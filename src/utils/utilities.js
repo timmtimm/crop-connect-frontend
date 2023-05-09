@@ -8,7 +8,7 @@ export const setPriceFormat = (price) => {
 
 export const validatePassword = (string) => {
   var pattern = new RegExp(
-    "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[-+_!@#$%^&*.,?]).+$"
+    "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
   );
 
   return pattern.test(string);
@@ -33,9 +33,9 @@ export const validateStringInputLogic = (string, validateResult, result) => {
 export const validatePhoneNumber = (number) =>
   !isNaN(number) && number > 0 && number.toString().length < 13;
 
-export const checkObjectIsNullExist = (object, checkKey) => {
+export const checkObjectIsNotNullExist = (object, checkKey) => {
   for (const key of checkKey) {
-    if (!object[key]) {
+    if (object[key]) {
       return true;
     }
   }

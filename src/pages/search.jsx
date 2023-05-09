@@ -185,7 +185,7 @@ export default () => {
               overflow: "auto",
             }}
           >
-            {open == "filter" ? (
+            {open == "filter" && (
               <>
                 <p className="text-xl font-bold mb-4">Filter</p>
                 <Filter
@@ -193,7 +193,8 @@ export default () => {
                   onSubmit={toggleDrawer(false)}
                 />
               </>
-            ) : (
+            )}
+            {open == "sorting" && (
               <div className="flex flex-col">
                 <p className="text-xl font-bold mb-4">Urutkan berdasarkan</p>
                 <FormControl className="w-full">

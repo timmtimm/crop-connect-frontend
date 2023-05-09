@@ -23,7 +23,7 @@ import { setParamRegionFetch } from "@/utils/url";
 import { runOnce } from "@/lib/swr";
 import Loading from "@/components/elements/loading";
 import {
-  checkObjectIsNullExist,
+  checkObjectIsNotNullExist,
   validateEmail,
   validatePhoneNumber,
   validateStringInputLogic,
@@ -157,11 +157,16 @@ export default () => {
 
   useEffect(() => {
     if (!Cookies.get("token")) {
-      router.replace("/");
+      router.replace({
+        pathname: "/login",
+        query: {
+          redirect: router.pathname,
+        },
+      });
     } else {
       handleGetProfile();
     }
-  }, [Cookies.get("token")]);
+  }, []);
 
   const validateInput = () => {
     let flag = true;
@@ -211,7 +216,7 @@ export default () => {
     });
 
     if (
-      !checkObjectIsNullExist(tempError, [
+      checkObjectIsNotNullExist(tempError, [
         "name",
         "email",
         "phoneNumber",
@@ -233,7 +238,7 @@ export default () => {
 
     if (validateInput()) {
       const tempError = { ...error };
-      const { data } = await putWithJSON("/api/v1/user/profile", {
+      const data = await putWithJSON("/api/v1/user/profile", {
         ...profile,
       });
 
@@ -256,7 +261,7 @@ export default () => {
         TransitionComponent={Slide}
         autoHideDuration={6000}
         onClose={handleClose}
-        message={error.message}
+        message={message ? message : error.message}
       >
         <Alert
           onClose={handleClose}

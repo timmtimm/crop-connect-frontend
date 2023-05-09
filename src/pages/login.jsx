@@ -2,7 +2,7 @@ import Loading from "@/components/elements/loading";
 import Auth from "@/components/layouts/auth";
 import { get, postWithJSON } from "@/lib/axios";
 import {
-  checkObjectIsNullExist,
+  checkObjectIsNotNullExist,
   findErrorMessageFromResponse,
   validateEmail,
   validatePassword,
@@ -59,11 +59,12 @@ export default () => {
       validatePassword(input.password),
       {
         empty: "Kata sandi tidak boleh kosong",
-        invalid: "Kata sandi harus mengandung huruf besar, kecil, dan angka",
+        invalid:
+          "Kata sandi minimal 8 karakter dan harus mengandung huruf besar, kecil, angka, dan simbol",
       }
     );
 
-    if (checkObjectIsNullExist(input, ["email", "password"])) {
+    if (checkObjectIsNotNullExist(tempError, ["email", "password"])) {
       flag = false;
     }
 
@@ -83,9 +84,10 @@ export default () => {
     setIsLoading(true);
 
     if (validateInput()) {
-      const { data } = await postWithJSON("/api/v1/user/login", input);
+      const data = await postWithJSON("/api/v1/user/login", input);
 
       console.log(data);
+
       if (data?.data) {
         Cookies.set("token", data.data, { expires: 1 });
 
@@ -94,7 +96,7 @@ export default () => {
         router.push(
           dataProfile.role == "buyer"
             ? router.query.redirect || "/"
-            : "/dashboard"
+            : router.query.redirect || "/dashboard"
         );
       } else {
         setError({

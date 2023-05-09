@@ -48,12 +48,9 @@ export const get = async (url, params = {}) => {
     const { data } = await instance.get(url, {
       params: params,
     });
-
-    console.log(data);
     return data;
   } catch (err) {
-    console.log(err.response);
-    return err.response;
+    return err.response.data;
   }
 };
 
@@ -71,14 +68,14 @@ export const get = async (url, params = {}) => {
 
 export const postWithJSON = async (url, input) => {
   try {
-    return await instance.post(url, input, {
+    const { data } = await instance.post(url, input, {
       headers: {
         "Content-Type": "application/json",
       },
     });
+    return data;
   } catch (err) {
-    console.log(err.response);
-    return err.response;
+    return err.response.data;
   }
 };
 
@@ -99,14 +96,14 @@ export const postWithJSON = async (url, input) => {
 
 export const putWithJSON = async (url, input) => {
   try {
-    return await instance.put(url, input, {
+    const { data } = await instance.put(url, input, {
       headers: {
         "Content-Type": "application/json",
       },
     });
+    return data;
   } catch (err) {
-    console.log(err.response);
-    return err.response;
+    return err.response.data;
   }
 };
 

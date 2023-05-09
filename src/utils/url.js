@@ -4,8 +4,6 @@ import { useRouter } from "next/router";
 export const getPagination = () => {
   const router = useRouter();
   const { page, limit, sortBy, orderBy } = router.query;
-
-  console.log(typeof page);
   return {
     page: page && !isNaN(page) ? parseInt(page) : 1,
     limit: limit && !isNaN(limit) == "number" ? parseInt(limit) : 20,

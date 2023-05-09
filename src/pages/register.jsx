@@ -2,7 +2,7 @@ import Auth from "@/components/layouts/auth";
 import { fetcher, postWithJSON, triggerfetcher } from "@/lib/axios";
 import { runOnce } from "@/lib/swr";
 import {
-  checkObjectIsNullExist,
+  checkObjectIsNotNullExist,
   findErrorMessageFromResponse,
   validateEmail,
   validatePassword,
@@ -123,7 +123,8 @@ export default () => {
       validatePassword(input.password),
       {
         empty: "Kata sandi tidak boleh kosong",
-        invalid: "Kata sandi harus mengandung huruf besar, kecil, dan angka",
+        invalid:
+          "Kata sandi minimal 8 karakter dan harus mengandung huruf besar, kecil, angka, dan simbol",
       }
     );
     tempError.passwordConfirmation = validateStringInputLogic(
@@ -152,10 +153,10 @@ export default () => {
       invalid: "",
     });
 
-    console.log(checkObjectIsNullExist(tempError));
+    console.log(checkObjectIsNotNullExist(tempError));
 
     if (
-      checkObjectIsNullExist(tempError, [
+      checkObjectIsNotNullExist(tempError, [
         "name",
         "email",
         "phoneNumber",
