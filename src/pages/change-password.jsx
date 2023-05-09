@@ -1,4 +1,5 @@
 import Loading from "@/components/elements/loading";
+import Seo from "@/components/elements/seo";
 import Default from "@/components/layouts/default";
 import { putWithJSON } from "@/lib/axios";
 import {
@@ -142,6 +143,7 @@ export default () => {
 
   return (
     <>
+      <Seo title="Ganti Password" />
       <Snackbar
         open={open}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}

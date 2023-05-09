@@ -1,4 +1,5 @@
 import Loading from "@/components/elements/loading";
+import Seo from "@/components/elements/seo";
 import Auth from "@/components/layouts/auth";
 import { get, postWithJSON } from "@/lib/axios";
 import {
@@ -121,6 +122,7 @@ export default () => {
 
   return (
     <>
+      <Seo title="Masuk Akun" />
       <Snackbar
         open={open}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}

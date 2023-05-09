@@ -28,6 +28,7 @@ import {
   validatePhoneNumber,
   validateStringInputLogic,
 } from "@/utils/utilities";
+import Seo from "@/components/elements/seo";
 
 export default () => {
   const router = useRouter();
@@ -255,6 +256,7 @@ export default () => {
 
   return (
     <>
+      <Seo title="Pengaturan Akun" />
       <Snackbar
         open={open}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}

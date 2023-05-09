@@ -23,6 +23,7 @@ import { Global } from "@emotion/react";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import Typography from "@mui/material/Typography";
 import Skeleton from "@mui/material/Skeleton";
+import Seo from "@/components/elements/seo";
 
 const Root = styled("div")(({ theme }) => ({
   height: "100%",
@@ -145,6 +146,13 @@ export default () => {
 
   return (
     <>
+      <Seo
+        title={
+          queryParam.searchBy == "komoditas"
+            ? "Cari Komoditas "
+            : "Cari Petani " + queryParam.searchQuery
+        }
+      />
       {isLoading && <Loading />}
       <Root>
         <CssBaseline />

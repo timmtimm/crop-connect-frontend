@@ -10,6 +10,7 @@ import { FormControl, MenuItem, Pagination, Select } from "@mui/material";
 import Card from "@/components/elements/card";
 import useSWR from "swr";
 import { runOnce } from "@/lib/swr";
+import Seo from "@/components/elements/seo";
 
 const listSorting = [
   {
@@ -44,12 +45,10 @@ export default () => {
   const pagination = getPagination();
   const queryParam = router.query;
 
-  // const [profileFarmer, setProfileFarmer] = useState({});
-  // const [farmerCommodity, setFarmerCommodity] = useState([{}]);
   const {
     data: farmerCommodity,
+    error: commmodityError,
     isLoading: commodityLoading,
-    mutate: commodityMutate,
   } = useSWR(
     [
       "/api/v1/commodity",
@@ -65,11 +64,7 @@ export default () => {
     runOnce
   );
 
-  const {
-    data: profileFarmer,
-    isLoading: profileLoading,
-    mutate: profileMutate,
-  } = useSWR(
+  const { data: profileFarmer, isLoading: profileLoading } = useSWR(
     [`/api/v1/user/farmer/${queryParam.id}`, {}],
     ([url, params]) => {
       if (!queryParam.id) return;
@@ -77,48 +72,6 @@ export default () => {
     },
     runOnce
   );
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState({
-    farmerMessage: "",
-    commoditiesMessage: "",
-  });
-
-  // const handleGetProfileFarmer = async () => {
-  //   if (!queryParam.id) return;
-
-  //   const data = await get(`/api/v1/user/farmer/${queryParam.id}`);
-
-  //   if (data?.data) {
-  //     setProfileFarmer(data.data);
-  //   } else {
-  //     setError({
-  //       farmerMessage: data.message,
-  //     });
-  //   }
-  // };
-
-  // const handleGetFarmerCommodity = async () => {
-  //   const data = await get(`/api/v1/commodity`, {
-  //     ...pagination,
-  //     farmerID: queryParam.id,
-  //   });
-
-  //   if (data?.data) {
-  //     setFarmerCommodity({ data: data.data, pagination: data.pagination });
-  //   } else {
-  //     setError({
-  //       commoditiesMessage: data.message,
-  //     });
-  //   }
-  // };
-
-  // const handleGetData = async () => {
-  //   setIsLoading(true);
-  //   await handleGetProfileFarmer();
-  //   // await handleGetFarmerCommodity();
-  //   setIsLoading(false);
-  // };
 
   const handleChangeSorting = ({ target: { sort, order } }) => {
     console.log(sort, order);
@@ -134,6 +87,7 @@ export default () => {
 
   return (
     <>
+      <Seo title={`Petani ${profileFarmer?.data?.name}`} />
       {profileLoading || commodityLoading ? <Loading /> : <></>}
       <Default>
         <div className="flex flex-col gap-8">
@@ -242,6 +196,7 @@ export default () => {
             </div>
           </div>
         </div>
+        {/* <span>{JSON.stringify(commmodityError)}</span> */}
       </Default>
     </>
   );

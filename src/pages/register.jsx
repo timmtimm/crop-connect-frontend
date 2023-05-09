@@ -28,6 +28,7 @@ import { useEffect, useState } from "react";
 import useSWRMutation from "swr/mutation";
 import useSWR from "swr";
 import { setParamRegionFetch } from "@/utils/url";
+import Seo from "@/components/elements/seo";
 
 const availableRoles = [
   {
@@ -286,6 +287,7 @@ export default () => {
 
   return (
     <>
+      <Seo title="Daftar Akun" />
       <Snackbar
         open={open}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}

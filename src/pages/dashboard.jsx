@@ -1,3 +1,4 @@
+import Seo from "@/components/elements/seo";
 import Default from "@/components/layouts/default";
 import { get } from "@/lib/axios";
 import Cookies from "js-cookie";
@@ -29,5 +30,10 @@ export default () => {
     }
   }, []);
 
-  return <Default>dashboard</Default>;
+  return (
+    <>
+      <Seo title="Dashboard" />
+      <Default>dashboard</Default>
+    </>
+  );
 };
