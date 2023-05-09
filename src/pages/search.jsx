@@ -121,8 +121,10 @@ export default () => {
     runOnce
   );
 
+  const [open, setOpen] = useState(null);
+
   const handleChangeSorting = ({ target: { sort, order } }) => {
-    console.log(sort, order);
+    setOpen(null);
     router.push({
       pathname: "/search",
       query: {
@@ -132,8 +134,6 @@ export default () => {
       },
     });
   };
-
-  const [open, setOpen] = useState(null);
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
