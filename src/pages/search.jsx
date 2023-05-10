@@ -147,11 +147,11 @@ export default () => {
   return (
     <>
       <Seo
-        title={
+        title={`${
           queryParam.searchBy == "komoditas"
             ? "Cari Komoditas "
-            : "Cari Petani " + queryParam.searchQuery
-        }
+            : "Cari Petani "
+        } ${queryParam.searchQuery}`}
       />
       {isLoading && <Loading />}
       <Root>
@@ -166,7 +166,7 @@ export default () => {
         />
         <SwipeableDrawer
           anchor="bottom"
-          open={open}
+          open={open ? true : false}
           onClose={toggleDrawer(null)}
           disableSwipeToOpen={false}
           ModalProps={{
@@ -221,7 +221,6 @@ export default () => {
                   >
                     {listSorting?.map((item) => (
                       <MenuItem
-                        className="text-sm"
                         key={item.value}
                         value={item.text}
                         sort={item.sort}

@@ -350,7 +350,7 @@ export default () => {
                 ) : (
                   <></>
                 )}
-                <FormControl error={error.province ? true : false}>
+                <FormControl error={error.province ? true : false} required>
                   <InputLabel>Provinsi</InputLabel>
                   <Select
                     name="province"
@@ -368,7 +368,7 @@ export default () => {
                   <FormHelperText>{error.province}</FormHelperText>
                 </FormControl>
 
-                <FormControl error={error.regency ? true : false}>
+                <FormControl error={error.regency ? true : false} required>
                   <InputLabel>Kabupaten</InputLabel>
                   <Select
                     name="regency"
@@ -387,7 +387,7 @@ export default () => {
                   <FormHelperText>{error.regency}</FormHelperText>
                 </FormControl>
 
-                <FormControl error={error.district ? true : false}>
+                <FormControl error={error.district ? true : false} required>
                   <InputLabel>Kecamatan</InputLabel>
                   <Select
                     name="district"
@@ -405,7 +405,7 @@ export default () => {
                   </Select>
                 </FormControl>
 
-                <FormControl error={error.regency ? true : false}>
+                <FormControl error={error.regency ? true : false} required>
                   <InputLabel>Kelurahan</InputLabel>
                   <Select
                     name="subdistrict"

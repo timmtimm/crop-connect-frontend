@@ -74,7 +74,6 @@ export default () => {
   );
 
   const handleChangeSorting = ({ target: { sort, order } }) => {
-    console.log(sort, order);
     router.push({
       pathname: `/farmer/${queryParam.id}`,
       query: {

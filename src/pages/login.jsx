@@ -141,9 +141,9 @@ export default () => {
         altBanner="Masuk"
       >
         <div>
-          <h2 className="text-center text-2xl font-semibold mb-4">
+          <h1 className="text-center text-2xl font-semibold mb-4">
             Masuk ke Akun
-          </h2>
+          </h1>
 
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <TextField
@@ -192,10 +192,7 @@ export default () => {
           </div>
           <div className="text-center text-sm md:text-base">
             Lupa kata sandi?{" "}
-            <Link
-              href={"/forgot-password"}
-              className="text-[#52A068] font-bold"
-            >
+            <Link href={"/reset-password"} className="text-[#52A068] font-bold">
               Atur Ulang Kata Sandi
             </Link>
           </div>
