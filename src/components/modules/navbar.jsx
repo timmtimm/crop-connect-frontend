@@ -2,6 +2,7 @@ import {
   Button,
   FormControl,
   FormGroup,
+  InputAdornment,
   Menu,
   MenuItem,
   Select,
@@ -12,7 +13,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 import { get } from "@/lib/axios";
-import { FaUserCircle } from "react-icons/fa";
+import { FaSearch, FaUserCircle } from "react-icons/fa";
 import Cookies from "js-cookie";
 
 const listSearchBy = [
@@ -208,6 +209,15 @@ export default () => {
                 InputProps={{
                   className:
                     "bg-white rounded-lg rounded-l-none text-sm md:text-base focus:border-0 hover:border-0",
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <FaSearch
+                        className="cursor-pointer"
+                        onClick={(e) => handleSearch(e)}
+                        size={20}
+                      />
+                    </InputAdornment>
+                  ),
                 }}
                 sx={{ "& input": { padding: "0.75rem" } }}
                 value={input.searchQuery}

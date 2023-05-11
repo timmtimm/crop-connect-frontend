@@ -2,7 +2,7 @@ import { getPagination } from "@/utils/url";
 import { fetcher } from "@/lib/axios";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-import DefaultLayout from "@/components/layouts/default";
+import Default from "@/components/layouts/default";
 import Card from "@/components/elements/card";
 import Filter from "@/components/elements/filter";
 import Loading from "@/components/elements/loading";
@@ -21,8 +21,6 @@ import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Global } from "@emotion/react";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import Typography from "@mui/material/Typography";
-import Skeleton from "@mui/material/Skeleton";
 import Seo from "@/components/elements/seo";
 
 const Root = styled("div")(({ theme }) => ({
@@ -71,6 +69,10 @@ export default () => {
         : {
             ...pagination,
             name: queryParam.searchQuery,
+            province: queryParam.province,
+            regency: queryParam.regency,
+            district: queryParam.district,
+            regionID: queryParam.regionID,
           },
   };
 
@@ -139,10 +141,6 @@ export default () => {
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
-
-  useEffect(() => {
-    mutate();
-  }, [router.query]);
 
   return (
     <>
@@ -244,7 +242,7 @@ export default () => {
           </StyledBox>
         </SwipeableDrawer>
       </Root>
-      <DefaultLayout>
+      <Default>
         <div className="flex flex-row gap-8">
           <div className="hidden lg:block">
             <h1 className="text-xl font-bold mb-4">Filter</h1>
@@ -302,7 +300,6 @@ export default () => {
                   >
                     {listSorting?.map((item) => (
                       <MenuItem
-                        className="text-sm"
                         key={item.value}
                         value={item.text}
                         sort={item.sort}
@@ -342,19 +339,20 @@ export default () => {
               page={queryParam.page || 1}
               variant="outlined"
               shape="rounded"
-              onChange={(e, value) =>
+              onChange={(e, value) => {
+                e.preventDefault();
                 router.push({
                   pathname: "/search",
                   query: {
                     ...router.query,
                     page: value,
                   },
-                })
-              }
+                });
+              }}
             />
           </div>
         </div>
-      </DefaultLayout>
+      </Default>
     </>
   );
 };

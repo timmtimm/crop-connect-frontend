@@ -32,6 +32,7 @@ export const fetcher = async (url, params = {}) => {
     const { data } = await instance.get(url, {
       params,
     });
+    console.log(data);
     return data;
   } catch (err) {
     console.log(err.response);

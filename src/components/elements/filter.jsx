@@ -145,7 +145,9 @@ export default (props) => {
     query = setIfNotNull(query, "minPrice", input.minPrice);
     query = setIfNotNull(query, "maxPrice", input.maxPrice);
 
-    onSubmit();
+    if (onSubmit) {
+      onSubmit();
+    }
 
     router.push({
       pathname: "/search",

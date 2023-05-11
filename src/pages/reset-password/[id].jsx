@@ -52,7 +52,6 @@ export default () => {
   const checkToken = async () => {
     setIsLoading(true);
     const data = await get(`/api/v1/user/forgot-password/${id}`);
-    console.log(data);
 
     if (data.status != 200) {
       setExpired(true);

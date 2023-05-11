@@ -143,7 +143,7 @@ export default () => {
 
   return (
     <>
-      <Seo title="Ganti Password" />
+      <Seo title="Ganti Kata Sandi" />
       <Snackbar
         open={open}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -194,7 +194,7 @@ export default () => {
           <section className="flex flex-col gap-8 jutify-center p-6">
             <div className="flex flex-col gap-8 jutify-center">
               <span className="text-2xl text-center font-bold mb-4">
-                Ganti Password
+                Ganti Kata Sandi
               </span>
               <form className="flex flex-col gap-4">
                 <TextField
