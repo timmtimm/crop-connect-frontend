@@ -241,6 +241,12 @@ export default () => {
                       </span>
                     </div>
                   </div>
+                  <div className="text-right">
+                    <span className="mr-2">Total Pembayaran</span>
+                    <span className="font-bold">
+                      Rp {setPriceFormat(item.totalPrice)}
+                    </span>
+                  </div>
                 </div>
               </div>
             </Link>

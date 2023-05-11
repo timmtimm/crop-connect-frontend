@@ -6,6 +6,7 @@ import { get } from "@/lib/axios";
 import { dateFormatToIndonesia, setPriceFormat } from "@/utils/utilities";
 import Cookies from "js-cookie";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -81,7 +82,16 @@ export default () => {
         <h1 className="text-2xl font-bold mb-4">Detail Transaksi</h1>
         <div className="flex flex-col gap-4 w-full bg-white p-4 rounded-xl divide-y-2">
           {error ? (
-            { error }
+            <div className="flex flex-col justify-center items-center">
+              <Image
+                src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
+                alt="Ilustrasi Not Found"
+              />
+              <h2 className="text-xl">Transaksi tidak ditemukan</h2>
+              <Link href="/transaction-history">
+                <span>Kembali ke halaman riwayat transaksi</span>
+              </Link>
+            </div>
           ) : (
             <>
               <div>
@@ -160,7 +170,7 @@ export default () => {
                   </div>
                   <div>
                     <h3 className="text-lg text-right mt-2">
-                      Total Belanja{" "}
+                      Total Pembayaran{" "}
                       <span className="font-bold">
                         Rp {setPriceFormat(dataTransaction.totalPrice)}
                       </span>
