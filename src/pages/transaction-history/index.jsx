@@ -26,6 +26,10 @@ import {
 import Status from "@/components/elements/status";
 import Image from "next/image";
 import Link from "next/link";
+import dayjs from "dayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 const listStatus = [
   {
@@ -54,10 +58,13 @@ export default () => {
   const [input, setInput] = useState({
     search: router.query.search || "",
     status: router.query.status || "none",
+    startDate: dayjs(router.query.startDate) || dayjs(),
+    endDate: router.query.endDate || dayjs(),
   });
 
   const handleChange = ({ target: { name, value } }) => {
     setInput({ ...input, [name]: value });
+    console.log(input);
   };
 
   const handleFilter = (e) => {
@@ -90,12 +97,18 @@ export default () => {
 
   const handleFilterStatus = ({ target: { value } }) => {
     let query = { ...router.query };
-    setInput({
-      ...input,
-      status: value,
-    });
 
     query = setIfNotNone(router.query, "status", value);
+
+    router.push({
+      pathname: "/transaction-history",
+      query,
+    });
+  };
+
+  const handleFilterDate = ({ target: { name, value } }) => {
+    let query = { ...router.query };
+    query = setIfNotToday(router.query, name, value);
 
     router.push({
       pathname: "/transaction-history",
@@ -114,10 +127,22 @@ export default () => {
     }
   }, []);
 
+  const setIfNotToday = (object, key, value) => {
+    if (value != dayjs().format("YYYY-MM-DD")) {
+      object[key] = value;
+    } else {
+      delete object[key];
+    }
+
+    return object;
+  };
+
   const setQueryparam = () => {
     let query = { ...pagination };
     query = setIfNotNull(query, "commodity", router.query.search);
     query = setIfNotNone(query, "status", router.query.status);
+    query = setIfNotToday(query, "startDate", router.query.startDate);
+    query = setIfNotToday(query, "endDate", router.query.endDate);
     return query;
   };
 
@@ -199,6 +224,36 @@ export default () => {
                 ))}
               </Select>
             </FormControl>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Rentang awal transaksi"
+                maxDate={dayjs()}
+                value={dayjs(input.startDate)}
+                views={["year", "month", "day"]}
+                onChange={(newValue) =>
+                  handleFilterDate({
+                    target: {
+                      name: "startDate",
+                      value: dayjs(newValue).format("YYYY-MM-DD"),
+                    },
+                  })
+                }
+              />
+              <DatePicker
+                label="Rentang akhir transaksi"
+                minDate={dayjs(input.startDate)}
+                maxDate={dayjs()}
+                value={dayjs(input.endDate)}
+                onChange={(newValue) =>
+                  handleFilterDate({
+                    target: {
+                      name: "endDate",
+                      value: dayjs(newValue).format("YYYY-MM-DD"),
+                    },
+                  })
+                }
+              />
+            </LocalizationProvider>
           </div>
           {data?.data?.map((item) => (
             <Link href={`/transaction-history/${item._id}`}>
