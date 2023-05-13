@@ -120,6 +120,4 @@ export const putWithJSON = async (url, input) => {
 //   }
 // };
 
-instance.interceptors.request.use((request) => requestHandler(request));
-
 export default instance;

@@ -85,11 +85,15 @@ export default () => {
             <div className="flex flex-col justify-center items-center">
               <Image
                 src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
+                width={400}
+                height={400}
                 alt="Ilustrasi Not Found"
               />
               <h2 className="text-xl">Transaksi tidak ditemukan</h2>
               <Link href="/transaction-history">
-                <span>Kembali ke halaman riwayat transaksi</span>
+                <span className="text-[#53A06C]">
+                  Kembali ke halaman riwayat transaksi
+                </span>
               </Link>
             </div>
           ) : (

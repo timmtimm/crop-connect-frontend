@@ -61,6 +61,7 @@ export const setIfNotNull = (object, key, value) => {
 };
 
 export const dateFormatToIndonesia = (date) => {
+  if (!date) return;
   const dateObject = {
     date: dayjs(date).date(),
     month: dayjs(date).month(),
