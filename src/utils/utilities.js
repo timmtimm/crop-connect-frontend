@@ -110,3 +110,38 @@ export const dateFormatToIndonesia = (date) => {
 
   return `${dateObject.date} ${month} ${dateObject.year}`;
 };
+
+export const dayUnitToIndonesiaDisplayFormat = (dayUnit) => {
+  switch (dayUnit) {
+    case dayUnit > 365:
+      return `${Math.floor(dayUnit / 365)} tahun`;
+    case dayUnit > 30:
+      return `${Math.floor(dayUnit / 30)} bulan`;
+    case dayUnit > 7:
+      return `${Math.floor(dayUnit / 7)} minggu`;
+    case dayUnit > 1:
+      return `${dayUnit} hari`;
+    default:
+      return `${dayUnit} hari`;
+  }
+};
+
+export const unitToIndonesiaTotalFormat = (unit) => {
+  switch (unit) {
+    case unit > 1000000:
+      return `${Math.floor(unit / 1000000)} juta`;
+    case unit > 1000:
+      return `${Math.floor(unit / 1000)} ribu`;
+    case unit > 100:
+      return `${Math.floor(unit / 100)} ratus`;
+    case unit > 10:
+      return `${Math.floor(unit / 10)} puluh`;
+    default:
+      return `${unit}`;
+  }
+};
+
+export const checkIsValidDate = (stringDate) => {
+  const date = new Date(stringDate);
+  return isNaN(date.getMonth()) ? false : true;
+};

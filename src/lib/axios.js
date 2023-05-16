@@ -18,7 +18,7 @@ export const requestHandler = async (config) => {
   if (isHandlerEnabled(config)) {
     const token = Cookies.get("token");
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = token;
     }
   }
 
@@ -32,6 +32,7 @@ export const fetcher = async (url, params = {}) => {
     const { data } = await instance.get(url, {
       params,
     });
+    console.log(url);
     console.log(data);
     return data;
   } catch (err) {
@@ -74,8 +75,10 @@ export const postWithJSON = async (url, input) => {
         "Content-Type": "application/json",
       },
     });
+    console.log(data);
     return data;
   } catch (err) {
+    console.log(err.response);
     return err.response.data;
   }
 };

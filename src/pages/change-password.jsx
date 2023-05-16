@@ -183,7 +183,7 @@ export default () => {
             <div className="relative h-full w-full">
               <Image
                 className="flex justify-center items-center contents-center relative h-full w-full"
-                src="/security _ lock, padlock, man, protection, safety, privacy_lg.png"
+                src="/security _ password, safe, vault, hand gesture, pincode, privacy_lg.png"
                 width={500}
                 height={500}
                 style={{ objectFit: "contain" }}

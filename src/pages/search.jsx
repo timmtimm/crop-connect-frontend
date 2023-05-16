@@ -329,6 +329,7 @@ export default () => {
                 <Card
                   className="w-1/4 gap-7"
                   type={queryParam.searchBy}
+                  withName
                   data={item}
                 />
               ))}

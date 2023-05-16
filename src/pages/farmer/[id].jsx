@@ -105,7 +105,6 @@ export default () => {
                   Komoditas: {farmerCommodity?.pagination?.totalData} jenis
                 </span>
                 <span>Proposal: belom implement</span>
-                <span>Transaksi: belom implement</span>
               </div>
               <div className="w-full">
                 <div className="flex flex-col lg:ml-4 lg:mt-0 mt-2">

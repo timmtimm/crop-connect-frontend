@@ -1,6 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { setPriceFormat } from "@/utils/utilities.js";
+import { TbPlant } from "react-icons/tb";
+import { MdLocationOn } from "react-icons/md";
+import { GiFarmer } from "react-icons/gi";
+import { ImPriceTag } from "react-icons/im";
 
 export default (props) => {
   const { type, data, withName } = props;
@@ -23,20 +27,28 @@ export default (props) => {
             />
 
             <div className="flex flex-col p-5">
-              <span className="text-white text-xl truncate">{data.name}</span>
-              <span className="font-bold text-white text-base">
-                Rp {setPriceFormat(data.pricePerKg)} / kg
+              <div className="flex flex-row items-center gap-1">
+                <TbPlant sice={15} />
+                <span className="text-white text-xl truncate">{data.name}</span>
+              </div>
+              <span className="flex flex-row gap-1 items-center font-bold text-white">
+                <ImPriceTag size={10} />
+                <span className="text-base">
+                  Rp {setPriceFormat(data.pricePerKg)} / kg
+                </span>
               </span>
-              <span
-                className={`text-white text-base truncate ${
+              <div
+                className={`text-white text-base truncate flex flex-row items-center gap-1 ${
                   !withName && "hidden"
                 }`}
               >
-                {data.farmer.name}
-              </span>
-              <span className="text-white text-base truncate">
-                {data.farmer.region.province}
-              </span>
+                <GiFarmer />
+                <span>{data.farmer.name}</span>
+              </div>
+              <div className="flex flex-row gap-1 items-center text-white text-base">
+                <MdLocationOn />
+                <span className="truncate">{data.farmer.region.province}</span>
+              </div>
             </div>
           </div>
         </Link>

@@ -19,6 +19,7 @@ import { runOnce } from "@/lib/swr";
 import Loading from "@/components/elements/loading";
 import { fetcher } from "@/lib/axios";
 import {
+  checkIsValidDate,
   dateFormatToIndonesia,
   setIfNotNull,
   setPriceFormat,
@@ -58,13 +59,17 @@ export default () => {
   const [input, setInput] = useState({
     search: router.query.search || "",
     status: router.query.status || "none",
-    startDate: dayjs(router.query.startDate) || dayjs(),
-    endDate: router.query.endDate || dayjs(),
+    startDate:
+      (checkIsValidDate(router.query.startDate) &&
+        dayjs(router.query.startDate)) ||
+      null,
+    endDate:
+      (checkIsValidDate(router.query.endDate) && dayjs(router.query.endDate)) ||
+      null,
   });
 
   const handleChange = ({ target: { name, value } }) => {
     setInput({ ...input, [name]: value });
-    console.log(input);
   };
 
   const handleFilter = (e) => {
@@ -108,11 +113,26 @@ export default () => {
 
   const handleFilterDate = ({ target: { name, value } }) => {
     let query = { ...router.query };
-    query = setIfNotToday(router.query, name, value);
+
+    if (!checkIsValidDate(input.startDate)) {
+      input.startDate = dayjs();
+    }
+
+    if (!checkIsValidDate(input.endDate)) {
+      input.endDate = dayjs();
+    }
+
+    if (name == "startDate" && value > router.query.endDate) {
+      input.endDate = dayjs();
+      delete query.endDate;
+    }
 
     router.push({
       pathname: "/transaction-history",
-      query,
+      query: {
+        ...query,
+        [name]: value,
+      },
     });
   };
 
@@ -127,22 +147,19 @@ export default () => {
     }
   }, []);
 
-  const setIfNotToday = (object, key, value) => {
-    if (value != dayjs().format("YYYY-MM-DD")) {
-      object[key] = value;
-    } else {
-      delete object[key];
-    }
-
-    return object;
-  };
-
   const setQueryparam = () => {
     let query = { ...pagination };
     query = setIfNotNull(query, "commodity", router.query.search);
     query = setIfNotNone(query, "status", router.query.status);
-    query = setIfNotToday(query, "startDate", router.query.startDate);
-    query = setIfNotToday(query, "endDate", router.query.endDate);
+
+    if (checkIsValidDate(router.query.startDate)) {
+      query.startDate = router.query.startDate;
+    }
+
+    if (checkIsValidDate(router.query.endDate)) {
+      query.endDate = router.query.endDate;
+    }
+
     return query;
   };
 
@@ -158,7 +175,7 @@ export default () => {
         return "warning";
       case "accepted":
         return "success";
-      case "":
+      case "cancelled":
         return "error";
       default:
         return;
@@ -228,22 +245,22 @@ export default () => {
               <DatePicker
                 label="Rentang awal transaksi"
                 maxDate={dayjs()}
-                value={dayjs(input.startDate)}
+                value={input.startDate ? dayjs(input.startDate) : null}
                 views={["year", "month", "day"]}
-                onChange={(newValue) =>
+                onChange={(newValue) => {
                   handleFilterDate({
                     target: {
                       name: "startDate",
                       value: dayjs(newValue).format("YYYY-MM-DD"),
                     },
-                  })
-                }
+                  });
+                }}
               />
               <DatePicker
                 label="Rentang akhir transaksi"
                 minDate={dayjs(input.startDate)}
                 maxDate={dayjs()}
-                value={dayjs(input.endDate)}
+                value={input.endDate ? dayjs(input.endDate) : null}
                 onChange={(newValue) =>
                   handleFilterDate({
                     target: {

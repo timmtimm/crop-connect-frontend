@@ -183,14 +183,13 @@ export default () => {
   const handleChange = ({ target: { name, value } }) => {
     setInput({ ...input, [name]: value });
     setError({ ...error, [name]: "" });
-    console.log(input);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (validateInput()) {
-      const { data } = await postWithJSON("/api/v1/user/register", input);
+      const data = await postWithJSON("/api/v1/user/register", input);
 
       if (data?.data) {
         Cookies.set("token", data.data, { expires: 1 });
