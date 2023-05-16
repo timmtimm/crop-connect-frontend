@@ -1,4 +1,4 @@
-import Loading from "@/components/elements/loading";
+import Loading from "@/components/modules/loading";
 import Seo from "@/components/elements/seo";
 import Auth from "@/components/layouts/auth";
 import { get, postWithJSON } from "@/lib/axios";

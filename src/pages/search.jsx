@@ -3,9 +3,9 @@ import { fetcher } from "@/lib/axios";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import Default from "@/components/layouts/default";
-import Card from "@/components/elements/card";
-import Filter from "@/components/elements/filter";
-import Loading from "@/components/elements/loading";
+import Card from "@/components/modules/card";
+import Filter from "@/components/modules/filter";
+import Loading from "@/components/modules/loading";
 import {
   Button,
   FormControl,

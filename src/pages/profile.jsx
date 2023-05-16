@@ -21,7 +21,7 @@ import useSWRMutation from "swr/mutation";
 import useSWR from "swr";
 import { setParamRegionFetch } from "@/utils/url";
 import { runOnce } from "@/lib/swr";
-import Loading from "@/components/elements/loading";
+import Loading from "@/components/modules/loading";
 import {
   checkObjectIsNotNullExist,
   validateEmail,

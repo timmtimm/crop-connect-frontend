@@ -1,4 +1,4 @@
-import Loading from "@/components/elements/loading";
+import Loading from "@/components/modules/loading";
 import Seo from "@/components/elements/seo";
 import Default from "@/components/layouts/default";
 import { fetcher, get, postWithJSON, triggerfetcher } from "@/lib/axios";

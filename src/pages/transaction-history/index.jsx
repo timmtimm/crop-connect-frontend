@@ -16,7 +16,7 @@ import { FaSearch } from "react-icons/fa";
 import { getPagination } from "@/utils/url";
 import useSWR from "swr";
 import { runOnce } from "@/lib/swr";
-import Loading from "@/components/elements/loading";
+import Loading from "@/components/modules/loading";
 import { fetcher } from "@/lib/axios";
 import {
   checkIsValidDate,
