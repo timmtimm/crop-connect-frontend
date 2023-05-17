@@ -1,11 +1,14 @@
 import "@/styles/globals.css";
 import { ThemeProvider } from "@mui/material/styles";
 import { propsTheme } from "@/lib/mui";
+import { ProfileUserProvider } from "@/context/profileUserContext";
 
 export default ({ Component, pageProps }) => {
   return (
-    <ThemeProvider theme={propsTheme}>
-      <Component {...pageProps} />
-    </ThemeProvider>
+    <ProfileUserProvider>
+      <ThemeProvider theme={propsTheme}>
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </ProfileUserProvider>
   );
 };

@@ -201,7 +201,7 @@ export default () => {
                       </span>
                     </p>
                     <h2 className="text-2xl font-bold mt-4 mb-5">
-                      Rp {setPriceFormat(dataCommodity?.data?.pricePerKg)} /
+                      {setPriceFormat(dataCommodity?.data?.pricePerKg)} /
                       kilogram
                     </h2>
                   </div>
@@ -262,7 +262,7 @@ export default () => {
                             </span>
                           </span>
                           <span className="font-bold">
-                            Total: Rp{" "}
+                            Total:
                             {input.proposal.estimatedTotalHarvest &&
                               setPriceFormat(
                                 dataCommodity?.data?.pricePerKg *

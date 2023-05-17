@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 export const setPriceFormat = (price) => {
   const formatter = new Intl.NumberFormat("en-US", {});
 
-  return formatter.format(price).replace(/,/g, ".");
+  return "Rp" + formatter.format(price).replace(/,/g, ".");
 };
 
 export const validatePassword = (string) => {

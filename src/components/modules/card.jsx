@@ -28,13 +28,13 @@ export default (props) => {
 
             <div className="flex flex-col p-5">
               <div className="flex flex-row items-center gap-1">
-                <TbPlant sice={15} />
+                <TbPlant size={15} />
                 <span className="text-white text-xl truncate">{data.name}</span>
               </div>
               <span className="flex flex-row gap-1 items-center font-bold text-white">
                 <ImPriceTag size={10} />
                 <span className="text-base">
-                  Rp {setPriceFormat(data.pricePerKg)} / kg
+                  {setPriceFormat(data.pricePerKg)} / kg
                 </span>
               </span>
               <div

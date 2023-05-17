@@ -29,17 +29,28 @@ import {
   validateStringInputLogic,
 } from "@/utils/utilities";
 import Seo from "@/components/elements/seo";
+import { useProfileUser } from "@/context/profileUserContext";
 
 export default () => {
   const router = useRouter();
 
-  const [profile, setProfile] = useState({});
+  /* Snackbar */
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState({
-    message: "",
-  });
-  const [message, setMessage] = useState("");
+  const handleClick = () => {
+    setOpen(true);
+  };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
 
+    setOpen(false);
+  };
+
+  /* Profile */
+  const { logout } = useProfileUser();
+  const [profile, setProfile] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const [region, setRegion] = useState({
     country: "Indonesia",
     province: null,
@@ -47,23 +58,20 @@ export default () => {
     district: null,
     subdistrict: null,
   });
+  const [error, setError] = useState({
+    message: "",
+  });
+  const [message, setMessage] = useState("");
   const [oldRegion, setOldRegion] = useState(region);
-
-  const handleChangeRegion = ({ target: { name, value } }) => {
-    setRegion({ ...region, [name]: value });
-    setError({ ...error, [name]: "" });
-  };
+  const [province, setProvince] = useState([]);
 
   const handleChange = ({ target: { name, value } }) => {
     setProfile({ ...profile, [name]: value });
   };
 
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleLogout = () => {
-    Cookies.remove("token");
-    setError({ ...error, message: "Silahkan masuk kembali" });
-    router.replace("/");
+  const handleChangeRegion = ({ target: { name, value } }) => {
+    setRegion({ ...region, [name]: value });
+    setError({ ...error, [name]: "" });
   };
 
   const handleGetProfile = async () => {
@@ -74,34 +82,17 @@ export default () => {
       data.regionID = data.region._id;
       setProfile(data);
       setRegion(data.region);
-    } else handleLogout();
+    } else logout();
 
     setIsLoading(false);
   };
 
-  const handleClick = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
-  };
-
-  const [province, setProvince] = useState([]);
   const getProvince = async () => {
     const { data } = await get("/api/v1/region/province", {
       country: region.country,
     });
     setProvince(data);
   };
-
-  useEffect(() => {
-    getProvince();
-  }, []);
 
   const {
     data: regency,
@@ -118,6 +109,25 @@ export default () => {
     trigger: triggerSubdistrict,
     isMutating: mutatingSubdistrict,
   } = useSWRMutation("/api/v1/region/sub-district", triggerfetcher);
+
+  /* useEffect */
+
+  useEffect(() => {
+    getProvince();
+  }, []);
+
+  useEffect(() => {
+    if (!Cookies.get("token")) {
+      router.replace({
+        pathname: "/login",
+        query: {
+          redirect: router.pathname,
+        },
+      });
+    } else {
+      handleGetProfile();
+    }
+  }, []);
 
   useEffect(() => {
     if (
@@ -156,18 +166,7 @@ export default () => {
     setOldRegion(region);
   }, [region.province, region.regency, region.district]);
 
-  useEffect(() => {
-    if (!Cookies.get("token")) {
-      router.replace({
-        pathname: "/login",
-        query: {
-          redirect: router.pathname,
-        },
-      });
-    } else {
-      handleGetProfile();
-    }
-  }, []);
+  /* Submit */
 
   const validateInput = () => {
     let flag = true;

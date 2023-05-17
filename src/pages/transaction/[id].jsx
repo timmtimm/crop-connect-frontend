@@ -29,10 +29,12 @@ import Slide from "@mui/material/Slide";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import Link from "next/link";
+import { useProfileUser } from "@/context/profileUserContext";
 
 export default () => {
   const router = useRouter();
   const { id } = router.query;
+  const { checkRole } = useProfileUser();
 
   const { data: dataProposal, isLoading: proposalLoading } = useSWR(
     [`api/v1/proposal/id/${id}`, {}],
@@ -199,15 +201,13 @@ export default () => {
     setIsLoading(false);
   };
 
-  const checkRole = async () => {
+  const handleCheckRole = async () => {
     setIsLoading(true);
-    const { data } = await get("/api/v1/user/profile");
 
-    if (data) {
-      if (data?.role != "buyer") {
-        router.replace("/");
-      }
+    if (checkRole(true, "buyer")) {
+      router.replace("/");
     }
+
     setIsLoading(false);
   };
 
@@ -220,7 +220,7 @@ export default () => {
         },
       });
     } else {
-      checkRole();
+      handleCheckRole();
     }
   }, []);
 
@@ -310,15 +310,6 @@ export default () => {
                 <h2 className="text-lg font-bold mb-2">
                   Komoditas yang ditransaksikan
                 </h2>
-                {/* <div className="flex flex-col gap-1">
-                  <span>Nama: {dataProposal.data.commodity?.name}</span>
-                  <span>Jenis bibit: {dataProposal.data.commodity.seed}</span>
-                  <span>
-                    Harga: Rp{" "}
-                    {setPriceFormat(dataProposal.data.commodity.pricePerKg)} /
-                    kilogram
-                  </span>
-                </div> */}
                 <table className="w-full md:w-fit">
                   <tbody>
                     <tr>
@@ -338,7 +329,6 @@ export default () => {
                         </div>
                       </td>
                       <td className="px-2 text-right md:text-left">
-                        Rp{" "}
                         {setPriceFormat(dataProposal.data.commodity.pricePerKg)}{" "}
                         / kilogram
                       </td>
@@ -508,7 +498,6 @@ export default () => {
                           <span className="hidden md:flex text-right">:</span>
                         </td>
                         <td className="px-2 text-right md:text-left">
-                          Rp{" "}
                           {setPriceFormat(
                             dataProposal.data.commodity.pricePerKg
                           )}

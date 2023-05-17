@@ -15,6 +15,7 @@ import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useProfileUser } from "@/context/profileUserContext";
 
 export default () => {
   const router = useRouter();
@@ -24,6 +25,7 @@ export default () => {
     password: "",
   });
   const [open, setOpen] = useState(false);
+  const { setProfileUser } = useProfileUser();
   const [error, setError] = useState({
     message: "",
     email: "",
@@ -87,12 +89,12 @@ export default () => {
     if (validateInput()) {
       const data = await postWithJSON("/api/v1/user/login", input);
 
-      console.log(data);
-
       if (data?.data) {
         Cookies.set("token", data.data, { expires: 1 });
 
         const { data: dataProfile } = await get("/api/v1/user/profile");
+
+        setProfileUser(dataProfile);
 
         router.push(
           dataProfile.role == "buyer"

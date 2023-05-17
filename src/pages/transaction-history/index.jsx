@@ -31,6 +31,7 @@ import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { useProfileUser } from "@/context/profileUserContext";
 
 const listStatus = [
   {
@@ -55,6 +56,7 @@ export default () => {
   const router = useRouter();
   const pagination = getPagination();
   pagination.limit = 10;
+  const { checkRole } = useProfileUser();
 
   const [input, setInput] = useState({
     search: router.query.search || "",
@@ -144,6 +146,10 @@ export default () => {
           redirect: router.pathname,
         },
       });
+    } else {
+      if (!checkRole(true, "buyer")) {
+        router.replace("/");
+      }
     }
   }, []);
 
@@ -308,15 +314,14 @@ export default () => {
                         {item.proposal.estimatedTotalHarvest} kg
                       </span>
                       <span>
-                        Rp {setPriceFormat(item.commodity.pricePerKg)} /
-                        kilogram
+                        {setPriceFormat(item.commodity.pricePerKg)} / kilogram
                       </span>
                     </div>
                   </div>
                   <div className="text-right">
                     <span className="mr-2">Total Pembayaran</span>
                     <span className="font-bold">
-                      Rp {setPriceFormat(item.totalPrice)}
+                      {setPriceFormat(item.totalPrice)}
                     </span>
                   </div>
                 </div>

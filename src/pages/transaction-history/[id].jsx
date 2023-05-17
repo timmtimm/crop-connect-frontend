@@ -218,7 +218,6 @@ export default () => {
                         <span className="hidden md:flex text-right">:</span>
                       </td>
                       <td className="px-2 text-right md:text-left">
-                        Rp{" "}
                         {setPriceFormat(dataTransaction.commodity?.pricePerKg)}{" "}
                         / kilogram
                       </td>
@@ -286,7 +285,6 @@ export default () => {
                         <span className="hidden md:flex text-right">:</span>
                       </td>
                       <td className="px-2 text-right md:text-left">
-                        Rp{" "}
                         {setPriceFormat(dataTransaction.commodity?.pricePerKg)}
                       </td>
                     </tr>
@@ -308,7 +306,7 @@ export default () => {
                   <h3 className="text-lg text-right mt-2">
                     Total Pembayaran{" "}
                     <span className="font-bold">
-                      Rp {setPriceFormat(dataTransaction.totalPrice)}
+                      {setPriceFormat(dataTransaction.totalPrice)}
                     </span>
                   </h3>
                 </div>
