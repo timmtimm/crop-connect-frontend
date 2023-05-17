@@ -30,25 +30,24 @@ import {
 } from "@/utils/utilities";
 import Seo from "@/components/elements/seo";
 import { useProfileUser } from "@/context/profileUserContext";
+import { roleUser } from "@/constant/constant";
 
 export default () => {
   const router = useRouter();
+  const { logout } = useProfileUser();
 
   /* Snackbar */
+
   const [open, setOpen] = useState(false);
-  const handleClick = () => {
-    setOpen(true);
-  };
+  const handleClick = () => setOpen(true);
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
-
     setOpen(false);
   };
 
-  /* Profile */
-  const { logout } = useProfileUser();
+  /* State */
   const [profile, setProfile] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [region, setRegion] = useState({
@@ -63,8 +62,8 @@ export default () => {
   });
   const [message, setMessage] = useState("");
   const [oldRegion, setOldRegion] = useState(region);
-  const [province, setProvince] = useState([]);
 
+  /* Function */
   const handleChange = ({ target: { name, value } }) => {
     setProfile({ ...profile, [name]: value });
   };
@@ -87,6 +86,8 @@ export default () => {
     setIsLoading(false);
   };
 
+  /* Region */
+  const [province, setProvince] = useState([]);
   const getProvince = async () => {
     const { data } = await get("/api/v1/region/province", {
       country: region.country,
@@ -109,25 +110,6 @@ export default () => {
     trigger: triggerSubdistrict,
     isMutating: mutatingSubdistrict,
   } = useSWRMutation("/api/v1/region/sub-district", triggerfetcher);
-
-  /* useEffect */
-
-  useEffect(() => {
-    getProvince();
-  }, []);
-
-  useEffect(() => {
-    if (!Cookies.get("token")) {
-      router.replace({
-        pathname: "/login",
-        query: {
-          redirect: router.pathname,
-        },
-      });
-    } else {
-      handleGetProfile();
-    }
-  }, []);
 
   useEffect(() => {
     if (
@@ -166,8 +148,25 @@ export default () => {
     setOldRegion(region);
   }, [region.province, region.regency, region.district]);
 
-  /* Submit */
+  /* useEffect */
+  useEffect(() => {
+    getProvince();
+  }, []);
 
+  useEffect(() => {
+    if (!Cookies.get("token")) {
+      router.replace({
+        pathname: "/login",
+        query: {
+          redirect: router.pathname,
+        },
+      });
+    } else {
+      handleGetProfile();
+    }
+  }, []);
+
+  /* Submit */
   const validateInput = () => {
     let flag = true;
     let tempError = { ...error };
@@ -333,7 +332,7 @@ export default () => {
                   helperText={error.phoneNumber}
                   value={profile.phoneNumber || ""}
                 />
-                {profile.role != "buyer" ? (
+                {profile.role != roleUser.buyer ? (
                   <TextField
                     error={error.description ? true : false}
                     InputProps={{

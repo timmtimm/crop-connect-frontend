@@ -29,20 +29,34 @@ import useSWRMutation from "swr/mutation";
 import useSWR from "swr";
 import { setParamRegionFetch } from "@/utils/url";
 import Seo from "@/components/elements/seo";
+import { roleUser } from "@/constant/constant";
 
 const availableRoles = [
   {
     text: "Pembeli",
-    value: "buyer",
+    value: roleUser.buyer,
   },
   {
     text: "Petani",
-    value: "farmer",
+    value: roleUser.farmer,
   },
 ];
 
 export default () => {
   const router = useRouter();
+
+  /* Snackbar */
+
+  const [open, setOpen] = useState(false);
+  const handleClick = () => setOpen(true);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  /* State */
 
   const [input, setInput] = useState({
     name: "",
@@ -53,7 +67,6 @@ export default () => {
     passwordConfirmation: "",
     regionID: "",
   });
-  const [open, setOpen] = useState(false);
   const [error, setError] = useState({
     name: "",
     email: "",
@@ -75,18 +88,85 @@ export default () => {
   });
   const [oldRegion, setOldRegion] = useState(region);
 
-  const handleClick = () => {
-    setOpen(true);
+  /* Function */
+  const handleChange = ({ target: { name, value } }) => {
+    setInput({ ...input, [name]: value });
+    setError({ ...error, [name]: "" });
   };
 
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
+  const handleChangeRegion = ({ target: { name, value } }) => {
+    setRegion({ ...region, [name]: value });
+    setError({ ...error, [name]: "" });
+  };
+
+  /* Region */
+  const { data: province, isLoading: provinceLoading } = useSWR(
+    ["/api/v1/region/province", { country: region.country }],
+    ([url, params]) => fetcher(url, params),
+    runOnce
+  );
+
+  const {
+    data: regency,
+    trigger: triggerRegency,
+    isMutating: mutatingRegency,
+  } = useSWRMutation("/api/v1/region/regency", triggerfetcher);
+  const {
+    data: district,
+    trigger: triggerDistrict,
+    isMutating: mutatingDistrict,
+  } = useSWRMutation("/api/v1/region/district", triggerfetcher);
+  const {
+    data: subdistrict,
+    trigger: triggerSubdistrict,
+    isMutating: mutatingSubdistrict,
+  } = useSWRMutation("/api/v1/region/sub-district", triggerfetcher);
+
+  useEffect(() => {
+    if (
+      (regency &&
+        region.province != null &&
+        region.province != oldRegion.province) ||
+      (!regency && region.province != null)
+    ) {
+      triggerRegency(setParamRegionFetch(region, "regency"));
+      setRegion({
+        ...region,
+        regency: null,
+        district: null,
+        subdistrict: null,
+      });
     }
 
-    setOpen(false);
-  };
+    if (
+      (district && region.regency && region.regency != oldRegion.regency) ||
+      (!district && region.regency)
+    ) {
+      triggerDistrict(setParamRegionFetch(region, "district"));
+      setRegion({ ...region, district: null, subdistrict: null });
+    }
 
+    if (
+      (subdistrict &&
+        region.district &&
+        region.district != oldRegion.district) ||
+      (!subdistrict && region.district)
+    ) {
+      triggerSubdistrict(setParamRegionFetch(region, "subdistrict"));
+      setRegion({ ...region, subdistrict: null });
+    }
+
+    setOldRegion(region);
+  }, [region.province, region.regency, region.district]);
+
+  /* useEffect */
+  useEffect(() => {
+    if (Cookies.get("token")) {
+      router.replace("/");
+    }
+  }, []);
+
+  /* Submit */
   const validateInput = () => {
     let flag = true;
     let tempError = { ...error };
@@ -180,11 +260,6 @@ export default () => {
     return flag;
   };
 
-  const handleChange = ({ target: { name, value } }) => {
-    setInput({ ...input, [name]: value });
-    setError({ ...error, [name]: "" });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -209,80 +284,6 @@ export default () => {
       }
     }
   };
-
-  useEffect(() => {
-    if (Cookies.get("token")) {
-      router.replace("/");
-    }
-  }, []);
-
-  const handleChangeRegion = ({ target: { name, value } }) => {
-    setRegion({ ...region, [name]: value });
-    setError({ ...error, [name]: "" });
-  };
-
-  const {
-    data: province,
-    error: provinceError,
-    isLoading: provinceLoading,
-  } = useSWR(
-    ["/api/v1/region/province", { country: region.country }],
-    ([url, params]) => fetcher(url, params),
-    runOnce
-  );
-
-  const {
-    data: regency,
-    trigger: triggerRegency,
-    isMutating: mutatingRegency,
-  } = useSWRMutation("/api/v1/region/regency", triggerfetcher);
-  const {
-    data: district,
-    trigger: triggerDistrict,
-    isMutating: mutatingDistrict,
-  } = useSWRMutation("/api/v1/region/district", triggerfetcher);
-  const {
-    data: subdistrict,
-    trigger: triggerSubdistrict,
-    isMutating: mutatingSubdistrict,
-  } = useSWRMutation("/api/v1/region/sub-district", triggerfetcher);
-
-  useEffect(() => {
-    if (
-      (regency &&
-        region.province != null &&
-        region.province != oldRegion.province) ||
-      (!regency && region.province != null)
-    ) {
-      triggerRegency(setParamRegionFetch(region, "regency"));
-      setRegion({
-        ...region,
-        regency: null,
-        district: null,
-        subdistrict: null,
-      });
-    }
-
-    if (
-      (district && region.regency && region.regency != oldRegion.regency) ||
-      (!district && region.regency)
-    ) {
-      triggerDistrict(setParamRegionFetch(region, "district"));
-      setRegion({ ...region, district: null, subdistrict: null });
-    }
-
-    if (
-      (subdistrict &&
-        region.district &&
-        region.district != oldRegion.district) ||
-      (!subdistrict && region.district)
-    ) {
-      triggerSubdistrict(setParamRegionFetch(region, "subdistrict"));
-      setRegion({ ...region, subdistrict: null });
-    }
-
-    setOldRegion(region);
-  }, [region.province, region.regency, region.district]);
 
   return (
     <>

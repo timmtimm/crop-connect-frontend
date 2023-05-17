@@ -35,27 +35,27 @@ export default (props) => {
   });
   const [oldInput, setOldInput] = useState(input);
 
-  useEffect(() => {
-    setInput({
-      ...input,
-      ...router.query,
-    });
-  }, [router.query]);
-
+  /* Function */
   const handleChangeInput = ({ target: { name, value } }) => {
     setInput({ ...input, [name]: value });
   };
 
-  const {
-    data: province,
-    error: provinceError,
-    isLoading: provinceLoading,
-  } = useSWR(
+  const setIfNotNone = (object, key, value) => {
+    if (value != "none") {
+      object[key] = value;
+    } else {
+      delete object[key];
+    }
+
+    return object;
+  };
+
+  /* Region */
+  const { data: province, isLoading: provinceLoading } = useSWR(
     ["/api/v1/region/province", { country: input.country }],
     ([url, params]) => fetcher(url, params),
     runOnce
   );
-
   const {
     data: regency,
     trigger: triggerRegency,
@@ -111,16 +111,15 @@ export default (props) => {
     setOldInput(input);
   }, [input.province, input.regency, input.district]);
 
-  const setIfNotNone = (object, key, value) => {
-    if (value != "none") {
-      object[key] = value;
-    } else {
-      delete object[key];
-    }
+  /* useEffect */
+  useEffect(() => {
+    setInput({
+      ...input,
+      ...router.query,
+    });
+  }, [router.query]);
 
-    return object;
-  };
-
+  /* Submit */
   const handleSubmit = (e) => {
     e.preventDefault();
 

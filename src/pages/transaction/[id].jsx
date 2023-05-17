@@ -30,18 +30,24 @@ import Cookies from "js-cookie";
 import Image from "next/image";
 import Link from "next/link";
 import { useProfileUser } from "@/context/profileUserContext";
+import { roleUser } from "@/constant/constant";
 
 export default () => {
   const router = useRouter();
   const { id } = router.query;
   const { checkRole } = useProfileUser();
 
-  const { data: dataProposal, isLoading: proposalLoading } = useSWR(
-    [`api/v1/proposal/id/${id}`, {}],
-    ([url, params]) => fetcher(url, params),
-    runOnce
-  );
+  /* Snackbar */
+  const [open, setOpen] = useState(false);
+  const handleClick = () => setOpen(true);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
+  /* State */
   const [input, setInput] = useState({
     country: "Indonesia",
     province: "",
@@ -50,25 +56,49 @@ export default () => {
     subdistrict: "",
     address: "",
   });
-
-  const handleChange = ({ target: { name, value } }) => {
-    setInput({ ...input, [name]: value });
-    setError({ ...error, [name]: "" });
-  };
-
   const [oldInput, setOldInput] = useState(input);
   const [error, setError] = useState({
     address: "",
     regionID: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
+  /* Fetch */
+  const { data: dataProposal, isLoading: proposalLoading } = useSWR(
+    [`api/v1/proposal/id/${id}`, {}],
+    ([url, params]) => fetcher(url, params),
+    runOnce
+  );
+
+  /* Function */
+  const handleChange = ({ target: { name, value } }) => {
+    setInput({ ...input, [name]: value });
+    setError({ ...error, [name]: "" });
+  };
+
+  /* useEffect */
+  useEffect(() => {
+    setIsLoading(true);
+    if (!Cookies.get("token")) {
+      router.replace({
+        pathname: "/login",
+        query: {
+          redirect: router.pathname,
+        },
+      });
+    } else if (checkRole(true, roleUser.buyer)) {
+      router.replace("/");
+    }
+    setIsLoading(false);
+  }, []);
+
+  /* Region */
   const { data: province, isLoading: provinceLoading } = useSWR(
     ["/api/v1/region/province", { country: input.country }],
     ([url, params]) => fetcher(url, params),
     runOnce
   );
-
-  const [isLoading, setIsLoading] = useState(false);
 
   const {
     data: regency,
@@ -123,6 +153,7 @@ export default () => {
     setOldInput(input);
   }, [input.province, input.regency, input.district]);
 
+  /* Submit */
   const validateInput = () => {
     let flag = true;
     let tempError = { ...error };
@@ -167,8 +198,6 @@ export default () => {
     return flag;
   };
 
-  const [isSuccess, setIsSuccess] = useState(false);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -199,41 +228,6 @@ export default () => {
     }
 
     setIsLoading(false);
-  };
-
-  const handleCheckRole = async () => {
-    setIsLoading(true);
-
-    if (checkRole(true, "buyer")) {
-      router.replace("/");
-    }
-
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    if (!Cookies.get("token")) {
-      router.replace({
-        pathname: "/login",
-        query: {
-          redirect: router.pathname,
-        },
-      });
-    } else {
-      handleCheckRole();
-    }
-  }, []);
-
-  const [open, setOpen] = useState(false);
-  const handleClick = () => {
-    setOpen(true);
-  };
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
   };
 
   return (

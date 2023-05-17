@@ -45,11 +45,20 @@ export default () => {
   const pagination = getPagination();
   const queryParam = router.query;
 
-  const {
-    data: farmerCommodity,
-    error: commmodityError,
-    isLoading: commodityLoading,
-  } = useSWR(
+  /* Function */
+  const handleChangeSorting = ({ target: { sort, order } }) => {
+    router.push({
+      pathname: `/farmer/${queryParam.id}`,
+      query: {
+        ...setQueryParamWithoutID(queryParam),
+        sortBy: sort,
+        orderBy: order,
+      },
+    });
+  };
+
+  /* Fetch */
+  const { data: farmerCommodity, isLoading: commodityLoading } = useSWR(
     [
       "/api/v1/commodity",
       {
@@ -72,17 +81,6 @@ export default () => {
     },
     runOnce
   );
-
-  const handleChangeSorting = ({ target: { sort, order } }) => {
-    router.push({
-      pathname: `/farmer/${queryParam.id}`,
-      query: {
-        ...setQueryParamWithoutID(queryParam),
-        sortBy: sort,
-        orderBy: order,
-      },
-    });
-  };
 
   return (
     <>
@@ -194,7 +192,6 @@ export default () => {
             </div>
           </div>
         </div>
-        {/* <span>{JSON.stringify(commmodityError)}</span> */}
       </Default>
     </>
   );

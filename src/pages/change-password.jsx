@@ -19,7 +19,17 @@ import { useEffect, useState } from "react";
 export default () => {
   const router = useRouter();
 
+  /* Snackbar */
   const [open, setOpen] = useState(false);
+  const handleClick = () => setOpen(true);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  /* State */
   const [input, setInput] = useState({
     oldPassword: "",
     newPassword: "",
@@ -33,22 +43,12 @@ export default () => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  /* Function */
   const handleChangeInput = ({ target: { name, value } }) => {
     setInput({ ...input, [name]: value });
   };
 
-  const handleClick = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
-  };
-
+  /* Submit */
   const validateInput = () => {
     let flag = true;
     let tempError = {};
@@ -130,6 +130,7 @@ export default () => {
     setIsLoading(false);
   };
 
+  /* useEffect */
   useEffect(() => {
     if (!Cookies.get("token")) {
       router.replace({

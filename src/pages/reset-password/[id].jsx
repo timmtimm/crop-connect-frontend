@@ -19,6 +19,17 @@ export default () => {
   const router = useRouter();
   const { id } = router.query;
 
+  /* Snackbar */
+  const [open, setOpen] = useState(false);
+  const handleClick = () => setOpen(true);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  /* State */
   const [isLoading, setIsLoading] = useState(false);
   const [expired, setExpired] = useState(false);
   const [input, setInput] = useState({
@@ -30,21 +41,9 @@ export default () => {
     password: "",
     passwordConfirmation: "",
   });
-  const [open, setOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleClick = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
-  };
-
+  /* Function */
   const handleChange = ({ target: { name, value } }) => {
     setInput({ ...input, [name]: value });
   };
@@ -59,6 +58,7 @@ export default () => {
     setIsLoading(false);
   };
 
+  /* useEffect */
   useEffect(() => {
     if (!id) {
       return;
@@ -73,6 +73,7 @@ export default () => {
     }
   }, []);
 
+  /* Submit */
   const validateInput = () => {
     let flag = true;
     let tempError = {};

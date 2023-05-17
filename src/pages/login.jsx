@@ -16,35 +16,40 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useProfileUser } from "@/context/profileUserContext";
+import { roleUser } from "@/constant/constant";
 
 export default () => {
   const router = useRouter();
+  const { setProfileUser } = useProfileUser();
 
+  /* Snackbar */
+  const [open, setOpen] = useState(false);
+  const handleClick = () => setOpen(true);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  /* State */
   const [input, setInput] = useState({
     email: "",
     password: "",
   });
-  const [open, setOpen] = useState(false);
-  const { setProfileUser } = useProfileUser();
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState({
     message: "",
     email: "",
     password: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleClick = () => {
-    setOpen(true);
+  /* Function */
+  const handleChange = ({ target: { name, value } }) => {
+    setInput({ ...input, [name]: value });
   };
 
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
-  };
-
+  /* Submit */
   const validateInput = () => {
     let flag = true;
     let tempError = { ...error };
@@ -78,10 +83,6 @@ export default () => {
     return flag;
   };
 
-  const handleChange = ({ target: { name, value } }) => {
-    setInput({ ...input, [name]: value });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -97,7 +98,7 @@ export default () => {
         setProfileUser(dataProfile);
 
         router.push(
-          dataProfile.role == "buyer"
+          dataProfile.role == roleUser.buyer
             ? router.query.redirect || "/"
             : router.query.redirect || "/dashboard"
         );
@@ -116,6 +117,7 @@ export default () => {
     setIsLoading(false);
   };
 
+  /* useEffect */
   useEffect(() => {
     if (Cookies.get("token")) {
       router.replace("/");

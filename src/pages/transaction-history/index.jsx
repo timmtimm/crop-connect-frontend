@@ -32,6 +32,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useProfileUser } from "@/context/profileUserContext";
+import { roleUser, transactionStatus } from "@/constant/constant";
 
 const listStatus = [
   {
@@ -40,15 +41,15 @@ const listStatus = [
   },
   {
     text: "Pending",
-    value: "pending",
+    value: transactionStatus.pending,
   },
   {
     text: "Diterima",
-    value: "accepted",
+    value: transactionStatus.accepted,
   },
   {
     text: "Ditolak",
-    value: "rejected",
+    value: transactionStatus.cancel,
   },
 ];
 
@@ -58,6 +59,7 @@ export default () => {
   pagination.limit = 10;
   const { checkRole } = useProfileUser();
 
+  /* State */
   const [input, setInput] = useState({
     search: router.query.search || "",
     status: router.query.status || "none",
@@ -70,6 +72,7 @@ export default () => {
       null,
   });
 
+  /* Function */
   const handleChange = ({ target: { name, value } }) => {
     setInput({ ...input, [name]: value });
   };
@@ -138,6 +141,20 @@ export default () => {
     });
   };
 
+  const convertStatusForComponent = (status) => {
+    switch (status) {
+      case "pending":
+        return "warning";
+      case "accepted":
+        return "success";
+      case "cancelled":
+        return "error";
+      default:
+        return;
+    }
+  };
+
+  /* useEffect */
   useEffect(() => {
     if (!Cookies.get("token")) {
       router.replace({
@@ -147,12 +164,20 @@ export default () => {
         },
       });
     } else {
-      if (!checkRole(true, "buyer")) {
+      if (!checkRole(true, roleUser.buyer)) {
         router.replace("/");
       }
     }
   }, []);
 
+  useEffect(() => {
+    setInput({
+      ...input,
+      ...router.query,
+    });
+  }, [router.query]);
+
+  /* Fetch */
   const setQueryparam = () => {
     let query = { ...pagination };
     query = setIfNotNull(query, "commodity", router.query.search);
@@ -174,26 +199,6 @@ export default () => {
     ([url, params]) => fetcher(url, params),
     runOnce
   );
-
-  const convertStatusForComponent = (status) => {
-    switch (status) {
-      case "pending":
-        return "warning";
-      case "accepted":
-        return "success";
-      case "cancelled":
-        return "error";
-      default:
-        return;
-    }
-  };
-
-  useEffect(() => {
-    setInput({
-      ...input,
-      ...router.query,
-    });
-  }, [router.query]);
 
   return (
     <>

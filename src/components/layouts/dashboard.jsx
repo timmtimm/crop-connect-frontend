@@ -36,6 +36,7 @@ import { GiFarmTractor } from "react-icons/gi";
 import { GrTransaction, GrValidate } from "react-icons/gr";
 import { useProfileUser } from "@/context/profileUserContext";
 import Loading from "../modules/loading";
+import { roleUser } from "@/constant/constant";
 
 const drawerWidth = 270;
 
@@ -140,7 +141,7 @@ export default function MiniDrawer(props) {
         },
       });
     } else {
-      if (!checkRole(false, "buyer")) {
+      if (!checkRole(false, roleUser.buyer)) {
         router.replace({
           pathname: "/",
         });
@@ -149,7 +150,7 @@ export default function MiniDrawer(props) {
   }, []);
 
   const listMenu =
-    profileUser?.role == "farmer"
+    profileUser?.role == roleUser.farmer
       ? [
           {
             text: "Daftar Komoditas",
@@ -177,7 +178,7 @@ export default function MiniDrawer(props) {
             icon: <GrTransaction className="text-black" size={20} />,
           },
         ]
-      : profileUser?.role == "validator"
+      : profileUser?.role == roleUser.validator
       ? [
           {
             text: "Validasi proposal",

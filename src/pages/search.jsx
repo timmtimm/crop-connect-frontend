@@ -23,6 +23,7 @@ import { Global } from "@emotion/react";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import Seo from "@/components/elements/seo";
 
+/* Menu */
 const Root = styled("div")(({ theme }) => ({
   height: "100%",
 }));
@@ -49,6 +50,7 @@ export default () => {
     ...pagination,
   };
 
+  /* Initial */
   const fetch = {
     url:
       queryParam.searchBy == "komoditas"
@@ -118,14 +120,20 @@ export default () => {
           },
         ];
 
-  const { data, error, isLoading, mutate } = useSWR(
+  /* Drawer */
+  const [open, setOpen] = useState(null);
+  const toggleDrawer = (newOpen) => () => {
+    setOpen(newOpen);
+  };
+
+  /* Fetch */
+  const { data, isLoading } = useSWR(
     [fetch.url, fetch.params],
     ([url, params]) => fetcher(url, params),
     runOnce
   );
 
-  const [open, setOpen] = useState(null);
-
+  /* Function */
   const handleChangeSorting = ({ target: { sort, order } }) => {
     setOpen(null);
     router.push({
@@ -136,10 +144,6 @@ export default () => {
         orderBy: order,
       },
     });
-  };
-
-  const toggleDrawer = (newOpen) => () => {
-    setOpen(newOpen);
   };
 
   return (

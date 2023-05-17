@@ -25,6 +25,15 @@ export default () => {
   const router = useRouter();
   const { id } = router.query;
 
+  /* State */
+  const [input, setInput] = useState({
+    proposal: {},
+    batch: {},
+    treatmentRecord: {},
+  });
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+
+  /* Fetch */
   const { data: dataCommodity, isLoading: commodityLoading } = useSWR(
     [`api/v1/commodity/${id}`, {}],
     ([url, params]) => fetcher(url, params),
@@ -65,12 +74,7 @@ export default () => {
   //   isMutating: mutatingTotalProposal,
   // } = useSWRMutation("/api/v1/harvest/batch", triggerfetcher);
 
-  const [input, setInput] = useState({
-    proposal: {},
-    batch: {},
-    treatmentRecord: {},
-  });
-
+  /* UseEffect */
   useEffect(() => {
     if (!dataCommodity?.data) return;
     else {
@@ -90,8 +94,6 @@ export default () => {
       });
     }
   }, [input.batch]);
-
-  const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
   return (
     <>

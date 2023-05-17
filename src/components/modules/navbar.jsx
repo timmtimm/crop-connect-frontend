@@ -17,6 +17,7 @@ import { FaSearch, FaUserCircle } from "react-icons/fa";
 import Cookies from "js-cookie";
 import { useProfileUser } from "@/context/profileUserContext";
 import Loading from "./loading";
+import { roleUser } from "@/constant/constant";
 
 const listSearchBy = [
   {
@@ -197,7 +198,7 @@ export default () => {
                   <Link href="/profile">
                     <MenuItem onClick={handleClose}>Pengaturan akun</MenuItem>
                   </Link>
-                  {profileUser.role == "buyer" ? (
+                  {profileUser.role == roleUser.buyer ? (
                     <Link href="/transaction-history">
                       <MenuItem onClick={handleClose}>
                         Riwayat transaksi

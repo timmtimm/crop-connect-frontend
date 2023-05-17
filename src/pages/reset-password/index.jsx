@@ -11,26 +11,26 @@ import { useRouter } from "next/router";
 
 export default () => {
   const router = useRouter();
+
+  /* Snackbar */
+  const [open, setOpen] = useState(false);
+  const handleClick = () => setOpen(true);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  /* State */
   const [input, setInput] = useState("");
   const [error, setError] = useState({
     message: "",
     email: "",
   });
-  const [open, setOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleClick = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
-  };
-
+  /* Function */
   const handleChange = ({ target: { value } }) => {
     setInput(value);
   };
@@ -59,6 +59,7 @@ export default () => {
     }
   };
 
+  /* useEffect */
   useEffect(() => {
     if (Cookies.get("token")) {
       router.replace("/");

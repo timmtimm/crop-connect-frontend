@@ -11,15 +11,30 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Slide from "@mui/material/Slide";
+import { useProfileUser } from "@/context/profileUserContext";
+import { roleUser, transactionStatus } from "@/constant/constant";
 
 export default () => {
   const router = useRouter();
   const { id } = router.query;
+  const { checkRole } = useProfileUser();
 
+  /* Snackbar */
+  const [open, setOpen] = useState(false);
+  const handleClick = () => setOpen(true);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  /* State */
   const [dataTransaction, setDataTransaction] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  /* Function */
   const getTransactionData = async () => {
     setIsLoading(true);
     const data = await get(`/api/v1/transaction/${id}`, {});
@@ -33,16 +48,7 @@ export default () => {
     setIsLoading(false);
   };
 
-  const checkRole = async () => {
-    const { data } = await get("/api/v1/user/profile");
-
-    if (data) {
-      if (data?.role != "buyer") {
-        router.replace("/");
-      }
-    }
-  };
-
+  /* useEffect */
   useEffect(() => {
     if (!Cookies.get("token")) {
       router.replace({
@@ -51,8 +57,8 @@ export default () => {
           redirect: router.pathname,
         },
       });
-    } else {
-      checkRole();
+    } else if (checkRole(true, roleUser.buyer)) {
+      router.replace("/");
     }
   }, []);
 
@@ -65,27 +71,13 @@ export default () => {
 
   const convertStatusForComponent = (status) => {
     switch (status) {
-      case "pending":
+      case transactionStatus.pending:
         return "warning";
-      case "accepted":
+      case transactionStatus.accepted:
         return "success";
-      case "cancelled":
-        return "error";
       default:
-        return;
+        return "error";
     }
-  };
-
-  const [open, setOpen] = useState(false);
-  const handleClick = () => {
-    setOpen(true);
-  };
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
   };
 
   const handleCancel = async (e) => {
