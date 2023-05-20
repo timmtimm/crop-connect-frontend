@@ -15,6 +15,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { HttpStatusCode } from "axios";
 
 export default () => {
   const router = useRouter();
@@ -110,7 +111,7 @@ export default () => {
       });
 
       console.log(data);
-      if (data.status != 200) {
+      if (data.status != HttpStatusCode.Ok) {
         setError({
           message: data.message,
           oldPassword: findErrorMessageFromResponse(data?.error, "oldPassword"),
@@ -179,7 +180,7 @@ export default () => {
       </Snackbar>
       {isLoading ? <Loading /> : <></>}
       <Default>
-        <div className="grid grid-cols-1 lg:grid-cols-2 bg-white rounded-xl shadow-custom">
+        <div className="grid grid-cols-1 lg:grid-cols-2 bg-white rounded-xl drop-shadow-md">
           <section className="relative p-32 hidden flex-col lg:flex">
             <div className="relative h-full w-full">
               <Image

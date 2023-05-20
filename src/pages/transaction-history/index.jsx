@@ -163,10 +163,8 @@ export default () => {
           redirect: router.pathname,
         },
       });
-    } else {
-      if (!checkRole(true, roleUser.buyer)) {
-        router.replace("/");
-      }
+    } else if (!checkRole(true, roleUser.buyer)) {
+      router.replace("/");
     }
   }, []);
 
@@ -200,10 +198,11 @@ export default () => {
     runOnce
   );
 
+  if (isLoading) return <Loading />;
+
   return (
     <>
       <Seo title="Riwayat Transaksi" />
-      {isLoading && <Loading />}
       <Default>
         <h1 className="text-2xl font-bold mb-4">Riwayat Transaksi</h1>
         <div className="flex flex-col gap-4 w-full bg-white rounded-xl p-4">

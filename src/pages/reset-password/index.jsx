@@ -8,6 +8,7 @@ import Slide from "@mui/material/Slide";
 import { postWithJSON } from "@/lib/axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { HttpStatusCode } from "axios";
 
 export default () => {
   const router = useRouter();
@@ -42,7 +43,7 @@ export default () => {
         email: input,
       });
 
-      if (data.status == 201) {
+      if (data.status == HttpStatusCode.Created) {
         setIsSuccess(true);
       } else {
         setError({

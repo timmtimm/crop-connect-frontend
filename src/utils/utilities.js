@@ -1,10 +1,14 @@
 import dayjs from "dayjs";
 
-export const setPriceFormat = (price) => {
+export const setNumberFormat = (number) => {
   const formatter = new Intl.NumberFormat("en-US", {});
 
-  return "Rp" + formatter.format(price).replace(/,/g, ".");
+  return formatter.format(number).replace(/,/g, ".");
 };
+
+export const setWeightFormat = (weight) => setNumberFormat(weight) + " Kg";
+
+export const setPriceFormat = (price) => "Rp" + setNumberFormat(price);
 
 export const validatePassword = (string) => {
   var pattern = new RegExp(
@@ -144,4 +148,8 @@ export const unitToIndonesiaTotalFormat = (unit) => {
 export const checkIsValidDate = (stringDate) => {
   const date = new Date(stringDate);
   return isNaN(date.getMonth()) ? false : true;
+};
+
+export const SumObjectByKey = (array, key) => {
+  return array.reduce((a, b) => a + (b[key] || 0), 0);
 };

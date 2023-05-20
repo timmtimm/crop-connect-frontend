@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import axios from "axios";
+import axios, { HttpStatusCode } from "axios";
 
 const instance = axios.create({
   baseURL: process.env.BACKEND_BASE_URL,
@@ -27,17 +27,28 @@ export const requestHandler = async (config) => {
 
 instance.interceptors.request.use((request) => requestHandler(request));
 
+const errorHandler = (error) => {
+  if (error.response?.data) {
+    if (error.response.status === HttpStatusCode.Unauthorized) {
+      Cookies.remove("token");
+      window.location.href = "/login";
+    }
+    return error.response.data;
+  } else if (error.code == "ERR_NETWORK") {
+    return { message: "Terjadi kesalahan. Silahkan coba beberapa saat lagi" };
+  }
+
+  return { message: error.message };
+};
+
 export const fetcher = async (url, params = {}) => {
   try {
     const { data } = await instance.get(url, {
       params,
     });
-    console.log(url);
-    console.log(data);
     return data;
   } catch (err) {
-    console.log(err.response);
-    return err.response;
+    return errorHandler(err);
   }
 };
 
@@ -50,9 +61,10 @@ export const get = async (url, params = {}) => {
     const { data } = await instance.get(url, {
       params: params,
     });
+    console.log(data);
     return data;
   } catch (err) {
-    return err.response.data;
+    return errorHandler(err);
   }
 };
 
@@ -75,11 +87,9 @@ export const postWithJSON = async (url, input) => {
         "Content-Type": "application/json",
       },
     });
-    console.log(data);
     return data;
   } catch (err) {
-    console.log(err.response);
-    return err.response.data;
+    return errorHandler(err);
   }
 };
 
@@ -107,7 +117,7 @@ export const putWithJSON = async (url, input) => {
     });
     return data;
   } catch (err) {
-    return err.response.data;
+    return errorHandler(err);
   }
 };
 

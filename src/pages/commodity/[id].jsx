@@ -14,6 +14,7 @@ import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Navigation, Thumbs } from "swiper";
+import { HttpStatusCode } from "axios";
 
 // Import Swiper styles
 import "swiper/css";
@@ -68,18 +69,21 @@ export default () => {
     `/api/v1/commodity/farmer-total/${dataCommodity?.data?.farmer?._id}`,
     triggerfetcher
   );
-  // const {
-  //   data: dataTotalProposal,
-  //   trigger: triggerTotalProposal,
-  //   isMutating: mutatingTotalProposal,
-  // } = useSWRMutation("/api/v1/harvest/batch", triggerfetcher);
+  const {
+    data: dataTotalProposal,
+    trigger: triggerTotalProposal,
+    isMutating: mutatingTotalProposal,
+  } = useSWRMutation(
+    `/api/v1/proposal/farmer-total/${dataCommodity?.data?.farmer?._id}`,
+    triggerfetcher
+  );
 
   /* UseEffect */
   useEffect(() => {
     if (!dataCommodity?.data) return;
     else {
       triggerTotalCommodity({});
-      // triggerTotalProposal({});
+      triggerTotalProposal({});
     }
   }, [dataCommodity]);
 
@@ -95,23 +99,28 @@ export default () => {
     }
   }, [input.batch]);
 
+  if (
+    commodityLoading ||
+    proposalLoading ||
+    batchLoading ||
+    mutatingHarvest ||
+    mutatingTotalCommodity ||
+    mutatingTreatmentRecord ||
+    mutatingTotalProposal
+  )
+    return <Loading />;
+
   return (
     <>
       <Seo
         title={`Komoditas ${
-          dataCommodity?.status != 200
+          dataCommodity?.status != HttpStatusCode.Ok
             ? `Tidak Ditemukan`
             : `${dataCommodity?.data?.name}`
         }`}
       />
-      {(commodityLoading ||
-        proposalLoading ||
-        batchLoading ||
-        mutatingHarvest ||
-        mutatingTotalCommodity ||
-        mutatingTreatmentRecord) && <Loading />}
       <Default>
-        {dataCommodity?.status != 200 ? (
+        {dataCommodity?.status != HttpStatusCode.Ok ? (
           <div className="flex flex-col justify-center items-center">
             <Image
               src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
@@ -329,8 +338,8 @@ export default () => {
                       {JSON.stringify(dataTotalCommodityFarmer?.data)} jenis
                     </p>
                     <p>
-                      Transaksi:{" "}
-                      {/*JSON.stringify(dataTotalProposal)*/ `belom implement`}
+                      Proposal: {JSON.stringify(dataTotalProposal?.data)}{" "}
+                      proposal
                     </p>
                   </div>
                 </div>

@@ -13,11 +13,13 @@ import { useEffect, useState } from "react";
 import Slide from "@mui/material/Slide";
 import { useProfileUser } from "@/context/profileUserContext";
 import { roleUser, transactionStatus } from "@/constant/constant";
+import Modal from "@/components/elements/modal";
+import { HttpStatusCode } from "axios";
 
 export default () => {
   const router = useRouter();
   const { id } = router.query;
-  const { checkRole } = useProfileUser();
+  const { checkRole, isLoadingProfile } = useProfileUser();
 
   /* Snackbar */
   const [open, setOpen] = useState(false);
@@ -28,6 +30,10 @@ export default () => {
     }
     setOpen(false);
   };
+
+  /* Modal */
+  const [openModal, setOpenModal] = useState(false);
+  const handleModal = () => setOpenModal(!openModal);
 
   /* State */
   const [dataTransaction, setDataTransaction] = useState({});
@@ -57,7 +63,7 @@ export default () => {
           redirect: router.pathname,
         },
       });
-    } else if (checkRole(true, roleUser.buyer)) {
+    } else if (!isLoadingProfile && !checkRole(true, roleUser.buyer)) {
       router.replace("/");
     }
   }, []);
@@ -84,7 +90,7 @@ export default () => {
     e.preventDefault();
 
     const data = await putWithJSON(`/api/v1/transaction/cancel/${id}`, {});
-    if (data.status == 200) {
+    if (data.status == HttpStatusCode.Ok) {
       setDataTransaction({
         ...dataTransaction,
         status: "cancelled",
@@ -93,12 +99,44 @@ export default () => {
       setError(data.message);
       handleClick();
     }
+
+    handleModal();
   };
+
+  if (isLoading) return <Loading />;
 
   return (
     <>
       <Seo title={`Detail Transaksi ${id}`} />
-      {isLoading ? <Loading /> : <></>}
+      {openModal && (
+        <Modal>
+          <Image
+            src="/search _ find, research, scan, article, document, file, magnifier_lg.png"
+            width={160}
+            height={160}
+            alt="ilustrasi Batal Transaksi"
+          />
+          <h2 className="text-xl text-center mt-4 font-bold">
+            Apakah anda yakin ingin membatalkan transaksi ini?
+          </h2>
+          <div className="flex flex-row gap-2">
+            <Button
+              className="text-right bg-[#53A06C] hover:bg-[#3E8A4F] normal-case font-bold mt-2"
+              variant="contained"
+              onClick={handleCancel}
+            >
+              Ya
+            </Button>
+            <Button
+              className="text-right bg-[#DB3546] hover:bg-[#BA2D3C] normal-case font-bold mt-2"
+              variant="contained"
+              onClick={handleModal}
+            >
+              Tidak
+            </Button>
+          </div>
+        </Modal>
+      )}
       <Snackbar
         open={open}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -311,7 +349,7 @@ export default () => {
             <Button
               className="text-right bg-[#DB3546] hover:bg-[#BA2D3C] normal-case font-bold mt-2"
               variant="contained"
-              onClick={handleCancel}
+              onClick={handleModal}
             >
               Batalkan Transaksi
             </Button>

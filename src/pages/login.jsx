@@ -20,7 +20,8 @@ import { roleUser } from "@/constant/constant";
 
 export default () => {
   const router = useRouter();
-  const { setProfileUser } = useProfileUser();
+  const { profileUser, getProfileUser, isLoadingProfile, isAuthenticated } =
+    useProfileUser();
 
   /* Snackbar */
   const [open, setOpen] = useState(false);
@@ -93,12 +94,10 @@ export default () => {
       if (data?.data) {
         Cookies.set("token", data.data, { expires: 1 });
 
-        const { data: dataProfile } = await get("/api/v1/user/profile");
-
-        setProfileUser(dataProfile);
+        await getProfileUser();
 
         router.push(
-          dataProfile.role == roleUser.buyer
+          profileUser.role == roleUser.buyer
             ? router.query.redirect || "/"
             : router.query.redirect || "/dashboard"
         );
@@ -119,7 +118,7 @@ export default () => {
 
   /* useEffect */
   useEffect(() => {
-    if (Cookies.get("token")) {
+    if (isAuthenticated) {
       router.replace("/");
     }
   }, []);
@@ -139,7 +138,7 @@ export default () => {
           {error.message}
         </Alert>
       </Snackbar>
-      {isLoading ? <Loading /> : <></>}
+      {isLoading || isLoadingProfile ? <Loading /> : <></>}
       <Auth
         srcBanner="/accounts _ profile, account, user, dating, employee, woman, hiring, casting_lg.png"
         altBanner="Masuk"

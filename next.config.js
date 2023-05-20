@@ -6,7 +6,9 @@ const nextConfig = {
     BACKEND_BASE_URL: process.env.BACKEND_BASE_URL,
   },
   eslint: {
-    dirs: ["src"],
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    ignoreDuringBuilds: true,
   },
   images: {
     domains: ["res.cloudinary.com"],

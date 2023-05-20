@@ -8,24 +8,26 @@ const profileUserContext = createContext();
 export const ProfileUserProvider = ({ children }) => {
   const router = useRouter();
   const [profileUser, setProfileUser] = useState({});
-  const [isLoadingProfile, setIsLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 
   const getProfileUser = async () => {
-    setIsLoading(true);
+    // setIsLoadingProfile(true);
     const { data } = await get("/api/v1/user/profile");
 
-    if (data) setProfileUser(data);
-    else handleLogout();
-
-    setIsLoading(false);
+    if (data) {
+      setProfileUser(data);
+      setIsAuthenticated(true);
+    } else logout();
   };
 
   const logout = () => {
-    setIsLoading(true);
+    setIsLoadingProfile(true);
     Cookies.remove("token");
     setProfileUser({});
     router.push("/");
-    setIsLoading(false);
+    setIsAuthenticated(false);
+    setIsLoadingProfile(false);
   };
 
   const checkRole = (condition, role) => {
@@ -36,13 +38,16 @@ export const ProfileUserProvider = ({ children }) => {
     if (Cookies.get("token")) {
       getProfileUser();
     }
-  }, [Cookies.get("token")]);
+    setIsLoadingProfile(false);
+  }, []);
 
   return (
     <profileUserContext.Provider
       value={{
         profileUser,
         isLoadingProfile,
+        isAuthenticated,
+        setIsAuthenticated,
         setProfileUser,
         getProfileUser,
         checkRole,

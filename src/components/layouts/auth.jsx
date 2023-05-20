@@ -29,7 +29,7 @@ export default (props) => {
               />
             </Link>
           </div>
-          <div className="rounded-xl flex flex-col gap-4 bg-white p-6 pb-8 shadow-custom divide-y-2">
+          <div className="rounded-xl flex flex-col gap-4 bg-white p-6 pb-8 drop-shadow-md divide-y-2">
             {children}
           </div>
         </div>

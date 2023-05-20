@@ -31,10 +31,11 @@ import {
 import Seo from "@/components/elements/seo";
 import { useProfileUser } from "@/context/profileUserContext";
 import { roleUser } from "@/constant/constant";
+import { HttpStatusCode } from "axios";
 
 export default () => {
   const router = useRouter();
-  const { logout } = useProfileUser();
+  const { profileUser, isLoadingProfile, isAuthenticated } = useProfileUser();
 
   /* Snackbar */
 
@@ -75,13 +76,12 @@ export default () => {
 
   const handleGetProfile = async () => {
     setIsLoading(true);
-    const { data } = await get("/api/v1/user/profile");
 
-    if (data) {
-      data.regionID = data.region._id;
-      setProfile(data);
-      setRegion(data.region);
-    } else logout();
+    let tempProfile = profileUser;
+
+    tempProfile.regionID = tempProfile.region._id;
+    setProfile(tempProfile);
+    setRegion(tempProfile.region);
 
     setIsLoading(false);
   };
@@ -161,10 +161,10 @@ export default () => {
           redirect: router.pathname,
         },
       });
-    } else {
+    } else if (!isLoadingProfile && isAuthenticated) {
       handleGetProfile();
     }
-  }, []);
+  }, [isLoadingProfile, isAuthenticated]);
 
   /* Submit */
   const validateInput = () => {
@@ -241,7 +241,7 @@ export default () => {
         ...profile,
       });
 
-      if (data.status == 200) {
+      if (data.status == HttpStatusCode.Ok) {
         setMessage(data.message);
       } else {
         tempError.message = data.message;
@@ -273,7 +273,7 @@ export default () => {
       </Snackbar>
       {isLoading ? <Loading /> : <></>}
       <Default>
-        <div className="grid grid-cols-1 lg:grid-cols-2 bg-white rounded-xl shadow-custom">
+        <div className="grid grid-cols-1 lg:grid-cols-2 bg-white rounded-xl drop-shadow-md">
           <section className="relative p-32 hidden flex-col lg:flex">
             <div className="relative h-full w-full">
               <Image

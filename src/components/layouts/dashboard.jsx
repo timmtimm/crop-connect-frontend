@@ -105,11 +105,12 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function MiniDrawer(props) {
+export default (props) => {
   const { children } = props;
   const router = useRouter();
 
-  const { profileUser, isLoading, logout, checkRole } = useProfileUser();
+  const { profileUser, isLoadingProfile, isAuthenticated, logout, checkRole } =
+    useProfileUser();
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const handleDrawer = () => {
@@ -127,10 +128,20 @@ export default function MiniDrawer(props) {
 
   const handleLogout = () => {
     setAnchorEl(null);
-    router.push("/");
-
     logout();
   };
+
+  useEffect(() => {
+    if (
+      !isLoadingProfile &&
+      isAuthenticated &&
+      !checkRole(false, roleUser.buyer)
+    ) {
+      router.replace({
+        pathname: "/",
+      });
+    }
+  }, [isLoadingProfile, isAuthenticated]);
 
   useEffect(() => {
     if (!Cookies.get("token")) {
@@ -140,14 +151,12 @@ export default function MiniDrawer(props) {
           redirect: router.pathname,
         },
       });
-    } else {
-      if (!checkRole(false, roleUser.buyer)) {
-        router.replace({
-          pathname: "/",
-        });
-      }
     }
   }, []);
+
+  if (isLoadingProfile || !isAuthenticated) {
+    return <Loading />;
+  }
 
   const listMenu =
     profileUser?.role == roleUser.farmer
@@ -196,17 +205,18 @@ export default function MiniDrawer(props) {
             icon: <GiFarmTractor className="text-black" size={20} />,
           },
         ]
-      : [
+      : profileUser?.role == roleUser.admin
+      ? [
           {
             text: "Daftar Validator",
             to: "/dashboard/list-validator",
             icon: <GrValidate className="text-black" size={20} />,
           },
-        ];
+        ]
+      : [];
 
   return (
     <>
-      {isLoading && <Loading />}
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <AppBar className="z-0" position="fixed" open={openDrawer}>
@@ -307,7 +317,7 @@ export default function MiniDrawer(props) {
                       <AiOutlineHome className="text-black" size={20} />
                     </ListItemIcon>
                     <ListItemText
-                      primary="Dashboard"
+                      primary="Beranda"
                       sx={{ opacity: openDrawer ? 1 : 0 }}
                     />
                   </ListItemButton>
@@ -429,4 +439,4 @@ export default function MiniDrawer(props) {
       </Box>
     </>
   );
-}
+};

@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Slide from "@mui/material/Slide";
+import { HttpStatusCode } from "axios";
 
 export default () => {
   const router = useRouter();
@@ -52,7 +53,7 @@ export default () => {
     setIsLoading(true);
     const data = await get(`/api/v1/user/forgot-password/${id}`);
 
-    if (data.status != 200) {
+    if (data.status != HttpStatusCode.Ok) {
       setExpired(true);
     }
     setIsLoading(false);
@@ -119,7 +120,7 @@ export default () => {
       });
       console.log(data);
 
-      if (data.status == 200) {
+      if (data.status == HttpStatusCode.Ok) {
         setIsSuccess(true);
       } else {
         setError({

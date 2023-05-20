@@ -31,6 +31,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useProfileUser } from "@/context/profileUserContext";
 import { roleUser } from "@/constant/constant";
+import { HttpStatusCode } from "axios";
 
 export default () => {
   const router = useRouter();
@@ -87,7 +88,7 @@ export default () => {
           redirect: router.pathname,
         },
       });
-    } else if (checkRole(true, roleUser.buyer)) {
+    } else if (!isLoadingProfile && !checkRole(true, roleUser.buyer)) {
       router.replace("/");
     }
     setIsLoading(false);
@@ -211,7 +212,7 @@ export default () => {
           )?._id || "",
       });
 
-      if (data?.status == 201) {
+      if (data?.status == HttpStatusCode.Created) {
         setIsSuccess(true);
       } else {
         setError({
@@ -230,10 +231,11 @@ export default () => {
     setIsLoading(false);
   };
 
+  if (proposalLoading || isLoading) return <Loading />;
+
   return (
     <>
       <Seo title="Perjanjian Transaksi Pembelian" />
-      {(proposalLoading || isLoading) && <Loading />}
       <Snackbar
         open={open}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -250,7 +252,7 @@ export default () => {
         <h1 className="text-2xl font-bold mb-4">
           Perjanjian Transaksi Pembelian
         </h1>
-        {dataProposal?.status != 200 ? (
+        {dataProposal?.status != HttpStatusCode.Ok ? (
           <div className="flex flex-col justify-center items-center">
             <Image
               src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
