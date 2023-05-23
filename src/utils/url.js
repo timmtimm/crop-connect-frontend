@@ -6,7 +6,7 @@ export const getPagination = () => {
   const { page, limit, sortBy, orderBy } = router.query;
   return {
     page: page && !isNaN(page) ? parseInt(page) : 1,
-    limit: limit && !isNaN(limit) == "number" ? parseInt(limit) : 20,
+    limit: limit && !isNaN(limit) ? parseInt(limit) : 20,
     sort: sortBy ? sortBy : "createdAt",
     order: orderBy ? orderBy : "desc",
   };

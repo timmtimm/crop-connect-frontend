@@ -61,24 +61,23 @@ export const get = async (url, params = {}) => {
     const { data } = await instance.get(url, {
       params: params,
     });
-    console.log(data);
     return data;
   } catch (err) {
     return errorHandler(err);
   }
 };
 
-// export const PostWithForm = async (url, input) => {
-//   try {
-//     return await instance.post(url, input, {
-//       headers: {
-//         Authorization: token,
-//       },
-//     });
-//   } catch (err) {
-//     throw new Error(err.response);
-//   }
-// };
+export const PostWithForm = async (url, input) => {
+  try {
+    return await instance.post(url, input, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  } catch (err) {
+    return errorHandler(err);
+  }
+};
 
 export const postWithJSON = async (url, input) => {
   try {
@@ -93,20 +92,18 @@ export const postWithJSON = async (url, input) => {
   }
 };
 
-// export const PutWithForm = async (url, input) => {
-//   try {
-//     return await instance.put(url, input, {
-//       headers: {
-//         Authorization: token,
-//       },
-//     });
-//   } catch (err) {
-//     throw new Error({
-//       message: err.response.message,
-//       error: err.response.error,
-//     });
-//   }
-// };
+export const PutWithForm = async (url, input) => {
+  try {
+    const { data } = await instance.put(url, input, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return data;
+  } catch (err) {
+    return errorHandler(err);
+  }
+};
 
 export const putWithJSON = async (url, input) => {
   try {
@@ -121,16 +118,12 @@ export const putWithJSON = async (url, input) => {
   }
 };
 
-// export const Delete = async (url) => {
-//   try {
-//     return await instance.delete(url, {
-//       headers: {
-//         Authorization: token,
-//       },
-//     });
-//   } catch (err) {
-//     throw new Error(err.response.data);
-//   }
-// };
+export const Delete = async (url) => {
+  try {
+    return await instance.delete(url);
+  } catch (err) {
+    return errorHandler(err);
+  }
+};
 
 export default instance;

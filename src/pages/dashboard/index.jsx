@@ -13,6 +13,7 @@ import { BsBag } from "react-icons/bs";
 import { SumObjectByKey } from "@/utils/utilities";
 import { HttpStatusCode } from "axios";
 import { FaUserCheck } from "react-icons/fa";
+import Loading from "@/components/modules/loading";
 
 export default () => {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default () => {
   /* State */
   const [statisticCard, setStatisticCard] = useState([]);
   const [statisticGraph, setStatisticGraph] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   /* Function */
   const setColorForIcon = (differences) =>
@@ -372,6 +374,7 @@ export default () => {
 
     setStatisticCard(tempStatisticCard);
     setStatisticGraph(tempStatisticGraph);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -384,12 +387,17 @@ export default () => {
     ) {
       getStatistic();
     }
+    setIsLoading(false);
   }, [isLoadingProfile, isAuthenticated]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <>
       <Seo title="Dashboard" />
-      <Dashboard>
+      <Dashboard roles={[roleUser.admin, roleUser.admin, roleUser.validator]}>
         <h1 className="text-xl font-bold mb-4">Dashboard</h1>
         <div className="flex flex-col gap-2 w-full">
           <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-2">

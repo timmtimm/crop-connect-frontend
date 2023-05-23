@@ -16,6 +16,7 @@ import { FaSearch, FaUserCircle } from "react-icons/fa";
 import { useProfileUser } from "@/context/profileUserContext";
 import Loading from "./loading";
 import { roleUser } from "@/constant/constant";
+import { FiMenu } from "react-icons/fi";
 
 const listSearchBy = [
   {
@@ -109,6 +110,7 @@ export default () => {
           <div className="flex items-center justify-between flex-nowrap gap-4 lg:gap-14">
             <Link href="/">
               <Image
+                className="hidden md:block"
                 src="/logo.svg"
                 width={60}
                 height={60}
@@ -125,7 +127,7 @@ export default () => {
                   value={input.searchBy}
                   name="searchBy"
                   onChange={handleChange}
-                  className="font-bold min-w-[7.5rem] lg:min-w-[9rem] bg-white rounded-lg rounded-r-none text-sm md:text-base focus:border-0 hover:border-0"
+                  className="font-bold sm:min-w-[9rem] max-w-[4rem] bg-white rounded-lg rounded-r-none text-sm md:text-base focus:border-0 hover:border-0"
                 >
                   {listSearchBy.map((item) => {
                     return (
@@ -211,34 +213,58 @@ export default () => {
                 </Menu>
               </div>
             ) : (
-              <div className="flex gap-2">
-                <Link
-                  href={{
-                    pathname: "/login",
-                    query: setRedirect(),
+              <>
+                <div className="sm:flex gap-2 hidden">
+                  <Link
+                    href={{
+                      pathname: "/login",
+                      query: setRedirect(),
+                    }}
+                  >
+                    <Button
+                      className="border-white text-white font-bold hover:border-white"
+                      variant="outlined"
+                    >
+                      Masuk
+                    </Button>
+                  </Link>
+                  <Link
+                    href={{
+                      pathname: "/register",
+                      query: setRedirect(),
+                    }}
+                  >
+                    <Button
+                      className="bg-white text-[#52A068] font-bold hover:bg-white"
+                      variant="contained"
+                    >
+                      Daftar
+                    </Button>
+                  </Link>
+                </div>
+                <FiMenu
+                  className="text-white mx-2 sm:hidden"
+                  size={30}
+                  onClick={handleClick}
+                />
+                <Menu
+                  className="mt-3"
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
                   }}
                 >
-                  <Button
-                    className="border-white text-white font-bold hover:border-white"
-                    variant="outlined"
-                  >
-                    Masuk
-                  </Button>
-                </Link>
-                <Link
-                  href={{
-                    pathname: "/register",
-                    query: setRedirect(),
-                  }}
-                >
-                  <Button
-                    className="bg-white text-[#52A068] font-bold hover:bg-white"
-                    variant="contained"
-                  >
-                    Daftar
-                  </Button>
-                </Link>
-              </div>
+                  <Link href="/login">
+                    <MenuItem onClick={handleClose}>Masuk</MenuItem>
+                  </Link>
+                  <Link href="/register">
+                    <MenuItem onClick={handleClose}>Daftar</MenuItem>
+                  </Link>
+                </Menu>
+              </>
             )}
           </div>
         </div>

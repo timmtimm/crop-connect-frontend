@@ -1,12 +1,24 @@
+import { useProfileUser } from "@/context/profileUserContext";
+import Cookies from "js-cookie";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default (props) => {
   const { altBanner, srcBanner, children } = props;
+  const router = useRouter();
+  const { isAuthenticated, isLoadingProfile } = useProfileUser();
+
+  useEffect(() => {
+    if (Cookies.get("token")) {
+      router.replace("/");
+    }
+  }, []);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2">
-      <section className="relative p-32 hidden min-h-screen flex-col lg:flex">
+    <div className="grid grid-cols-1 lg:grid-cols-2 h-screen">
+      <section className="relative p-32 hidden flex-col lg:flex">
         <div className="relative h-full w-full">
           <Image
             src={srcBanner}
@@ -16,9 +28,9 @@ export default (props) => {
           />
         </div>
       </section>
-      <section className="flex flex-col justify-center min-h-screen bg-[#2C5456] overflow-y-scroll max-h-screen">
-        <div className="min-h-0 my-2 mx-8 md:my-4 md:mx-16">
-          <div className="mx-auto mb-8 w-1/2 md:w-2/5">
+      <section className="bg-[#2C5456] overflow-y-hidden">
+        <div className="flex flex-col justify-center items-center py-8 px-8 md:px-16 overflow-y-scroll h-full w-full">
+          <div className="mb-8 w-1/3 md:w-2/5">
             <Link href={"/"}>
               <Image
                 className="mx-auto"
@@ -29,7 +41,7 @@ export default (props) => {
               />
             </Link>
           </div>
-          <div className="rounded-xl flex flex-col gap-4 bg-white p-6 pb-8 drop-shadow-md divide-y-2">
+          <div className="rounded-xl flex flex-col gap-4 bg-white p-6 pb-8 drop-shadow-md divide-y-2 w-full">
             {children}
           </div>
         </div>

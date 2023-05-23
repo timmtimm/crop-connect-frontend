@@ -12,7 +12,6 @@ import { Alert, Button, Snackbar, TextField } from "@mui/material";
 import Slide from "@mui/material/Slide";
 import Cookies from "js-cookie";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { HttpStatusCode } from "axios";
@@ -150,7 +149,7 @@ export default () => {
         open={open}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         TransitionComponent={Slide}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={handleClose}
         message={error.message}
       >

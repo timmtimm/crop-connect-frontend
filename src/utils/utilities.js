@@ -64,12 +64,15 @@ export const setIfNotNull = (object, key, value) => {
   return object;
 };
 
-export const dateFormatToIndonesia = (date) => {
+export const dateFormatToIndonesia = (date, withTime = false) => {
   if (!date) return;
   const dateObject = {
     date: dayjs(date).date(),
     month: dayjs(date).month(),
     year: dayjs(date).year(),
+
+    hour: dayjs(date).hour(),
+    minute: dayjs(date).minute(),
   };
   let month = "";
 
@@ -112,7 +115,11 @@ export const dateFormatToIndonesia = (date) => {
       break;
   }
 
-  return `${dateObject.date} ${month} ${dateObject.year}`;
+  return withTime
+    ? `${dateObject.date} ${month} ${dateObject.year} ${dateObject.hour}:${
+        dateObject.minute < 10 ? "0" + dateObject.minute : dateObject.minute
+      }`
+    : `${dateObject.date} ${month} ${dateObject.year}`;
 };
 
 export const dayUnitToIndonesiaDisplayFormat = (dayUnit) => {
@@ -152,4 +159,33 @@ export const checkIsValidDate = (stringDate) => {
 
 export const SumObjectByKey = (array, key) => {
   return array.reduce((a, b) => a + (b[key] || 0), 0);
+};
+
+export const validateImage = (file) => {
+  const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+  return validTypes.includes(file.type) && file.size < 2000000;
+};
+
+export const isURL = (string) => {
+  try {
+    new URL(string);
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
+
+export const getLastURLSegment = (url) => {
+  const urlArray = url.split("/");
+  return urlArray[urlArray.length - 1];
+};
+
+export const getFilenameWithoutExtension = (filename) => {
+  return filename.split(".").slice(0, -1).join(".");
+};
+
+export const getObjectWihoutKey = (object, key) => {
+  const { [key]: deletedKey, ...otherKeys } = object;
+
+  return otherKeys;
 };

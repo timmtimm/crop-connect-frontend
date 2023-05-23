@@ -240,7 +240,7 @@ export default () => {
         open={open}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         TransitionComponent={Slide}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={handleClose}
         message={error.message}
       >

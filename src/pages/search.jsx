@@ -325,8 +325,10 @@ export default () => {
               </div>
             </div>
             <div
-              className={`flex flex-wrap gap-7 ${
-                queryParam.searchBy == "komoditas" ? "flex-row" : "flex-col"
+              className={`gap-7 ${
+                queryParam.searchBy == "komoditas"
+                  ? "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5"
+                  : "flex-col"
               }`}
             >
               {data?.data?.map((item) => (

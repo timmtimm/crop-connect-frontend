@@ -14,7 +14,7 @@ export default (props) => {
       classColor = "bg-[#FFF0B3] text-[#FA591D]";
       break;
     default:
-      classColor = "bg-gray-500";
+      classColor = "bg-gray-200 text-gray-500";
       break;
   }
 

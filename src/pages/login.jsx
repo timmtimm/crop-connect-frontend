@@ -20,7 +20,7 @@ import { roleUser } from "@/constant/constant";
 
 export default () => {
   const router = useRouter();
-  const { profileUser, getProfileUser, isLoadingProfile, isAuthenticated } =
+  const { profileUser, setProfileUser, isLoadingProfile, setIsAuthenticated } =
     useProfileUser();
 
   /* Snackbar */
@@ -94,12 +94,17 @@ export default () => {
       if (data?.data) {
         Cookies.set("token", data.data, { expires: 1 });
 
-        await getProfileUser();
+        const { data: dataProfile } = await get("/api/v1/user/profile");
+
+        if (dataProfile) {
+          setProfileUser(dataProfile);
+          setIsAuthenticated(true);
+        }
 
         router.push(
-          profileUser.role == roleUser.buyer
-            ? router.query.redirect || "/"
-            : router.query.redirect || "/dashboard"
+          dataProfile.role == roleUser.buyer
+            ? JSON.parse(router.query.redirect) || "/"
+            : JSON.parse(router.query.redirect) || "/dashboard"
         );
       } else {
         setError({
@@ -116,13 +121,6 @@ export default () => {
     setIsLoading(false);
   };
 
-  /* useEffect */
-  useEffect(() => {
-    if (isAuthenticated) {
-      router.replace("/");
-    }
-  }, []);
-
   return (
     <>
       <Seo title="Masuk Akun" />
@@ -130,7 +128,7 @@ export default () => {
         open={open}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         TransitionComponent={Slide}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={handleClose}
         message={error.message}
       >

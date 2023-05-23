@@ -12,13 +12,15 @@ export const ProfileUserProvider = ({ children }) => {
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 
   const getProfileUser = async () => {
-    // setIsLoadingProfile(true);
+    setIsLoadingProfile(true);
     const { data } = await get("/api/v1/user/profile");
 
     if (data) {
       setProfileUser(data);
       setIsAuthenticated(true);
     } else logout();
+
+    setIsLoadingProfile(false);
   };
 
   const logout = () => {

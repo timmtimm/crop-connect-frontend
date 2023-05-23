@@ -5,23 +5,16 @@ import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
-import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import { useEffect, useState } from "react";
-import { FaHome, FaUserCircle } from "react-icons/fa";
-import { Menu, MenuItem, Tooltip } from "@mui/material";
+import { FaUserCircle } from "react-icons/fa";
+import { Menu, MenuItem, SwipeableDrawer, Tooltip } from "@mui/material";
 import Link from "next/link";
-import { get } from "@/lib/axios";
 import Cookies from "js-cookie";
 import {
   AiOutlineMenuUnfold,
@@ -106,15 +99,30 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default (props) => {
-  const { children } = props;
+  const { children, roles } = props;
   const router = useRouter();
 
   const { profileUser, isLoadingProfile, isAuthenticated, logout, checkRole } =
     useProfileUser();
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [openSwipeableDrawer, setOpenSwipeableDrawer] = useState(false);
+  const [width, setWidth] = useState(0);
 
   const handleDrawer = () => {
-    setOpenDrawer(!openDrawer);
+    console.log(window.innerWidth);
+    if (window.innerWidth >= 640) {
+      setOpenDrawer(!openDrawer);
+    } else {
+      if (
+        event &&
+        event.type === "keydown" &&
+        (event.key === "Tab" || event.key === "Shift")
+      ) {
+        return;
+      }
+
+      setOpenSwipeableDrawer(!openSwipeableDrawer);
+    }
   };
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -131,12 +139,22 @@ export default (props) => {
     logout();
   };
 
+  const handleCheckRole = () => {
+    if (Array.isArray(roles)) {
+      let flag = true;
+      roles.forEach((role) => {
+        if (!checkRole(true, role)) {
+          flag = false;
+        }
+      });
+      return flag;
+    } else {
+      return !checkRole(true, roles);
+    }
+  };
+
   useEffect(() => {
-    if (
-      !isLoadingProfile &&
-      isAuthenticated &&
-      !checkRole(false, roleUser.buyer)
-    ) {
+    if (!isLoadingProfile && isAuthenticated && handleCheckRole()) {
       router.replace({
         pathname: "/",
       });
@@ -148,10 +166,17 @@ export default (props) => {
       router.replace({
         pathname: "/login",
         query: {
-          redirect: router.pathname,
+          redirect: JSON.stringify({
+            pathname: router.pathname,
+            query: router.query,
+          }),
         },
       });
     }
+  }, []);
+
+  useEffect(() => {
+    setWidth(window.innerWidth);
   }, []);
 
   if (isLoadingProfile || !isAuthenticated) {
@@ -219,12 +244,12 @@ export default (props) => {
     <>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
-        <AppBar className="z-0" position="fixed" open={openDrawer}>
+        <AppBar className="z-10" position="fixed" open={openDrawer}>
           <Toolbar>
             <div className="flex w-full items-center flex-row justify-between">
               <div
                 className={`flex flex-row items-center ${
-                  !openDrawer && "ml-16"
+                  !openDrawer && "sm:ml-16"
                 }`}
               >
                 <IconButton
@@ -275,7 +300,11 @@ export default (props) => {
             </div>
           </Toolbar>
         </AppBar>
-        <Drawer className="z-10" variant="permanent" open={openDrawer}>
+        <Drawer
+          className="z-20 hidden sm:block"
+          variant="permanent"
+          open={openDrawer}
+        >
           <DrawerHeader>
             <div className="flex flex-row w-full items-center justify-center">
               <Link href="/">
@@ -289,7 +318,7 @@ export default (props) => {
             </div>
           </DrawerHeader>
           <Divider />
-          <List className="p-0">
+          <List className="p-0 hidden sm:block">
             {openDrawer ? (
               <Link href="/dashboard">
                 <ListItem
@@ -365,7 +394,9 @@ export default (props) => {
                   <ListItem
                     key={menu.text}
                     disablePadding
-                    className={`${router.asPath == menu.to && "bg-gray-300"}`}
+                    className={`${
+                      router.asPath.includes(menu.to) && "bg-gray-300"
+                    }`}
                     sx={{ display: "block" }}
                   >
                     <ListItemButton
@@ -397,7 +428,9 @@ export default (props) => {
                     <ListItem
                       key={menu.text}
                       disablePadding
-                      className={`${router.asPath == menu.to && "bg-gray-300"}`}
+                      className={`${
+                        router.asPath.includes(menu.to) && "bg-gray-300"
+                      }`}
                       sx={{ display: "block" }}
                     >
                       <ListItemButton
@@ -428,13 +461,77 @@ export default (props) => {
             )}
           </List>
         </Drawer>
+        {width < 640 && (
+          <SwipeableDrawer
+            open={openSwipeableDrawer}
+            onClose={handleDrawer}
+            onOpen={handleDrawer}
+          >
+            <DrawerHeader>
+              <div className="flex flex-row w-full items-center justify-center">
+                <Link href="/">
+                  <Image
+                    src="/logo.svg"
+                    width={60}
+                    height={60}
+                    alt="Logo Crop Connect"
+                  />
+                </Link>
+              </div>
+            </DrawerHeader>
+            <Divider />
+            <Box
+              sx={{
+                width: "auto",
+              }}
+              role="presentation"
+              onClick={handleDrawer}
+              onKeyDown={handleDrawer}
+            >
+              <List className="p-0">
+                <Link href="/dashboard">
+                  <ListItem
+                    key="Beranda"
+                    disablePadding
+                    className={`${
+                      router.asPath == "/dashboard" && "bg-gray-300"
+                    }`}
+                  >
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <AiOutlineHome className="text-black" size={20} />
+                      </ListItemIcon>
+                      <ListItemText primary="Beranda" />
+                    </ListItemButton>
+                  </ListItem>
+                </Link>
+                {listMenu.map((menu) => (
+                  <Link href={menu.to}>
+                    <ListItem
+                      key={menu.text}
+                      disablePadding
+                      className={`${
+                        router.asPath.includes(menu.to) && "bg-gray-300"
+                      }`}
+                    >
+                      <ListItemButton>
+                        <ListItemIcon>{menu.icon}</ListItemIcon>
+                        <ListItemText primary={menu.text} />
+                      </ListItemButton>
+                    </ListItem>
+                  </Link>
+                ))}
+              </List>
+            </Box>
+          </SwipeableDrawer>
+        )}
         <Box
           component="main"
           className="bg-[#F7F6F0] flex flex-col min-h-screen"
           sx={{ flexGrow: 1, p: 3 }}
         >
           <DrawerHeader />
-          <main>{children}</main>
+          <main className="z-0">{children}</main>
         </Box>
       </Box>
     </>
