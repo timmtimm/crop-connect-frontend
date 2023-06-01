@@ -234,8 +234,6 @@ export default () => {
       invalid: "",
     });
 
-    console.log(checkObjectIsNotNullExist(tempError));
-
     if (
       checkObjectIsNotNullExist(tempError, [
         "name",
@@ -269,7 +267,13 @@ export default () => {
       if (data?.data) {
         Cookies.set("token", data.data, { expires: 1 });
 
-        router.push(router.query.redirect || "/");
+        router.push(
+          input.role == roleUser.buyer
+            ? (router.query.redirect && JSON.parse(router.query.redirect)) ||
+                "/"
+            : (router.query.redirect && JSON.parse(router.query.redirect)) ||
+                "/dashboard"
+        );
       } else {
         setError({
           ...error,
@@ -459,6 +463,7 @@ export default () => {
                     </MenuItem>
                   ))}
                 </Select>
+                <FormHelperText>{error.district}</FormHelperText>
               </FormControl>
             )}
 
@@ -491,6 +496,7 @@ export default () => {
                     </MenuItem>
                   ))}
                 </Select>
+                <FormHelperText>{error.subdistrict}</FormHelperText>
               </FormControl>
             )}
             <Button

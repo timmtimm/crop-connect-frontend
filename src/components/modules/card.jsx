@@ -13,42 +13,50 @@ export default (props) => {
     <div className="cursor-pointer shadow rounded-lg hover:bg-[#161D22] bg-[#222C34] text-white">
       {type == "komoditas" ? (
         <Link href={`/commodity/${data._id}`}>
-          <div className="max-w-[17rem]">
+          <div className="pt-[75%] relative">
             <Image
-              className="max-h-60"
+              className="rounded-lg"
               src={
                 data.imageURLs[0]
                   ? data.imageURLs[0]
                   : "/logo-no-background-white.png"
               }
-              width={270}
-              height={250}
-              alt=""
+              fill
+              style={{ objectFit: "cover" }}
+              alt={
+                data.imageURLs[0]
+                  ? `Gambar Komoditas ${data.name}`
+                  : "Ilustrasi Komoditas"
+              }
             />
+          </div>
 
-            <div className="flex flex-col p-5">
-              <div className="flex flex-row items-center gap-1">
-                <TbPlant size={15} />
-                <span className="text-white text-xl truncate">{data.name}</span>
-              </div>
-              <span className="flex flex-row gap-1 items-center font-bold text-white">
-                <ImPriceTag size={10} />
-                <span className="text-base">
-                  {setPriceFormat(data.pricePerKg)} / kg
-                </span>
+          <div className="flex flex-col pt-2 p-4">
+            <div className="flex flex-row items-center gap-1">
+              <TbPlant size={15} />
+              <span className="text-white text-md md:text-xl truncate">
+                {data.name}
               </span>
-              <div
-                className={`text-white text-base truncate flex flex-row items-center gap-1 ${
-                  !withName && "hidden"
-                }`}
-              >
-                <GiFarmer />
-                <span>{data.farmer.name}</span>
-              </div>
-              <div className="flex flex-row gap-1 items-center text-white text-base">
-                <MdLocationOn />
-                <span className="truncate">{data.farmer.region.province}</span>
-              </div>
+            </div>
+            <span className="flex flex-row gap-1 items-center font-bold text-white">
+              <ImPriceTag size={15} />
+              <span className="text-sm sm:text-base">
+                {setPriceFormat(data.pricePerKg)} / kg
+              </span>
+            </span>
+            <div
+              className={`text-white text-base truncate flex flex-row items-center gap-1 ${
+                !withName && "hidden"
+              }`}
+            >
+              <GiFarmer size={15} />
+              <span>{data.farmer.name}</span>
+            </div>
+            <div className="flex flex-row gap-1 items-center text-white ">
+              <MdLocationOn size={15} />
+              <span className="truncate text-sm sm:text-base">
+                {data.farmer.region.province}
+              </span>
             </div>
           </div>
         </Link>

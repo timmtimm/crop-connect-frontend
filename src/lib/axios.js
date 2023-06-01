@@ -42,13 +42,16 @@ const errorHandler = (error) => {
 };
 
 export const fetcher = async (url, params = {}) => {
-  try {
-    const { data } = await instance.get(url, {
-      params,
-    });
-    return data;
-  } catch (err) {
-    return errorHandler(err);
+  if (!url.includes("undefined")) {
+    try {
+      const { data } = await instance.get(url, {
+        params,
+      });
+      console.log(data);
+      return data;
+    } catch (err) {
+      return errorHandler(err);
+    }
   }
 };
 
@@ -61,6 +64,7 @@ export const get = async (url, params = {}) => {
     const { data } = await instance.get(url, {
       params: params,
     });
+    console.log(data);
     return data;
   } catch (err) {
     return errorHandler(err);

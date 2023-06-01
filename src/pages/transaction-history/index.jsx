@@ -24,7 +24,9 @@ import {
   setIfNotNull,
   setPriceFormat,
 } from "@/utils/utilities";
-import Status from "@/components/elements/status";
+import Status, {
+  convertStatusForTransaction,
+} from "@/components/elements/status";
 import Image from "next/image";
 import Link from "next/link";
 import dayjs from "dayjs";
@@ -139,19 +141,6 @@ export default () => {
         [name]: value,
       },
     });
-  };
-
-  const convertStatusForComponent = (status) => {
-    switch (status) {
-      case "pending":
-        return "warning";
-      case "accepted":
-        return "success";
-      case "cancelled":
-        return "error";
-      default:
-        return;
-    }
   };
 
   /* useEffect */
@@ -294,22 +283,26 @@ export default () => {
                       {item._id} - {dateFormatToIndonesia(item.createdAt)}
                     </span>
                     <Status
-                      type={convertStatusForComponent(item.status)}
+                      type={convertStatusForTransaction(item.status)}
                       status={item.status}
                     />
                   </div>
                 </div>
                 <div>
                   <div className="flex flex-row gap-x-2 mt-2">
-                    <Image
-                      src={
-                        item.commodity?.imageURLs[0]
-                          ? item.commodity?.imageURLs[0]
-                          : "/logo-no-background.png"
-                      }
-                      width={100}
-                      height={100}
-                    />
+                    <div className="relative">
+                      <Image
+                        src={
+                          item.commodity?.imageURLs[0]
+                            ? item.commodity?.imageURLs[0]
+                            : "/logo-no-background.png"
+                        }
+                        fill
+                        style={{ objectFit: "cover" }}
+                        // width={100}
+                        // height={100}
+                      />
+                    </div>
                     <div className="flex flex-col">
                       <span className="font-bold">{item.commodity.name}</span>
                       <span>{item.proposal.name}</span>

@@ -161,11 +161,6 @@ export const SumObjectByKey = (array, key) => {
   return array.reduce((a, b) => a + (b[key] || 0), 0);
 };
 
-export const validateImage = (file) => {
-  const validTypes = ["image/jpeg", "image/jpg", "image/png"];
-  return validTypes.includes(file.type) && file.size < 2000000;
-};
-
 export const isURL = (string) => {
   try {
     new URL(string);

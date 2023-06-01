@@ -25,7 +25,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { TbPlant, TbReport } from "react-icons/tb";
 import { IoDocumentTextOutline } from "react-icons/io5";
-import { GiFarmTractor } from "react-icons/gi";
+import { GiClockwiseRotation, GiFarmTractor } from "react-icons/gi";
 import { GrTransaction, GrValidate } from "react-icons/gr";
 import { useProfileUser } from "@/context/profileUserContext";
 import Loading from "../modules/loading";
@@ -109,7 +109,6 @@ export default (props) => {
   const [width, setWidth] = useState(0);
 
   const handleDrawer = () => {
-    console.log(window.innerWidth);
     if (window.innerWidth >= 640) {
       setOpenDrawer(!openDrawer);
     } else {
@@ -188,45 +187,50 @@ export default (props) => {
       ? [
           {
             text: "Daftar Komoditas",
-            to: "/dashboard/commodity",
+            to: "commodity",
             icon: <TbPlant className="text-black" size={20} />,
           },
           {
             text: "Daftar proposal",
-            to: "/dashboard/proposal",
+            to: "proposal",
             icon: <IoDocumentTextOutline className="text-black" size={20} />,
           },
           {
+            text: "Daftar penjualan",
+            to: "sales",
+            icon: <GrTransaction className="text-black" size={20} />,
+          },
+          {
+            text: "Daftar Periode Penanaman",
+            to: "batch",
+            icon: <GiClockwiseRotation className="text-black" size={20} />,
+          },
+          {
             text: "Riwayat Perawatan",
-            to: "/dashboard/treatment-record",
+            to: "treatment-record",
             icon: <TbReport className="text-black" size={20} />,
           },
           {
             text: "Daftar Panen",
-            to: "/dashboard/harvest",
+            to: "harvest",
             icon: <GiFarmTractor className="text-black" size={20} />,
-          },
-          {
-            text: "Daftar penjualan",
-            to: "/dashboard/sales",
-            icon: <GrTransaction className="text-black" size={20} />,
           },
         ]
       : profileUser?.role == roleUser.validator
       ? [
           {
             text: "Validasi proposal",
-            to: "/dashboard/validation-proposal",
+            to: "validation-proposal",
             icon: <IoDocumentTextOutline className="text-black" size={20} />,
           },
           {
             text: "Validasi riwayat perawatan",
-            to: "/dashboard/validation-treatment-record",
+            to: "validation-treatment-record",
             icon: <TbReport className="text-black" size={20} />,
           },
           {
             text: "Validasi hasil panen",
-            to: "/dashboard/validation-harvest",
+            to: "validation-harvest",
             icon: <GiFarmTractor className="text-black" size={20} />,
           },
         ]
@@ -234,7 +238,7 @@ export default (props) => {
       ? [
           {
             text: "Daftar Validator",
-            to: "/dashboard/list-validator",
+            to: "validator",
             icon: <GrValidate className="text-black" size={20} />,
           },
         ]
@@ -390,12 +394,13 @@ export default (props) => {
             )}
             {listMenu.map((menu) =>
               openDrawer ? (
-                <Link href={menu.to}>
+                <Link href={`/dashboard/${menu.to}`}>
                   <ListItem
                     key={menu.text}
                     disablePadding
                     className={`${
-                      router.asPath.includes(menu.to) && "bg-gray-300"
+                      router.asPath.includes(`/dashboard/${menu.to}`) &&
+                      "bg-gray-300"
                     }`}
                     sx={{ display: "block" }}
                   >
@@ -424,12 +429,13 @@ export default (props) => {
                 </Link>
               ) : (
                 <Tooltip title={menu.text} placement="right">
-                  <Link href={menu.to}>
+                  <Link href={`/dashboard/${menu.to}`}>
                     <ListItem
                       key={menu.text}
                       disablePadding
                       className={`${
-                        router.asPath.includes(menu.to) && "bg-gray-300"
+                        router.asPath.includes(`/dashboard/${menu.to}`) &&
+                        "bg-gray-300"
                       }`}
                       sx={{ display: "block" }}
                     >
@@ -506,12 +512,13 @@ export default (props) => {
                   </ListItem>
                 </Link>
                 {listMenu.map((menu) => (
-                  <Link href={menu.to}>
+                  <Link href={`/dashboard/${menu.to}`}>
                     <ListItem
                       key={menu.text}
                       disablePadding
                       className={`${
-                        router.asPath.includes(menu.to) && "bg-gray-300"
+                        router.asPath.includes(`/dashboard/${menu.to}`) &&
+                        "bg-gray-300"
                       }`}
                     >
                       <ListItemButton>

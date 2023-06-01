@@ -109,7 +109,6 @@ export default () => {
         newPassword: input.newPassword,
       });
 
-      console.log(data);
       if (data.status != HttpStatusCode.Ok) {
         setError({
           message: data.message,

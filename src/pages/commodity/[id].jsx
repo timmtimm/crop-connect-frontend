@@ -3,7 +3,11 @@ import Seo from "@/components/elements/seo";
 import Default from "@/components/layouts/default";
 import { fetcher, triggerfetcher } from "@/lib/axios";
 import { runOnce } from "@/lib/swr";
-import { dateFormatToIndonesia, setPriceFormat } from "@/utils/utilities";
+import {
+  dateFormatToIndonesia,
+  setNumberFormat,
+  setPriceFormat,
+} from "@/utils/utilities";
 import { Button, MenuItem, Select } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,6 +25,8 @@ import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
+import { transactionType } from "@/constant/constant";
+import Status, { convertStatusForBatch } from "@/components/elements/status";
 
 export default () => {
   const router = useRouter();
@@ -28,28 +34,59 @@ export default () => {
 
   /* State */
   const [input, setInput] = useState({
-    proposal: {},
+    proposalTransaction: {},
+    batchTransaction: {},
     batch: {},
     treatmentRecord: {},
   });
+  const [isLoading, setIsLoading] = useState(true);
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
   /* Fetch */
   const { data: dataCommodity, isLoading: commodityLoading } = useSWR(
     [`api/v1/commodity/${id}`, {}],
-    ([url, params]) => fetcher(url, params),
+    ([url, params]) => {
+      const data = fetcher(url, params);
+      setIsLoading(false);
+      return data;
+    },
     runOnce
   );
-  const { data: dataProposal, isLoading: proposalLoading } = useSWR(
-    [`api/v1/proposal/commodity/${id}`, {}],
-    ([url, params]) => fetcher(url, params),
-    runOnce
+  // const { data: dataProposal, isLoading: proposalLoading } = useSWR(
+  //   [`api/v1/proposal/commodity/${id}`, {}],
+  //   ([url, params]) => fetcher(url, params),
+  //   runOnce
+  // );
+  // const { data: dataBatch, isLoading: batchLoading } = useSWR(
+  //   [`api/v1/batch/commodity/${id}`, {}],
+  //   ([url, params]) => fetcher(url, params),
+  //   runOnce
+  // );
+  const { data: dataTotalTransaction, isLoading: totalTransactionLoading } =
+    useSWR(
+      [`api/v1/transaction/total-commodity/${id}`, {}],
+      ([url, params]) => fetcher(url, params),
+      runOnce
+    );
+
+  const {
+    data: dataProposal,
+    trigger: triggerProposal,
+    isMutating: mutatingProposal,
+  } = useSWRMutation(`api/v1/proposal/commodity/${id}`, triggerfetcher);
+  const {
+    data: dataBatchTransaction,
+    trigger: triggerBatchTransaction,
+    isMutating: mutatingBatchTransaction,
+  } = useSWRMutation(
+    `api/v1/batch/transaction/commodity/${id}`,
+    triggerfetcher
   );
-  const { data: dataBatch, isLoading: batchLoading } = useSWR(
-    [`api/v1/batch/commodity/${id}`, {}],
-    ([url, params]) => fetcher(url, params),
-    runOnce
-  );
+  const {
+    data: dataBatch,
+    trigger: triggerBatch,
+    isMutating: mutatingBatch,
+  } = useSWRMutation(`api/v1/batch/commodity/${id}`, triggerfetcher);
 
   const {
     data: dataharvest,
@@ -82,6 +119,13 @@ export default () => {
   useEffect(() => {
     if (!dataCommodity?.data) return;
     else {
+      if (dataCommodity?.data.isPerennials) {
+        triggerBatchTransaction();
+      } else {
+        triggerProposal();
+      }
+
+      triggerBatch();
       triggerTotalCommodity({});
       triggerTotalProposal({});
     }
@@ -101,23 +145,29 @@ export default () => {
 
   if (
     commodityLoading ||
-    proposalLoading ||
-    batchLoading ||
+    mutatingProposal ||
+    mutatingBatch ||
     mutatingHarvest ||
     mutatingTotalCommodity ||
     mutatingTreatmentRecord ||
-    mutatingTotalProposal
-  )
+    mutatingTotalProposal ||
+    totalTransactionLoading
+  ) {
     return <Loading />;
+  }
 
   return (
     <>
       <Seo
-        title={`Komoditas ${
-          dataCommodity?.status != HttpStatusCode.Ok
-            ? `Tidak Ditemukan`
-            : `${dataCommodity?.data?.name}`
-        }`}
+        title={
+          isLoading
+            ? "Loading..."
+            : `Komoditas ${
+                dataCommodity?.status != HttpStatusCode.Ok
+                  ? `Tidak Ditemukan`
+                  : `${dataCommodity?.data?.name}`
+              }`
+        }
       />
       <Default>
         {dataCommodity?.status != HttpStatusCode.Ok ? (
@@ -137,7 +187,7 @@ export default () => {
           <div className="flex flex-col gap-y-6">
             <div className="flex flex-col lg:flex-row items-start gap-5">
               <div className="w-full lg:w-fit flex justify-center ">
-                <div className="max-w-[28rem]">
+                <div className="max-w-[20rem] sm:max-w-[28rem]">
                   <Swiper
                     style={{
                       "--swiper-navigation-color": "#fff",
@@ -204,11 +254,17 @@ export default () => {
                     <p className="mt-2">
                       Terjual{" "}
                       <span className="font-bold">
-                        {`belom implement`} kilogram
+                        {setNumberFormat(
+                          dataTotalTransaction?.data?.totalTransaction
+                        )}{" "}
+                        kilogram
                       </span>{" "}
                       dari{" "}
                       <span className="font-bold">
-                        {`belom implement`} transaksi
+                        {setNumberFormat(
+                          dataTotalTransaction?.data?.totalWeight
+                        )}{" "}
+                        transaksi
                       </span>
                     </p>
                     <h2 className="text-2xl font-bold mt-4 mb-5">
@@ -218,96 +274,264 @@ export default () => {
                   </div>
                   {dataCommodity?.data?.isAvailable ? (
                     <div className="flex flex-col gap-y-2">
-                      <h3 className="text-xl font-bold mt-3">
-                        Proposal Transaksi
-                      </h3>
-                      <div className="flex flex-row flex-wrap gap-2 mt-2 mb-4">
-                        {Array.isArray(dataProposal?.data) &&
-                          (dataProposal?.data?.length == 0 ? (
-                            <span className="text-xl font-bold mt-4">
-                              Komoditas tidak memiliki proposal transaksi
-                            </span>
-                          ) : (
-                            dataProposal?.data?.map((proposal) => (
-                              <button
-                                value={proposal?._id}
-                                className={`py-1 px-3 border-2 rounded-lg cursor-pointer hover:border-[#53A06C] hover:text-[#53A06C] ${
-                                  !proposal.isAvailable &&
-                                  proposal._id != input.proposal._id
-                                    ? "text-[#AAB4C8] bg-[#F0F3F7] cursor-default border-gray-200"
-                                    : proposal._id == input.proposal._id
-                                    ? "border-[#53A06C] text-[#53A06C] bg-[#53A06C]/[.05]"
-                                    : "border-gray-600"
-                                } `}
-                                onClick={() => {
-                                  setInput({ ...input, proposal: proposal });
-                                }}
-                              >
-                                {proposal?.name}
-                              </button>
-                            ))
-                          ))}
-                      </div>
-                      {input.proposal._id && (
+                      {dataCommodity?.data?.isPerennials ? (
                         <>
-                          <h4 className="text-lg font-bold">
-                            Deskripsi Proposal
-                          </h4>
-                          <span>
-                            Deskripsi:{" "}
-                            <span className="font-bold">
-                              {input?.proposal.description}
-                            </span>
-                          </span>
-                          <span>
-                            Alamat lahan:{" "}
-                            <span className="font-bold">
-                              {input?.proposal.address}
-                            </span>
-                          </span>
-                          <span>
-                            Estimasi berat panen:{" "}
-                            <span className="font-bold">
-                              {input?.proposal.estimatedTotalHarvest &&
-                                `${input?.proposal.estimatedTotalHarvest} kilogram`}
-                            </span>
-                          </span>
-                          <span className="font-bold">
-                            Total:
-                            {input.proposal.estimatedTotalHarvest &&
-                              setPriceFormat(
-                                dataCommodity?.data?.pricePerKg *
-                                  input.proposal?.estimatedTotalHarvest
-                              )}
-                          </span>
-                          {input.proposal.isAvailable ? (
-                            <Link href={`/transaction/${input.proposal._id}`}>
-                              <Button
-                                className="w-full bg-[#52A068] normal-case font-bold mt-2"
-                                disabled={
-                                  input.proposal._id &&
-                                  input.proposal.isAvailable
-                                    ? false
-                                    : true
+                          <h3 className="text-xl font-bold mt-3">
+                            Periode Transaksi
+                          </h3>
+                          <div className="flex flex-row flex-wrap gap-2 mt-2 mb-4">
+                            {Array.isArray(dataBatch?.data) &&
+                              (dataBatch?.data?.length == 0 ? (
+                                <span className="text-xl font-bold mt-4">
+                                  Komoditas tidak memiliki proposal transaksi
+                                </span>
+                              ) : (
+                                dataBatch?.data?.map((batch) => (
+                                  <button
+                                    value={batch?._id}
+                                    className={`py-1 px-3 border-2 rounded-lg cursor-pointer hover:border-[#53A06C] hover:text-[#53A06C] ${
+                                      !batch.isAvailable &&
+                                      batch._id != input.batchTransaction._id
+                                        ? "text-[#AAB4C8] bg-[#F0F3F7] cursor-default border-gray-200"
+                                        : batch._id ==
+                                          input.batchTransaction._id
+                                        ? "border-[#53A06C] text-[#53A06C] bg-[#53A06C]/[.05]"
+                                        : "border-gray-600"
+                                    } `}
+                                    onClick={() => {
+                                      setInput({
+                                        ...input,
+                                        batchTransaction: batch,
+                                      });
+                                    }}
+                                  >
+                                    {batch?.name}
+                                  </button>
+                                ))
+                              ))}
+                          </div>
+                          {input.batchTransaction._id && (
+                            <>
+                              <h4 className="text-lg font-bold">
+                                Deskripsi Proposal
+                              </h4>
+                              <span>
+                                Deskripsi:{" "}
+                                <span className="font-bold">
+                                  {input?.batchTransaction.proposal
+                                    .description || "Tidak ada deskripsi"}
+                                </span>
+                              </span>
+                              <span>
+                                Alamat lahan:{" "}
+                                <span className="font-bold">
+                                  {input?.batchTransaction.proposal.address}
+                                </span>
+                              </span>
+                              <span>
+                                Estimasi berat panen:{" "}
+                                <span className="font-bold">
+                                  {input?.batchTransaction.proposal
+                                    .estimatedTotalHarvest &&
+                                    `${input?.batchTransaction.proposal.estimatedTotalHarvest} kilogram`}
+                                </span>
+                              </span>
+                              <h4 className="text-lg font-bold">
+                                Deskripsi Periode
+                              </h4>
+                              <span>
+                                Tanggal tanam:{" "}
+                                <span className="font-bold">
+                                  {dateFormatToIndonesia(
+                                    input?.batchTransaction.createdAt
+                                  )}
+                                </span>
+                              </span>
+                              <div className="flex flex-row items-center">
+                                <span className="mr-2">Status:</span>
+                                {
+                                  <Status
+                                    type={convertStatusForBatch(
+                                      input?.batchTransaction.status
+                                    )}
+                                    status={input?.batchTransaction.status}
+                                  />
                                 }
-                                variant="contained"
-                              >
-                                Lanjutkan Transaksi
-                              </Button>
-                            </Link>
-                          ) : (
-                            <Button
-                              className="w-full bg-[#52A068] normal-case font-bold mt-2"
-                              disabled={
-                                input.proposal._id && input.proposal.isAvailable
-                                  ? false
-                                  : true
-                              }
-                              variant="contained"
-                              // onClick={handleSubmit}
-                            >
-                              Lanjutkan Transaksi
-                            </Button>
+                              </div>
+                              <span>
+                                Estimasi Tanggal Panen:{" "}
+                                <span className="font-bold">
+                                  {dateFormatToIndonesia(
+                                    input?.batchTransaction.estimatedHarvestDate
+                                  )}
+                                </span>
+                              </span>
+                              <span className="font-bold">
+                                Total:{" "}
+                                {input.batchTransaction.proposal
+                                  .estimatedTotalHarvest &&
+                                  setPriceFormat(
+                                    dataCommodity?.data?.pricePerKg *
+                                      input.batchTransaction.proposal
+                                        .estimatedTotalHarvest
+                                  )}
+                              </span>
+                              {input.batchTransaction.isAvailable ? (
+                                <Link
+                                  href={{
+                                    pathname: `/transaction/${input.batchTransaction._id}`,
+                                    query: {
+                                      transactionType: dataCommodity?.data
+                                        .isPerennials
+                                        ? transactionType.perennials
+                                        : transactionType.annuals,
+                                    },
+                                  }}
+                                >
+                                  <Button
+                                    className="w-full bg-[#52A068] normal-case font-bold mt-2"
+                                    disabled={
+                                      input.batchTransaction._id &&
+                                      input.batchTransaction.isAvailable
+                                        ? false
+                                        : true
+                                    }
+                                    variant="contained"
+                                  >
+                                    Lanjutkan Transaksi
+                                  </Button>
+                                </Link>
+                              ) : (
+                                <Button
+                                  className="w-full bg-[#52A068] normal-case font-bold mt-2"
+                                  disabled={
+                                    input.batchTransaction._id &&
+                                    input.batchTransaction.isAvailable
+                                      ? false
+                                      : true
+                                  }
+                                  variant="contained"
+                                  // onClick={handleSubmit}
+                                >
+                                  Lanjutkan Transaksi
+                                </Button>
+                              )}
+                            </>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <h3 className="text-xl font-bold mt-3">
+                            Proposal Transaksi
+                          </h3>
+                          <div className="flex flex-row flex-wrap gap-2 mt-2 mb-4">
+                            {Array.isArray(dataProposal?.data) &&
+                              (dataProposal?.data?.length == 0 ? (
+                                <span className="text-xl font-bold mt-4">
+                                  Komoditas tidak memiliki proposal transaksi
+                                </span>
+                              ) : (
+                                dataProposal?.data?.map((proposal) => (
+                                  <button
+                                    value={proposal?._id}
+                                    className={`py-1 px-3 border-2 rounded-lg cursor-pointer hover:border-[#53A06C] hover:text-[#53A06C] ${
+                                      !proposal.isAvailable &&
+                                      proposal._id !=
+                                        input.proposalTransaction._id
+                                        ? "text-[#AAB4C8] bg-[#F0F3F7] cursor-default border-gray-200"
+                                        : proposal._id ==
+                                          input.proposalTransaction._id
+                                        ? "border-[#53A06C] text-[#53A06C] bg-[#53A06C]/[.05]"
+                                        : "border-gray-600"
+                                    } `}
+                                    onClick={() => {
+                                      setInput({
+                                        ...input,
+                                        proposalTransaction: proposal,
+                                      });
+                                    }}
+                                  >
+                                    {proposal?.name}
+                                  </button>
+                                ))
+                              ))}
+                          </div>
+                          {input.proposalTransaction._id && (
+                            <>
+                              <h4 className="text-lg font-bold">
+                                Deskripsi Proposal
+                              </h4>
+                              <span>
+                                Deskripsi:{" "}
+                                <span className="font-bold">
+                                  {input?.proposalTransaction.description}
+                                </span>
+                              </span>
+                              <span>
+                                Alamat lahan:{" "}
+                                <span className="font-bold">
+                                  {input?.proposalTransaction.address}
+                                </span>
+                              </span>
+                              <span>
+                                Estimasi berat panen:{" "}
+                                <span className="font-bold">
+                                  {input?.proposalTransaction
+                                    .estimatedTotalHarvest &&
+                                    `${input?.proposalTransaction.estimatedTotalHarvest} kilogram`}
+                                </span>
+                              </span>
+                              <span className="font-bold">
+                                Total:
+                                {input.proposalTransaction
+                                  .estimatedTotalHarvest &&
+                                  setPriceFormat(
+                                    dataCommodity?.data?.pricePerKg *
+                                      input.proposalTransaction
+                                        ?.estimatedTotalHarvest
+                                  )}
+                              </span>
+                              {input.proposalTransaction.isAvailable ? (
+                                <Link
+                                  href={{
+                                    pathname: `/transaction/${input.proposalTransaction._id}`,
+                                    query: {
+                                      transactionType: dataCommodity?.data
+                                        .isPerennials
+                                        ? transactionType.perennials
+                                        : transactionType.annuals,
+                                    },
+                                  }}
+                                >
+                                  <Button
+                                    className="w-full bg-[#52A068] normal-case font-bold mt-2"
+                                    disabled={
+                                      input.proposalTransaction._id &&
+                                      input.proposalTransaction.isAvailable
+                                        ? false
+                                        : true
+                                    }
+                                    variant="contained"
+                                  >
+                                    Lanjutkan Transaksi
+                                  </Button>
+                                </Link>
+                              ) : (
+                                <Button
+                                  className="w-full bg-[#52A068] normal-case font-bold mt-2"
+                                  disabled={
+                                    input.proposalTransaction._id &&
+                                    input.proposalTransaction.isAvailable
+                                      ? false
+                                      : true
+                                  }
+                                  variant="contained"
+                                  // onClick={handleSubmit}
+                                >
+                                  Lanjutkan Transaksi
+                                </Button>
+                              )}
+                            </>
                           )}
                         </>
                       )}
@@ -362,7 +586,9 @@ export default () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold">Estimasi panen</h3>
-                  <p>{dataCommodity?.data?.plantingPeriod} hari</p>
+                  <p>
+                    {setNumberFormat(dataCommodity?.data?.plantingPeriod)} hari
+                  </p>
                 </div>
               </div>
               <div className="flex flex-col gap-3">
@@ -375,7 +601,7 @@ export default () => {
                     Menampilkan periode penanaman ke -{" "}
                     <Select
                       className="bg-white"
-                      value={input.proposal.name}
+                      value={input.proposalTransaction.name}
                       inputProps={{
                         className: "py-1",
                       }}
@@ -406,13 +632,15 @@ export default () => {
                   <>
                     <div>
                       <h3 className="text-lg font-bold">Lokasi penanaman</h3>
-                      <p>{input?.batch?.transaction?.proposal?.address}</p>
+                      <p>{input?.batch?.proposal?.address}</p>
                     </div>
                     <div>
                       <h3 className="text-lg font-bold">Panen</h3>
                       <p>
                         Penanaman komoditas dimulai tanggal{" "}
-                        {dateFormatToIndonesia(input?.batch?.createdAt)}
+                        <span className="font-bold">
+                          {dateFormatToIndonesia(input?.batch?.createdAt)}
+                        </span>
                       </p>
                       <div>
                         <table>
@@ -424,7 +652,7 @@ export default () => {
                                   <FaCalendarAlt size={20} />
                                   <span>
                                     {dateFormatToIndonesia(
-                                      input?.batch?.estimatedHarvestDate
+                                      input?.batch.estimatedHarvestDate
                                     )}
                                   </span>
                                 </div>
@@ -434,7 +662,10 @@ export default () => {
                                   <FaShoppingBasket size={20} />
                                   <span>
                                     {input.batch._id &&
-                                      `${input?.batch?.transaction?.proposal?.estimatedTotalHarvest} kilogram`}
+                                      `${setNumberFormat(
+                                        input?.batch?.proposal
+                                          .estimatedTotalHarvest
+                                      )} kilogram`}
                                   </span>
                                 </div>
                               </td>

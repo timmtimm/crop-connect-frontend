@@ -16,6 +16,19 @@ import { useRouter } from "next/router";
 
 const headCells = [
   {
+    id: "_id",
+    label: "ID",
+    numeric: false,
+    isSort: false,
+    prefix: null,
+    suffix: null,
+    isNumber: false,
+    isStatus: false,
+    isDate: false,
+    statusComponent: false,
+    optDataLocation: null,
+  },
+  {
     id: "name",
     label: "Nama",
     isSort: true,
@@ -28,53 +41,76 @@ const headCells = [
     optDataLocation: null,
   },
   {
-    id: "plantingPeriod",
-    label: "Jangka waktu penanaman",
+    id: "email",
+    label: "Email",
     isSort: true,
     prefix: null,
-    suffix: " hari",
-    isNumber: true,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: null,
-  },
-  {
-    id: "pricePerKg",
-    label: "Harga per kilogram",
-    isSort: true,
-    prefix: "Rp",
     suffix: null,
-    isNumber: true,
+    isNumber: false,
     isStatus: false,
     isDate: false,
     statusComponent: false,
     optDataLocation: null,
   },
   {
-    id: "isPerennials",
-    label: "Perennials",
+    id: "phoneNumber",
+    label: "Nomor handphone",
+    isSort: true,
+    prefix: null,
+    suffix: null,
+    isNumber: false,
+    isStatus: false,
+    isDate: false,
+    statusComponent: false,
+    optDataLocation: null,
+  },
+  {
+    id: "province",
+    label: "Provinsi",
     isSort: false,
     prefix: null,
     suffix: null,
     isNumber: false,
     isStatus: false,
     isDate: false,
-    isBoolean: true,
     statusComponent: false,
-    optDataLocation: null,
+    optDataLocation: (data) => data.region.province,
   },
   {
-    id: "isAvailable",
-    label: "Status",
-    isSort: true,
+    id: "regency",
+    label: "Kabupaten",
+    isSort: false,
     prefix: null,
     suffix: null,
     isNumber: false,
-    isStatus: true,
+    isStatus: false,
     isDate: false,
     statusComponent: false,
-    optDataLocation: null,
+    optDataLocation: (data) => data.region.regency,
+  },
+  {
+    id: "district",
+    label: "Kecamatan",
+    isSort: false,
+    prefix: null,
+    suffix: null,
+    isNumber: false,
+    isStatus: false,
+    isDate: false,
+    statusComponent: false,
+    optDataLocation: (data) => data.region.district,
+  },
+  {
+    id: "subdistrict",
+    label: "Kelurahan",
+    isSort: false,
+    prefix: null,
+    suffix: null,
+    isNumber: false,
+    isStatus: false,
+    isDate: false,
+    statusComponent: false,
+    optDataLocation: (data) => data.region.subdistrict,
   },
   {
     id: "createdAt",
@@ -111,36 +147,16 @@ export default () => {
   });
 
   const { data, isLoading, mutate } = useSWR(
-    ["/api/v1/commodity", { ...pagination }],
+    ["/api/v1/user", { ...pagination, role: roleUser.validator }],
     ([url, params]) => fetcher(url, params),
     runOnce
   );
-
-  const handleDelete = async (e, id) => {
-    e.preventDefault();
-    const dataDelete = await Delete(`/api/v1/commodity/${id}`);
-
-    if (dataDelete.status == HttpStatusCode.Ok) {
-      mutate();
-      setResult({
-        successMessage: "Berhasil menghapus komoditas",
-        errorMessage: "",
-      });
-    } else {
-      setResult({
-        successMessage: "",
-        errorMessage: dataDelete.message,
-      });
-    }
-
-    handleClickSnackbar();
-  };
 
   if (isLoading) return <Loading />;
 
   return (
     <>
-      <Seo title="Daftar Komoditas" />
+      <Seo title="Daftar Validator" />
       <Snackbar
         open={openSnackbar}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -157,16 +173,16 @@ export default () => {
           {result.successMessage || result.errorMessage}
         </Alert>
       </Snackbar>
-      <Dashboard roles={roleUser.farmer}>
+      <Dashboard roles={roleUser.admin}>
         <div className="flex flex-row justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Daftar Komoditas</h1>
+          <h1 className="text-2xl font-bold">Daftar Validator</h1>
           <Link href={`${router.pathname}/create`}>
             <Button
               className="text-white bg-[#52A068] normal-case font-bold"
               variant="contained"
             >
               <GoPlus className="sm:mr-2" />
-              <span className="hidden sm:block">Tambah komoditas</span>
+              <span className="hidden sm:block">Tambah Validator</span>
             </Button>
           </Link>
         </div>
@@ -174,16 +190,16 @@ export default () => {
           minWidth={400}
           headCells={headCells}
           data={data}
-          menuAction={(data) => (
-            <>
-              <Link href={`${router.pathname}/edit/${data._id}`}>
-                <MenuItem>Ubah</MenuItem>
-              </Link>
-              <MenuItem onClick={(e) => handleDelete(e, data._id)}>
-                Hapus
-              </MenuItem>
-            </>
-          )}
+          //   menuAction={(data) => (
+          //     <>
+          //       <Link href={`${router.pathname}/edit/${data._id}`}>
+          //         <MenuItem>Ubah</MenuItem>
+          //       </Link>
+          //       <MenuItem onClick={(e) => handleDelete(e, data._id)}>
+          //         Hapus
+          //       </MenuItem>
+          //     </>
+          //   )}
         />
       </Dashboard>
     </>

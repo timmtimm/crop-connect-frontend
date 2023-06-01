@@ -5,6 +5,8 @@ import {
   Alert,
   Button,
   InputAdornment,
+  MenuItem,
+  Select,
   Snackbar,
   TextField,
 } from "@mui/material";
@@ -15,7 +17,6 @@ import Slide from "@mui/material/Slide";
 import {
   checkObjectIsNotNullExist,
   findErrorMessageFromResponse,
-  validateImage,
   validateStringInputLogic,
 } from "@/utils/utilities";
 import { useRouter } from "next/router";
@@ -23,7 +24,7 @@ import Loading from "@/components/modules/loading";
 import { PostWithForm } from "@/lib/axios";
 import { HttpStatusCode } from "axios";
 import Status from "@/components/elements/status";
-import { setInputImageCreate } from "@/utils/image";
+import { validateImage, setInputImageCreate } from "@/utils/image";
 
 const formColumn = [
   {
@@ -48,6 +49,23 @@ const formColumn = [
     isDay: false,
     multiline: false,
     required: true,
+  },
+  {
+    name: "isPerennials",
+    label: "Perennial",
+    placeholder: "",
+    description:
+      "Apakah komoditas yang dibuat merupakan tanaman tahunan? Tanaman perennial bisa berbunga dan bertahan hidup selama bertahun-tahun. Contoh: kopi, coklat, teh, dan lain-lain.",
+    type: "text",
+    isPrice: false,
+    isDay: false,
+    multiline: false,
+    required: true,
+    isSelect: true,
+    options: [
+      { value: true, label: "Ya" },
+      { value: false, label: "Tidak" },
+    ],
   },
   {
     name: "description",
@@ -84,6 +102,23 @@ const formColumn = [
     multiline: false,
     required: true,
   },
+  {
+    name: "isAvailable",
+    label: "Tersedia",
+    placeholder: "",
+    description:
+      "Apakah komoditas yang dibuat tersedia untuk ditransaksikan saat ini?",
+    type: "text",
+    isPrice: false,
+    isDay: false,
+    multiline: false,
+    required: true,
+    isSelect: true,
+    options: [
+      { value: true, label: "Ya" },
+      { value: false, label: "Tidak" },
+    ],
+  },
 ];
 
 export default () => {
@@ -106,6 +141,8 @@ export default () => {
     plantingPeriod: "",
     pricePerKg: "",
     images: [],
+    isPerennials: false,
+    isAvailable: true,
   });
   const [error, setError] = useState({
     message: "",
@@ -119,6 +156,7 @@ export default () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = ({ target: { name, value } }) => {
+    setError({ ...error, [name]: "" });
     setInput({ ...input, [name]: value });
   };
 
@@ -129,7 +167,7 @@ export default () => {
     } else {
       let file = e.target.files[0];
 
-      if (validateImage(file)) {
+      if (validateImage(file, 5)) {
         setError({ ...error, message: "" });
         setInput({ ...input, images: [...input.images, file] });
       } else {
@@ -204,6 +242,8 @@ export default () => {
       description: input.description,
       plantingPeriod: input.plantingPeriod,
       pricePerKg: input.pricePerKg,
+      isPerennials: input.isPerennials,
+      isAvailable: input.isAvailable,
       ...setInputImageCreate(input, 5),
     });
 
@@ -263,10 +303,6 @@ export default () => {
     setIsLoading(false);
   };
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
   return (
     <>
       <Seo title="Tambah Komoditas" />
@@ -306,6 +342,7 @@ export default () => {
             : "Berhasil menambah komoditas"}
         </Alert>
       </Snackbar>
+      {isLoading && <Loading />}
       <Dashboard roles={roleUser.farmer}>
         <h1 className="text-2xl mb-4 font-bold">Tambah Komoditas</h1>
         <div className="w-full bg-white rounded-xl p-4">
@@ -318,25 +355,40 @@ export default () => {
                     {column.required && <Status status="Wajib" />}
                   </div>
                   <span className="mb-2">{column.description}</span>
-                  <TextField
-                    error={error[column.name] ? true : false}
-                    name={column.name}
-                    placeholder={column.placeholder}
-                    onChange={handleChange}
-                    type={column.type || "text"}
-                    value={input[column.name]}
-                    InputProps={{
-                      startAdornment: column?.isPrice && (
-                        <InputAdornment position="start">Rp</InputAdornment>
-                      ),
-                      endAdornment: column?.isDay && (
-                        <InputAdornment position="end">hari</InputAdornment>
-                      ),
-                    }}
-                    helperText={error[column.name]}
-                    multiline={column.multiline}
-                    rows={column.multiline ? 4 : 1}
-                  />
+                  {column.isSelect ? (
+                    <Select
+                      className="w-full"
+                      value={input[column.name]}
+                      onChange={handleChange}
+                      name={column.name}
+                    >
+                      {column.options.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  ) : (
+                    <TextField
+                      error={error[column.name] ? true : false}
+                      name={column.name}
+                      placeholder={column.placeholder}
+                      onChange={handleChange}
+                      type={column.type || "text"}
+                      value={input[column.name]}
+                      InputProps={{
+                        startAdornment: column?.isPrice && (
+                          <InputAdornment position="start">Rp</InputAdornment>
+                        ),
+                        endAdornment: column?.isDay && (
+                          <InputAdornment position="end">hari</InputAdornment>
+                        ),
+                      }}
+                      helperText={error[column.name]}
+                      multiline={column.multiline}
+                      rows={column.multiline ? 4 : 1}
+                    />
+                  )}
                 </div>
               ))}
             </div>

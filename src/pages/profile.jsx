@@ -79,6 +79,9 @@ export default () => {
 
     let tempProfile = profileUser;
 
+    console.log("tempProfile", tempProfile);
+    console.log("profileUser", profileUser);
+
     tempProfile.regionID = tempProfile.region._id;
     setProfile(tempProfile);
     setRegion(tempProfile.region);
@@ -142,7 +145,7 @@ export default () => {
       (!subdistrict && region.district)
     ) {
       triggerSubdistrict(setParamRegionFetch(region, "subdistrict"));
-      setRegion({ ...region, subdistrict: null });
+      setRegion({ ...region });
     }
 
     setOldRegion(region);
@@ -154,14 +157,7 @@ export default () => {
   }, []);
 
   useEffect(() => {
-    if (!Cookies.get("token")) {
-      router.replace({
-        pathname: "/login",
-        query: {
-          redirect: router.pathname,
-        },
-      });
-    } else if (!isLoadingProfile && isAuthenticated) {
+    if (!isLoadingProfile && isAuthenticated) {
       handleGetProfile();
     }
   }, [isLoadingProfile, isAuthenticated]);
@@ -272,7 +268,7 @@ export default () => {
         </Alert>
       </Snackbar>
       {isLoading ? <Loading /> : <></>}
-      <Default>
+      <Default isAuth={true} roles={null}>
         <div className="grid grid-cols-1 lg:grid-cols-2 bg-white rounded-xl drop-shadow-md">
           <section className="relative p-32 hidden flex-col lg:flex">
             <div className="relative h-full w-full">

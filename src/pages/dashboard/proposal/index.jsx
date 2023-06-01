@@ -13,8 +13,24 @@ import { roleUser } from "@/constant/constant";
 import { HttpStatusCode } from "axios";
 import Table from "@/components/modules/table";
 import { useRouter } from "next/router";
+import {
+  convertStatusForBatch,
+  convertStatusForProposal,
+} from "@/components/elements/status";
 
 const headCells = [
+  {
+    id: "commodity",
+    label: "Komoditas",
+    isSort: false,
+    prefix: null,
+    suffix: null,
+    isNumber: false,
+    isStatus: false,
+    isDate: false,
+    statusComponent: false,
+    optDataLocation: (data) => data.commodity.name,
+  },
   {
     id: "name",
     label: "Nama",
@@ -28,11 +44,11 @@ const headCells = [
     optDataLocation: null,
   },
   {
-    id: "plantingPeriod",
-    label: "Jangka waktu penanaman",
+    id: "estimatedTotalHarvest",
+    label: "Estimasi berat panen",
     isSort: true,
     prefix: null,
-    suffix: " hari",
+    suffix: " kg",
     isNumber: true,
     isStatus: false,
     isDate: false,
@@ -40,33 +56,46 @@ const headCells = [
     optDataLocation: null,
   },
   {
-    id: "pricePerKg",
-    label: "Harga per kilogram",
-    isSort: true,
-    prefix: "Rp",
-    suffix: null,
-    isNumber: true,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: null,
-  },
-  {
-    id: "isPerennials",
-    label: "Perennials",
+    id: "address",
+    label: "Alamat",
     isSort: false,
     prefix: null,
     suffix: null,
     isNumber: false,
     isStatus: false,
     isDate: false,
-    isBoolean: true,
     statusComponent: false,
     optDataLocation: null,
   },
   {
-    id: "isAvailable",
+    id: "plantingArea",
+    label: "Luas lahan tanam",
+    isSort: true,
+    prefix: null,
+    suffix: " km2",
+    isNumber: true,
+    isStatus: false,
+    isDate: false,
+    isBoolean: false,
+    statusComponent: false,
+    optDataLocation: null,
+  },
+  {
+    id: "status",
     label: "Status",
+    isSort: true,
+    prefix: null,
+    suffix: null,
+    isNumber: false,
+    isStatus: true,
+    isDate: false,
+    statusComponent: true,
+    convertStatusComponent: (data) => convertStatusForProposal(data),
+    optDataLocation: null,
+  },
+  {
+    id: "isAvailable",
+    label: "Tersedia",
     isSort: true,
     prefix: null,
     suffix: null,
@@ -78,7 +107,6 @@ const headCells = [
   },
   {
     id: "createdAt",
-    numeric: false,
     label: "Dibuat waktu",
     isSort: true,
     prefix: null,
@@ -111,19 +139,19 @@ export default () => {
   });
 
   const { data, isLoading, mutate } = useSWR(
-    ["/api/v1/commodity", { ...pagination }],
+    ["/api/v1/proposal", { ...pagination }],
     ([url, params]) => fetcher(url, params),
     runOnce
   );
 
   const handleDelete = async (e, id) => {
     e.preventDefault();
-    const dataDelete = await Delete(`/api/v1/commodity/${id}`);
+    const dataDelete = await Delete(`/api/v1/proposal/${id}`);
 
     if (dataDelete.status == HttpStatusCode.Ok) {
       mutate();
       setResult({
-        successMessage: "Berhasil menghapus komoditas",
+        successMessage: "Berhasil menghapus proposal",
         errorMessage: "",
       });
     } else {
@@ -140,7 +168,7 @@ export default () => {
 
   return (
     <>
-      <Seo title="Daftar Komoditas" />
+      <Seo title="Daftar Proposal" />
       <Snackbar
         open={openSnackbar}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -159,14 +187,14 @@ export default () => {
       </Snackbar>
       <Dashboard roles={roleUser.farmer}>
         <div className="flex flex-row justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Daftar Komoditas</h1>
+          <h1 className="text-2xl font-bold">Daftar Proposal</h1>
           <Link href={`${router.pathname}/create`}>
             <Button
               className="text-white bg-[#52A068] normal-case font-bold"
               variant="contained"
             >
               <GoPlus className="sm:mr-2" />
-              <span className="hidden sm:block">Tambah komoditas</span>
+              <span className="hidden sm:block">Tambah Proposal</span>
             </Button>
           </Link>
         </div>

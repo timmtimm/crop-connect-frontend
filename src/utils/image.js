@@ -8,12 +8,17 @@ export const initiateUpdateImage = (lengthArray) => {
   return array;
 };
 
+export const validateImage = (file, fileSizeInMB = 5) => {
+  console.log(file);
+  const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+  return (
+    validTypes.includes(file?.type) && file?.size < fileSizeInMB * 1024 * 1024
+  );
+};
+
 export const setChangeImage = (input, oldInput, index) => {
   let isChange = false;
   let isDelete = false;
-
-  console.log(input);
-  console.log(input.imageURLs[index]);
 
   if (input.imageURLs[index] !== oldInput.imageURLs[index]) {
     isChange = true;

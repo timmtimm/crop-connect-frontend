@@ -1,6 +1,6 @@
 import Seo from "@/components/elements/seo";
 import Dashboard from "@/components/layouts/dashboard";
-import { Alert, Button, Menu, MenuItem, Slide, Snackbar } from "@mui/material";
+import { Alert, Button, MenuItem, Slide, Snackbar } from "@mui/material";
 import Link from "next/link";
 import { GoPlus } from "react-icons/go";
 import useSWR from "swr";
@@ -9,78 +9,78 @@ import { runOnce } from "@/lib/swr";
 import Loading from "@/components/modules/loading";
 import { Delete, fetcher } from "@/lib/axios";
 import { useEffect, useState } from "react";
-import { roleUser } from "@/constant/constant";
+import { harvestStatus, roleUser } from "@/constant/constant";
 import { HttpStatusCode } from "axios";
 import Table from "@/components/modules/table";
 import { useRouter } from "next/router";
+import { convertStatusForBatch } from "@/components/elements/status";
 
 const headCells = [
   {
-    id: "name",
-    label: "Nama",
-    isSort: true,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: null,
-  },
-  {
-    id: "plantingPeriod",
-    label: "Jangka waktu penanaman",
-    isSort: true,
-    prefix: null,
-    suffix: " hari",
-    isNumber: true,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: null,
-  },
-  {
-    id: "pricePerKg",
-    label: "Harga per kilogram",
-    isSort: true,
-    prefix: "Rp",
-    suffix: null,
-    isNumber: true,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: null,
-  },
-  {
-    id: "isPerennials",
-    label: "Perennials",
+    id: "commodity",
+    label: "Komoditas",
     isSort: false,
     prefix: null,
     suffix: null,
     isNumber: false,
     isStatus: false,
     isDate: false,
-    isBoolean: true,
     statusComponent: false,
-    optDataLocation: null,
+    optDataLocation: (data) => data.proposal.commodity.name,
   },
   {
-    id: "isAvailable",
-    label: "Status",
-    isSort: true,
+    id: "proposal",
+    label: "Proposal",
+    isSort: false,
     prefix: null,
     suffix: null,
     isNumber: false,
-    isStatus: true,
+    isStatus: false,
+    isDate: false,
+    statusComponent: false,
+    optDataLocation: (data) => data.proposal.name,
+  },
+  {
+    id: "name",
+    label: "Nama Periode",
+    isSort: false,
+    prefix: null,
+    suffix: null,
+    isNumber: false,
+    isStatus: false,
     isDate: false,
     statusComponent: false,
     optDataLocation: null,
   },
   {
+    id: "estimatedHarvestDate",
+    label: "Estimasi waktu panen",
+    isSort: false,
+    isStatus: false,
+    prefix: null,
+    suffix: null,
+    isNumber: false,
+    isDate: true,
+    statusComponent: false,
+    optDataLocation: null,
+  },
+  {
+    id: "status",
+    label: "Status",
+    isSort: false,
+    isStatus: false,
+    prefix: null,
+    suffix: null,
+    isNumber: false,
+    isDate: false,
+    statusComponent: true,
+    convertStatusComponent: (data) => convertStatusForBatch(data),
+    optDataLocation: null,
+  },
+  {
     id: "createdAt",
-    numeric: false,
     label: "Dibuat waktu",
-    isSort: true,
+    isSort: false,
     prefix: null,
     suffix: null,
     isNumber: false,
@@ -111,36 +111,16 @@ export default () => {
   });
 
   const { data, isLoading, mutate } = useSWR(
-    ["/api/v1/commodity", { ...pagination }],
+    ["/api/v1/batch", { ...pagination }],
     ([url, params]) => fetcher(url, params),
     runOnce
   );
-
-  const handleDelete = async (e, id) => {
-    e.preventDefault();
-    const dataDelete = await Delete(`/api/v1/commodity/${id}`);
-
-    if (dataDelete.status == HttpStatusCode.Ok) {
-      mutate();
-      setResult({
-        successMessage: "Berhasil menghapus komoditas",
-        errorMessage: "",
-      });
-    } else {
-      setResult({
-        successMessage: "",
-        errorMessage: dataDelete.message,
-      });
-    }
-
-    handleClickSnackbar();
-  };
 
   if (isLoading) return <Loading />;
 
   return (
     <>
-      <Seo title="Daftar Komoditas" />
+      <Seo title="Daftar Periode" />
       <Snackbar
         open={openSnackbar}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -159,14 +139,14 @@ export default () => {
       </Snackbar>
       <Dashboard roles={roleUser.farmer}>
         <div className="flex flex-row justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Daftar Komoditas</h1>
+          <h1 className="text-2xl font-bold">Daftar Periode</h1>
           <Link href={`${router.pathname}/create`}>
             <Button
               className="text-white bg-[#52A068] normal-case font-bold"
               variant="contained"
             >
               <GoPlus className="sm:mr-2" />
-              <span className="hidden sm:block">Tambah komoditas</span>
+              <span className="hidden sm:block">Tambah Periode</span>
             </Button>
           </Link>
         </div>
@@ -176,12 +156,9 @@ export default () => {
           data={data}
           menuAction={(data) => (
             <>
-              <Link href={`${router.pathname}/edit/${data._id}`}>
-                <MenuItem>Ubah</MenuItem>
+              <Link href={`${router.pathname}/detail/${data._id}`}>
+                <MenuItem>Lihat detail</MenuItem>
               </Link>
-              <MenuItem onClick={(e) => handleDelete(e, data._id)}>
-                Hapus
-              </MenuItem>
             </>
           )}
         />

@@ -149,11 +149,13 @@ export default () => {
   return (
     <>
       <Seo
-        title={`${
-          queryParam.searchBy == "komoditas"
-            ? "Cari Komoditas "
-            : "Cari Petani "
-        } ${queryParam.searchQuery}`}
+        title={
+          isLoading
+            ? "Loading..."
+            : queryParam.searchBy == "komoditas"
+            ? `Cari Komoditas ${queryParam.searchQuery}`
+            : `Cari Petani ${queryParam.searchQuery}`
+        }
       />
       {isLoading && <Loading />}
       <Root>
@@ -246,7 +248,7 @@ export default () => {
           </StyledBox>
         </SwipeableDrawer>
       </Root>
-      <Default>
+      <Default isAuth={false}>
         <div className="flex flex-row gap-8">
           <div className="hidden lg:block">
             <h1 className="text-xl font-bold mb-4">Filter</h1>
@@ -327,7 +329,7 @@ export default () => {
             <div
               className={`gap-7 ${
                 queryParam.searchBy == "komoditas"
-                  ? "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5"
+                  ? "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
                   : "flex-col"
               }`}
             >

@@ -1,3 +1,46 @@
+import {
+  batchStatus,
+  proposalStatus,
+  transactionStatus,
+} from "@/constant/constant";
+
+export const convertStatusForTransaction = (status) => {
+  switch (status) {
+    case transactionStatus.pending:
+      return "warning";
+    case transactionStatus.accepted:
+      return "success";
+    default:
+      return "error";
+  }
+};
+
+export const convertStatusForProposal = (status) => {
+  switch (status) {
+    case proposalStatus.pending:
+      return "warning";
+    case proposalStatus.approved:
+      return "success";
+    case proposalStatus.rejected:
+      return "error";
+    default:
+      return "";
+  }
+};
+
+export const convertStatusForBatch = (status) => {
+  switch (status) {
+    case batchStatus.cancel:
+      return "error";
+    case batchStatus.harvest:
+      return "success";
+    case batchStatus.planting:
+      return "warning";
+    default:
+      return "";
+  }
+};
+
 export default (props) => {
   const { type, status } = props;
 

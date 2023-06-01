@@ -12,7 +12,6 @@ export const ProfileUserProvider = ({ children }) => {
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 
   const getProfileUser = async () => {
-    setIsLoadingProfile(true);
     const { data } = await get("/api/v1/user/profile");
 
     if (data) {
@@ -39,9 +38,10 @@ export const ProfileUserProvider = ({ children }) => {
   useEffect(() => {
     if (Cookies.get("token")) {
       getProfileUser();
+    } else {
+      setIsLoadingProfile(false);
     }
-    setIsLoadingProfile(false);
-  }, []);
+  }, [Cookies.get("token")]);
 
   return (
     <profileUserContext.Provider

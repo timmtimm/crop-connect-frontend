@@ -103,8 +103,10 @@ export default () => {
 
         router.push(
           dataProfile.role == roleUser.buyer
-            ? JSON.parse(router.query.redirect) || "/"
-            : JSON.parse(router.query.redirect) || "/dashboard"
+            ? (router.query.redirect && JSON.parse(router.query.redirect)) ||
+                "/"
+            : (router.query.redirect && JSON.parse(router.query.redirect)) ||
+                "/dashboard"
         );
       } else {
         setError({

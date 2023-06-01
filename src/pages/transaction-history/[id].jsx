@@ -1,6 +1,8 @@
 import Loading from "@/components/modules/loading";
 import Seo from "@/components/elements/seo";
-import Status from "@/components/elements/status";
+import Status, {
+  convertStatusForTransaction,
+} from "@/components/elements/status";
 import Default from "@/components/layouts/default";
 import { get, putWithJSON } from "@/lib/axios";
 import { dateFormatToIndonesia, setPriceFormat } from "@/utils/utilities";
@@ -75,17 +77,6 @@ export default () => {
     }
   }, [id]);
 
-  const convertStatusForComponent = (status) => {
-    switch (status) {
-      case transactionStatus.pending:
-        return "warning";
-      case transactionStatus.accepted:
-        return "success";
-      default:
-        return "error";
-    }
-  };
-
   const handleCancel = async (e) => {
     e.preventDefault();
 
@@ -121,18 +112,18 @@ export default () => {
           </h2>
           <div className="flex flex-row gap-2">
             <Button
-              className="text-right bg-[#53A06C] hover:bg-[#3E8A4F] normal-case font-bold mt-2"
-              variant="contained"
-              onClick={handleCancel}
-            >
-              Ya
-            </Button>
-            <Button
               className="text-right bg-[#DB3546] hover:bg-[#BA2D3C] normal-case font-bold mt-2"
               variant="contained"
               onClick={handleModal}
             >
               Tidak
+            </Button>
+            <Button
+              className="text-right bg-[#53A06C] hover:bg-[#3E8A4F] normal-case font-bold mt-2"
+              variant="contained"
+              onClick={handleCancel}
+            >
+              Ya
             </Button>
           </div>
         </Modal>
@@ -191,7 +182,9 @@ export default () => {
                     <td className="flex items-center w-full gap-2 px-2 justify-end md:justify-start">
                       {" "}
                       <Status
-                        type={convertStatusForComponent(dataTransaction.status)}
+                        type={convertStatusForTransaction(
+                          dataTransaction.status
+                        )}
                         status={dataTransaction.status}
                       />
                     </td>

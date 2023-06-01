@@ -90,7 +90,10 @@ export default () => {
       return {};
     } else {
       return {
-        redirect: router.asPath,
+        redirect: JSON.stringify({
+          pathname: router.pathname,
+          query: router.query,
+        }),
       };
     }
   };

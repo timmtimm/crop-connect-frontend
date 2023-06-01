@@ -6,19 +6,16 @@ import { roleUser } from "@/constant/constant";
 import { PutWithForm, get } from "@/lib/axios";
 import {
   initiateUpdateImage,
-  setArrayToFomData,
+  validateImage,
   setChangeImage,
   setDeleteImage,
-  setIfNotURLAndChange,
   setInputImageUpdate,
 } from "@/utils/image";
 import {
   checkObjectIsNotNullExist,
   findErrorMessageFromResponse,
   getLastURLSegment,
-  getObjectWihoutKey,
   isURL,
-  validateImage,
   validateStringInputLogic,
 } from "@/utils/utilities";
 import {
@@ -66,25 +63,21 @@ const formColumn = [
     isSelect: false,
   },
   {
-    name: "isAvailable",
-    label: "Status",
+    name: "isPerennials",
+    label: "Perennial",
+    placeholder: "",
     description:
-      "Status komoditas digunakan untuk menampilkan status penjualan komoditas ini.",
+      "Apakah komoditas yang dibuat merupakan tanaman tahunan? Tanaman perennial bisa berbunga dan bertahan hidup selama bertahun-tahun. Contoh: kopi, coklat, teh, dan lain-lain.",
     type: "text",
     isPrice: false,
     isDay: false,
     multiline: false,
     required: true,
     isSelect: true,
+    disabled: true,
     options: [
-      {
-        value: true,
-        label: "Tersedia",
-      },
-      {
-        value: false,
-        label: "Tidak Tersedia",
-      },
+      { value: true, label: "Ya" },
+      { value: false, label: "Tidak" },
     ],
   },
   {
@@ -125,6 +118,28 @@ const formColumn = [
     required: true,
     isSelect: false,
   },
+  {
+    name: "isAvailable",
+    label: "Status",
+    description:
+      "Status komoditas digunakan untuk menampilkan status penjualan komoditas ini.",
+    type: "text",
+    isPrice: false,
+    isDay: false,
+    multiline: false,
+    required: true,
+    isSelect: true,
+    options: [
+      {
+        value: true,
+        label: "Tersedia",
+      },
+      {
+        value: false,
+        label: "Tidak Tersedia",
+      },
+    ],
+  },
 ];
 
 export default () => {
@@ -149,6 +164,7 @@ export default () => {
   });
 
   const handleChange = ({ target: { name, value } }) => {
+    setError({ ...error, [name]: "" });
     setInput({ ...input, [name]: value });
   };
 
@@ -189,8 +205,6 @@ export default () => {
         );
         tempInput = { ...tempInput };
 
-        console.log(tempInput);
-
         setError({ ...error, message: "" });
         setInput({
           ...input,
@@ -209,9 +223,6 @@ export default () => {
   const removeImage = (i) => {
     let tempInput = { ...input };
     tempInput = setDeleteImage(tempInput, oldInput, i);
-
-    console.log(`sebelum ${JSON.stringify(input)}`);
-    console.log(`sesudah ${JSON.stringify(tempInput)}`);
 
     if (input.imageURLs.length == 1) {
       tempInput.imageURLs = [];
@@ -279,10 +290,8 @@ export default () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    console.log("sini");
 
     if (validateInput()) {
-      console.log("masuk sini");
       const data = await PutWithForm(
         `/api/v1/commodity/${id}`,
         setInputToAPI()
@@ -353,8 +362,17 @@ export default () => {
                       {column.required && <Status status="Wajib" />}
                     </div>
                     <span className="mb-2">{column.description}</span>
-                    {column.isSelect ? (
+                    {column.isSelect &&
+                    console.log(
+                      "Field:",
+                      column.name,
+                      "Input",
+                      input[column.name],
+                      "option:",
+                      column.options
+                    ) ? (
                       <Select
+                        disabled={column.disabled}
                         className="w-full"
                         value={input[column.name]}
                         onChange={handleChange}
@@ -368,6 +386,7 @@ export default () => {
                       </Select>
                     ) : (
                       <TextField
+                        disabled={column.disabled}
                         error={error[column.name] ? true : false}
                         name={column.name}
                         placeholder={column.placeholder}

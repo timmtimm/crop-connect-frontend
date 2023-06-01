@@ -9,76 +9,86 @@ import { runOnce } from "@/lib/swr";
 import Loading from "@/components/modules/loading";
 import { Delete, fetcher } from "@/lib/axios";
 import { useEffect, useState } from "react";
-import { roleUser } from "@/constant/constant";
+import { harvestStatus, roleUser } from "@/constant/constant";
 import { HttpStatusCode } from "axios";
 import Table from "@/components/modules/table";
 import { useRouter } from "next/router";
 
 const headCells = [
   {
-    id: "name",
-    label: "Nama",
-    isSort: true,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: null,
-  },
-  {
-    id: "plantingPeriod",
-    label: "Jangka waktu penanaman",
-    isSort: true,
-    prefix: null,
-    suffix: " hari",
-    isNumber: true,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: null,
-  },
-  {
-    id: "pricePerKg",
-    label: "Harga per kilogram",
-    isSort: true,
-    prefix: "Rp",
-    suffix: null,
-    isNumber: true,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: null,
-  },
-  {
-    id: "isPerennials",
-    label: "Perennials",
+    id: "commodity",
+    label: "Komoditas",
     isSort: false,
     prefix: null,
     suffix: null,
     isNumber: false,
     isStatus: false,
     isDate: false,
-    isBoolean: true,
+    statusComponent: false,
+    optDataLocation: (data) => data.proposal.commodity.name,
+  },
+  {
+    id: "proposal",
+    label: "Proposal",
+    isSort: false,
+    prefix: null,
+    suffix: null,
+    isNumber: false,
+    isStatus: false,
+    isDate: false,
+    statusComponent: false,
+    optDataLocation: (data) => data.proposal.name,
+  },
+  {
+    id: "batch",
+    label: "Batch",
+    isSort: false,
+    prefix: null,
+    suffix: null,
+    isNumber: false,
+    isStatus: false,
+    isDate: false,
+    statusComponent: false,
+    optDataLocation: (data) => data.name,
+  },
+  {
+    id: "date",
+    label: "Tanggal Panen",
+    isSort: false,
+    isStatus: false,
+    prefix: null,
+    suffix: null,
+    isNumber: false,
+    isDate: true,
     statusComponent: false,
     optDataLocation: null,
   },
   {
-    id: "isAvailable",
-    label: "Status",
+    id: "totalHarvest",
+    label: "Total berat panen",
     isSort: true,
     prefix: null,
     suffix: null,
-    isNumber: false,
-    isStatus: true,
+    isNumber: true,
+    isStatus: false,
     isDate: false,
     statusComponent: false,
     optDataLocation: null,
   },
   {
+    id: "status",
+    label: "Status",
+    isSort: true,
+    isStatus: false,
+    prefix: null,
+    suffix: null,
+    isNumber: false,
+    isDate: false,
+    statusComponent: true,
+    optDataLocation: null,
+  },
+  {
     id: "createdAt",
-    numeric: false,
     label: "Dibuat waktu",
     isSort: true,
     prefix: null,
@@ -111,36 +121,16 @@ export default () => {
   });
 
   const { data, isLoading, mutate } = useSWR(
-    ["/api/v1/commodity", { ...pagination }],
+    ["/api/v1/harvest", { ...pagination }],
     ([url, params]) => fetcher(url, params),
     runOnce
   );
-
-  const handleDelete = async (e, id) => {
-    e.preventDefault();
-    const dataDelete = await Delete(`/api/v1/commodity/${id}`);
-
-    if (dataDelete.status == HttpStatusCode.Ok) {
-      mutate();
-      setResult({
-        successMessage: "Berhasil menghapus komoditas",
-        errorMessage: "",
-      });
-    } else {
-      setResult({
-        successMessage: "",
-        errorMessage: dataDelete.message,
-      });
-    }
-
-    handleClickSnackbar();
-  };
 
   if (isLoading) return <Loading />;
 
   return (
     <>
-      <Seo title="Daftar Komoditas" />
+      <Seo title="Daftar Panen" />
       <Snackbar
         open={openSnackbar}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -159,14 +149,14 @@ export default () => {
       </Snackbar>
       <Dashboard roles={roleUser.farmer}>
         <div className="flex flex-row justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Daftar Komoditas</h1>
+          <h1 className="text-2xl font-bold">Daftar Panen</h1>
           <Link href={`${router.pathname}/create`}>
             <Button
               className="text-white bg-[#52A068] normal-case font-bold"
               variant="contained"
             >
               <GoPlus className="sm:mr-2" />
-              <span className="hidden sm:block">Tambah komoditas</span>
+              <span className="hidden sm:block">Tambah Panen</span>
             </Button>
           </Link>
         </div>
@@ -176,12 +166,12 @@ export default () => {
           data={data}
           menuAction={(data) => (
             <>
-              <Link href={`${router.pathname}/edit/${data._id}`}>
-                <MenuItem>Ubah</MenuItem>
-              </Link>
-              <MenuItem onClick={(e) => handleDelete(e, data._id)}>
-                Hapus
-              </MenuItem>
+              {data.status != harvestStatus.approved && (
+                <Link href={`${router.pathname}/fill/${data._id}`}>
+                  <MenuItem>Ubah</MenuItem>
+                </Link>
+              )}
+              <MenuItem>Lihat detail</MenuItem>
             </>
           )}
         />

@@ -28,7 +28,7 @@ export default (props) => {
           />
         </div>
       </section>
-      <section className="bg-[#2C5456] overflow-y-hidden">
+      <section className="bg-[#2C5456] overflow-hidden">
         <div className="flex flex-col justify-center items-center py-8 px-8 md:px-16 overflow-y-scroll h-full w-full">
           <div className="mb-8 w-1/3 md:w-2/5">
             <Link href={"/"}>

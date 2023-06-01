@@ -11,6 +11,11 @@ export const proposalStatus = {
   rejected: "rejected",
 };
 
+export const transactionType = {
+  perennials: "perennials",
+  annuals: "annuals",
+};
+
 export const transactionStatus = {
   pending: "pending",
   accepted: "accepted",

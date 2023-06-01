@@ -118,7 +118,6 @@ export default () => {
       const data = await putWithJSON(`/api/v1/user/forgot-password/${id}`, {
         password: input.password,
       });
-      console.log(data);
 
       if (data.status == HttpStatusCode.Ok) {
         setIsSuccess(true);
