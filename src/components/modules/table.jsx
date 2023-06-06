@@ -17,7 +17,7 @@ import {
 } from "@/utils/utilities";
 import { BsThreeDots } from "react-icons/bs";
 import { useRouter } from "next/router";
-import { getPagination } from "@/utils/url";
+import { getPagination, getUniquePagination } from "@/utils/url";
 import { useEffect, useState } from "react";
 import { Menu, MenuItem } from "@mui/material";
 import Link from "next/link";
@@ -85,9 +85,16 @@ EnhancedTableHead.propTypes = {
 };
 
 export default (props) => {
-  const { minWidth, data, headCells, menuAction } = props;
+  const { minWidth, data, headCells, menuAction, uniqueKeyPagination } = props;
   const router = useRouter();
-  const pagination = getPagination();
+
+  let pagination = {};
+
+  if (uniqueKeyPagination) {
+    pagination = getUniquePagination(uniqueKeyPagination);
+  } else {
+    pagination = getPagination();
+  }
 
   /* Menu */
   const [anchorEl, setAnchorEl] = useState(null);
@@ -109,81 +116,78 @@ export default (props) => {
   /* Function */
   const handleRequestSort = (event, property) => {
     const isAsc = input.sort === property && input.order === "asc";
-    router.push({
-      pathname: router.pathname,
-      query: {
-        ...router.query,
+    let query = {
+      ...router.query,
+    };
+    if (uniqueKeyPagination) {
+      query = {
+        ...query,
+        [`sortBy-${uniqueKeyPagination}`]: property,
+        [`orderBy-${uniqueKeyPagination}`]: isAsc ? "desc" : "asc",
+      };
+    } else {
+      query = {
+        ...query,
         sortBy: property,
         orderBy: isAsc ? "desc" : "asc",
-      },
+      };
+    }
+
+    router.push({
+      pathname: router.pathname,
+      query,
     });
   };
 
   const handleChangePage = (event, newPage) => {
+    let query = {
+      ...router.query,
+    };
+    if (uniqueKeyPagination) {
+      query = {
+        ...query,
+        [`page-${uniqueKeyPagination}`]: newPage + 1,
+      };
+    } else {
+      query = {
+        ...query,
+        page: newPage + 1,
+      };
+    }
+
     router.push({
       pathname: router.pathname,
-      query: {
-        ...router.query,
-        page: newPage + 1,
-      },
+      query,
     });
   };
 
   const handleChangeRowsPerPage = (event) => {
+    let query = {
+      ...router.query,
+    };
+
+    if (uniqueKeyPagination) {
+      query = {
+        ...query,
+        [`limit-${uniqueKeyPagination}`]: event.target.value,
+      };
+    } else {
+      query = {
+        ...query,
+        limit: event.target.value,
+      };
+    }
+
     router.push({
       pathname: router.pathname,
-      query: {
-        ...router.query,
-        limit: event.target.value,
-      },
+      query,
     });
   };
 
-  const setDisplayRow = (data, headCell) => {
-    let dataRow;
-    if (headCell.optDataLocation) {
-      dataRow = headCell.optDataLocation(data);
-    } else {
-      dataRow = data[headCell.id];
-    }
-
-    if (headCell.statusComponent) {
-      return (
-        <div className="flex w-full justify-center">
-          <div className="w-fit">
-            <Status
-              type={headCell.convertStatusComponent(dataRow)}
-              status={dataRow}
-            />
-          </div>
-        </div>
-      );
-    }
-
-    dataRow = headCell.isNumber
-      ? setNumberFormat(dataRow)
-      : headCell.isDate
-      ? dateFormatToIndonesia(dataRow, true)
-      : headCell.isStatus
-      ? dataRow
-        ? "Tersedia"
-        : "Tidak tersedia"
-      : headCell.isBoolean
-      ? dataRow
-        ? "Ya"
-        : "Tidak"
-      : dataRow;
-
-    if (headCell.prefix) {
-      dataRow = `${headCell.prefix}${dataRow}`;
-    }
-
-    if (headCell.suffix) {
-      dataRow = `${dataRow}${headCell.suffix}`;
-    }
-
-    return dataRow;
-  };
+  const setDisplayRow = (data, headCell) =>
+    headCell.customDisplayRow
+      ? headCell.customDisplayRow(data)
+      : data[headCell.id];
 
   /* useEffect */
   useEffect(() => {
@@ -233,8 +237,8 @@ export default (props) => {
                     >
                       {headCells.map((headCell, index2) => {
                         let dataRow;
-                        if (headCell.optDataLocation) {
-                          dataRow = data[headCell.optDataLocation];
+                        if (headCell.customDisplayRow) {
+                          dataRow = data[headCell.customDisplayRow];
                         } else {
                           dataRow = data[headCell.id];
                         }

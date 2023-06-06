@@ -13,81 +13,60 @@ import { harvestStatus, roleUser } from "@/constant/constant";
 import { HttpStatusCode } from "axios";
 import Table from "@/components/modules/table";
 import { useRouter } from "next/router";
-import { convertStatusForBatch } from "@/components/elements/status";
+import Status, { convertStatusForBatch } from "@/components/elements/status";
+import { dateFormatToIndonesia, setNumberFormat } from "@/utils/utilities";
 
 const headCells = [
+  {
+    id: "_id",
+    label: "ID",
+    isSort: false,
+    customDisplayRow: null,
+  },
   {
     id: "commodity",
     label: "Komoditas",
     isSort: false,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: (data) => data.proposal.commodity.name,
+    customDisplayRow: (data) => data.proposal.commodity.name,
   },
   {
     id: "proposal",
     label: "Proposal",
     isSort: false,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: (data) => data.proposal.name,
+    customDisplayRow: (data) => data.proposal.name,
   },
   {
     id: "name",
     label: "Nama Periode",
     isSort: false,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: null,
+    customDisplayRow: null,
   },
   {
     id: "estimatedHarvestDate",
     label: "Estimasi waktu panen",
     isSort: false,
-    isStatus: false,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isDate: true,
-    statusComponent: false,
-    optDataLocation: null,
+    customDisplayRow: (data) =>
+      dateFormatToIndonesia(data.estimatedHarvestDate),
   },
   {
     id: "status",
     label: "Status",
     isSort: false,
-    isStatus: false,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isDate: false,
-    statusComponent: true,
-    convertStatusComponent: (data) => convertStatusForBatch(data),
-    optDataLocation: null,
+    customDisplayRow: (data) => (
+      <div className="flex w-full justify-center">
+        <Status
+          className="w-fit"
+          type={convertStatusForBatch(data.status)}
+          status={data.status}
+        />
+      </div>
+    ),
   },
   {
     id: "createdAt",
     label: "Dibuat waktu",
-    isSort: false,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isStatus: false,
-    isDate: true,
-    statusComponent: false,
-    optDataLocation: null,
+    isSort: true,
+    customDisplayRow: (data) => dateFormatToIndonesia(data.createdAt, true),
   },
 ];
 
@@ -95,22 +74,7 @@ export default () => {
   const router = useRouter();
   const pagination = getPagination();
 
-  /* Snackbar */
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const handleClickSnackbar = () => setOpenSnackbar(true);
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpenSnackbar(false);
-  };
-
-  const [result, setResult] = useState({
-    errorMessage: "",
-    successMessage: "",
-  });
-
-  const { data, isLoading, mutate } = useSWR(
+  const { data, isLoading } = useSWR(
     ["/api/v1/batch", { ...pagination }],
     ([url, params]) => fetcher(url, params),
     runOnce
@@ -121,22 +85,6 @@ export default () => {
   return (
     <>
       <Seo title="Daftar Periode" />
-      <Snackbar
-        open={openSnackbar}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        TransitionComponent={Slide}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        message={result.successMessage || result.errorMessage}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity={result.successMessage ? "success" : "error"}
-          sx={{ width: "100%" }}
-        >
-          {result.successMessage || result.errorMessage}
-        </Alert>
-      </Snackbar>
       <Dashboard roles={roleUser.farmer}>
         <div className="flex flex-row justify-between items-center mb-4">
           <h1 className="text-2xl font-bold">Daftar Periode</h1>

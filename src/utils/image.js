@@ -44,12 +44,12 @@ export const setDeleteImage = (input, oldInput, index) => {
   return input;
 };
 
-export const setInputImageCreate = (input, maxImage) => {
+export const setInputImageCreate = (images, maxImage) => {
   const objectResult = {};
 
   for (let i = 0; i < maxImage - 1; i++) {
-    if (input.images[i]) {
-      objectResult[`image${i + 1}`] = input.images[i];
+    if (images[i]) {
+      objectResult[`image${i + 1}`] = images[i];
     }
   }
 
@@ -68,12 +68,14 @@ export const setInputImageUpdate = (input, maxImage) => {
   return objectResult;
 };
 
-export const setArrayToFomData = (input, key) => {
-  const formData = {};
+export const constructImageURLFromImageAndNote = (imageAndNotes) => {
+  const imageURLs = [];
+  const imageNotes = [];
 
-  input[key].forEach((element) => {
-    formData[`${key}[]`] = element;
+  imageAndNotes.forEach((imageAndNote) => {
+    imageURLs.push(imageAndNote.imageURL);
+    imageNotes.push(imageAndNote.note);
   });
 
-  return formData;
+  return { images: imageURLs, notes: imageNotes };
 };

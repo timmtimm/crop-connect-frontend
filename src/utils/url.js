@@ -12,6 +12,29 @@ export const getPagination = () => {
   };
 };
 
+export const getUniquePagination = (uniqueKey) => {
+  const router = useRouter();
+
+  return {
+    page:
+      router.query[`page-${uniqueKey}`] &&
+      !isNaN(router.query[`page-${uniqueKey}`])
+        ? parseInt(router.query[`page-${uniqueKey}`])
+        : 1,
+    limit:
+      router.query[`limit-${uniqueKey}`] &&
+      !isNaN(router.query[`limit-${uniqueKey}`])
+        ? parseInt(router.query[`limit-${uniqueKey}`])
+        : 20,
+    sort: router.query[`sortBy-${uniqueKey}`]
+      ? router.query[`sortBy-${uniqueKey}`]
+      : "createdAt",
+    order: router.query[`orderBy-${uniqueKey}`]
+      ? router.query[`orderBy-${uniqueKey}`]
+      : "desc",
+  };
+};
+
 export const setParamRegionFetch = (input, region) => {
   switch (region) {
     case "province":

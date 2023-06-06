@@ -152,7 +152,7 @@ export const unitToIndonesiaTotalFormat = (unit) => {
   }
 };
 
-export const checkIsValidDate = (stringDate) => {
+export const isValidDate = (stringDate) => {
   const date = new Date(stringDate);
   return isNaN(date.getMonth()) ? false : true;
 };

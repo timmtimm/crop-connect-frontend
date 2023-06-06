@@ -30,6 +30,7 @@ import { GrTransaction, GrValidate } from "react-icons/gr";
 import { useProfileUser } from "@/context/profileUserContext";
 import Loading from "../modules/loading";
 import { roleUser } from "@/constant/constant";
+import Seo from "../elements/seo";
 
 const drawerWidth = 270;
 
@@ -178,30 +179,26 @@ export default (props) => {
     setWidth(window.innerWidth);
   }, []);
 
-  if (isLoadingProfile || !isAuthenticated) {
-    return <Loading />;
-  }
-
   const listMenu =
     profileUser?.role == roleUser.farmer
       ? [
           {
-            text: "Daftar Komoditas",
+            text: "Komoditas",
             to: "commodity",
             icon: <TbPlant className="text-black" size={20} />,
           },
           {
-            text: "Daftar proposal",
+            text: "Proposal",
             to: "proposal",
             icon: <IoDocumentTextOutline className="text-black" size={20} />,
           },
           {
-            text: "Daftar penjualan",
+            text: "Penjualan",
             to: "sales",
             icon: <GrTransaction className="text-black" size={20} />,
           },
           {
-            text: "Daftar Periode Penanaman",
+            text: "Periode Penanaman",
             to: "batch",
             icon: <GiClockwiseRotation className="text-black" size={20} />,
           },
@@ -211,7 +208,7 @@ export default (props) => {
             icon: <TbReport className="text-black" size={20} />,
           },
           {
-            text: "Daftar Panen",
+            text: "Panen",
             to: "harvest",
             icon: <GiFarmTractor className="text-black" size={20} />,
           },
@@ -219,17 +216,17 @@ export default (props) => {
       : profileUser?.role == roleUser.validator
       ? [
           {
-            text: "Validasi proposal",
+            text: "Proposal",
             to: "validation-proposal",
             icon: <IoDocumentTextOutline className="text-black" size={20} />,
           },
           {
-            text: "Validasi riwayat perawatan",
+            text: "Riwayat Perawatan",
             to: "validation-treatment-record",
             icon: <TbReport className="text-black" size={20} />,
           },
           {
-            text: "Validasi hasil panen",
+            text: "Panen",
             to: "validation-harvest",
             icon: <GiFarmTractor className="text-black" size={20} />,
           },
@@ -237,7 +234,7 @@ export default (props) => {
       : profileUser?.role == roleUser.admin
       ? [
           {
-            text: "Daftar Validator",
+            text: "Validator",
             to: "validator",
             icon: <GrValidate className="text-black" size={20} />,
           },
@@ -246,118 +243,91 @@ export default (props) => {
 
   return (
     <>
-      <Box sx={{ display: "flex" }}>
-        <CssBaseline />
-        <AppBar className="z-10" position="fixed" open={openDrawer}>
-          <Toolbar>
-            <div className="flex w-full items-center flex-row justify-between">
-              <div
-                className={`flex flex-row items-center ${
-                  !openDrawer && "sm:ml-16"
-                }`}
-              >
-                <IconButton
-                  color="inherit"
-                  aria-label="open drawer"
-                  onClick={handleDrawer}
-                  edge="start"
-                >
-                  {openDrawer ? <AiOutlineMenuFold /> : <AiOutlineMenuUnfold />}
-                </IconButton>
-              </div>
-              <div
-                className="flex flex-row items-center bg-white rounded-lg p-3 cursor-pointer max-w-[12rem]"
-                id="basic-button"
-                aria-controls={openDrawer ? "basic-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={openDrawer ? "true" : undefined}
-                onClick={handleClick}
-              >
-                <FaUserCircle className="text-black" size={25} />
-                <span className="sm:ml-2 font-semibold text-gray-500 hidden sm:flex">
-                  Hi,{" "}
-                </span>
-                <span
-                  className={`font-semibold text-gray-500 hidden sm:flex truncate`}
-                >
-                  {profileUser?.name && profileUser?.name}
-                </span>
-              </div>
-              <Menu
-                className="mt-3"
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                MenuListProps={{
-                  "aria-labelledby": "basic-button",
-                }}
-              >
-                <Link href="/profile">
-                  <MenuItem onClick={handleClose}>Pengaturan akun</MenuItem>
-                </Link>
-                <Link href="/dashboard">
-                  <MenuItem onClick={handleClose}>Dashboard</MenuItem>
-                </Link>
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
-              </Menu>
-            </div>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          className="z-20 hidden sm:block"
-          variant="permanent"
-          open={openDrawer}
-        >
-          <DrawerHeader>
-            <div className="flex flex-row w-full items-center justify-center">
-              <Link href="/">
-                <Image
-                  src="/logo.svg"
-                  width={60}
-                  height={60}
-                  alt="Logo Crop Connect"
-                />
-              </Link>
-            </div>
-          </DrawerHeader>
-          <Divider />
-          <List className="p-0 hidden sm:block">
-            {openDrawer ? (
-              <Link href="/dashboard">
-                <ListItem
-                  key={"dashboard"}
-                  disablePadding
-                  className={`${
-                    router.asPath == "/dashboard" && "bg-gray-300"
+      {isLoadingProfile || !isAuthenticated ? (
+        <Loading />
+      ) : (
+        <Box sx={{ display: "flex" }}>
+          <CssBaseline />
+          <AppBar className="z-10" position="fixed" open={openDrawer}>
+            <Toolbar>
+              <div className="flex w-full items-center flex-row justify-between">
+                <div
+                  className={`flex flex-row items-center ${
+                    !openDrawer && "sm:ml-16"
                   }`}
-                  sx={{ display: "block" }}
                 >
-                  <ListItemButton
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: openDrawer ? "initial" : "center",
-                      px: 2.5,
-                    }}
+                  <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    onClick={handleDrawer}
+                    edge="start"
                   >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: openDrawer ? 3 : "auto",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <AiOutlineHome className="text-black" size={20} />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Beranda"
-                      sx={{ opacity: openDrawer ? 1 : 0 }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              </Link>
-            ) : (
-              <Tooltip title="Dashboard" placement="right">
+                    {openDrawer ? (
+                      <AiOutlineMenuFold />
+                    ) : (
+                      <AiOutlineMenuUnfold />
+                    )}
+                  </IconButton>
+                </div>
+                <div
+                  className="flex flex-row items-center bg-white rounded-lg p-3 cursor-pointer max-w-[12rem]"
+                  id="basic-button"
+                  aria-controls={openDrawer ? "basic-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={openDrawer ? "true" : undefined}
+                  onClick={handleClick}
+                >
+                  <FaUserCircle className="text-black" size={25} />
+                  <span className="sm:ml-2 font-semibold text-gray-500 hidden sm:flex">
+                    Hi,{" "}
+                  </span>
+                  <span
+                    className={`font-semibold text-gray-500 hidden sm:flex truncate`}
+                  >
+                    {profileUser?.name && profileUser?.name}
+                  </span>
+                </div>
+                <Menu
+                  className="mt-3"
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                  }}
+                >
+                  <Link href="/profile">
+                    <MenuItem onClick={handleClose}>Pengaturan akun</MenuItem>
+                  </Link>
+                  <Link href="/dashboard">
+                    <MenuItem onClick={handleClose}>Dashboard</MenuItem>
+                  </Link>
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </Menu>
+              </div>
+            </Toolbar>
+          </AppBar>
+          <Drawer
+            className="z-20 hidden sm:block"
+            variant="permanent"
+            open={openDrawer}
+          >
+            <DrawerHeader>
+              <div className="flex flex-row w-full items-center justify-center">
+                <Link href="/">
+                  <Image
+                    src="/logo.svg"
+                    width={60}
+                    height={60}
+                    alt="Logo Crop Connect"
+                  />
+                </Link>
+              </div>
+            </DrawerHeader>
+            <Divider />
+            <List className="p-0 hidden sm:block">
+              {openDrawer ? (
                 <Link href="/dashboard">
                   <ListItem
                     key={"dashboard"}
@@ -384,51 +354,50 @@ export default (props) => {
                         <AiOutlineHome className="text-black" size={20} />
                       </ListItemIcon>
                       <ListItemText
-                        primary="Dashboard"
-                        sx={{ opacity: openDrawer ? 1 : 0 }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                </Link>
-              </Tooltip>
-            )}
-            {listMenu.map((menu) =>
-              openDrawer ? (
-                <Link href={`/dashboard/${menu.to}`}>
-                  <ListItem
-                    key={menu.text}
-                    disablePadding
-                    className={`${
-                      router.asPath.includes(`/dashboard/${menu.to}`) &&
-                      "bg-gray-300"
-                    }`}
-                    sx={{ display: "block" }}
-                  >
-                    <ListItemButton
-                      sx={{
-                        minHeight: 48,
-                        justifyContent: openDrawer ? "initial" : "center",
-                        px: 2.5,
-                      }}
-                    >
-                      <ListItemIcon
-                        sx={{
-                          minWidth: 0,
-                          mr: openDrawer ? 3 : "auto",
-                          justifyContent: "center",
-                        }}
-                      >
-                        {menu.icon}
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={menu.text}
+                        primary="Beranda"
                         sx={{ opacity: openDrawer ? 1 : 0 }}
                       />
                     </ListItemButton>
                   </ListItem>
                 </Link>
               ) : (
-                <Tooltip title={menu.text} placement="right">
+                <Tooltip title="Dashboard" placement="right">
+                  <Link href="/dashboard">
+                    <ListItem
+                      key={"dashboard"}
+                      disablePadding
+                      className={`${
+                        router.asPath == "/dashboard" && "bg-gray-300"
+                      }`}
+                      sx={{ display: "block" }}
+                    >
+                      <ListItemButton
+                        sx={{
+                          minHeight: 48,
+                          justifyContent: openDrawer ? "initial" : "center",
+                          px: 2.5,
+                        }}
+                      >
+                        <ListItemIcon
+                          sx={{
+                            minWidth: 0,
+                            mr: openDrawer ? 3 : "auto",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <AiOutlineHome className="text-black" size={20} />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary="Dashboard"
+                          sx={{ opacity: openDrawer ? 1 : 0 }}
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                  </Link>
+                </Tooltip>
+              )}
+              {listMenu.map((menu) =>
+                openDrawer ? (
                   <Link href={`/dashboard/${menu.to}`}>
                     <ListItem
                       key={menu.text}
@@ -462,85 +431,121 @@ export default (props) => {
                       </ListItemButton>
                     </ListItem>
                   </Link>
-                </Tooltip>
-              )
-            )}
-          </List>
-        </Drawer>
-        {width < 640 && (
-          <SwipeableDrawer
-            open={openSwipeableDrawer}
-            onClose={handleDrawer}
-            onOpen={handleDrawer}
-          >
-            <DrawerHeader>
-              <div className="flex flex-row w-full items-center justify-center">
-                <Link href="/">
-                  <Image
-                    src="/logo.svg"
-                    width={60}
-                    height={60}
-                    alt="Logo Crop Connect"
-                  />
-                </Link>
-              </div>
-            </DrawerHeader>
-            <Divider />
-            <Box
-              sx={{
-                width: "auto",
-              }}
-              role="presentation"
-              onClick={handleDrawer}
-              onKeyDown={handleDrawer}
+                ) : (
+                  <Tooltip title={menu.text} placement="right">
+                    <Link href={`/dashboard/${menu.to}`}>
+                      <ListItem
+                        key={menu.text}
+                        disablePadding
+                        className={`${
+                          router.asPath.includes(`/dashboard/${menu.to}`) &&
+                          "bg-gray-300"
+                        }`}
+                        sx={{ display: "block" }}
+                      >
+                        <ListItemButton
+                          sx={{
+                            minHeight: 48,
+                            justifyContent: openDrawer ? "initial" : "center",
+                            px: 2.5,
+                          }}
+                        >
+                          <ListItemIcon
+                            sx={{
+                              minWidth: 0,
+                              mr: openDrawer ? 3 : "auto",
+                              justifyContent: "center",
+                            }}
+                          >
+                            {menu.icon}
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={menu.text}
+                            sx={{ opacity: openDrawer ? 1 : 0 }}
+                          />
+                        </ListItemButton>
+                      </ListItem>
+                    </Link>
+                  </Tooltip>
+                )
+              )}
+            </List>
+          </Drawer>
+          {width < 640 && (
+            <SwipeableDrawer
+              open={openSwipeableDrawer}
+              onClose={handleDrawer}
+              onOpen={handleDrawer}
             >
-              <List className="p-0">
-                <Link href="/dashboard">
-                  <ListItem
-                    key="Beranda"
-                    disablePadding
-                    className={`${
-                      router.asPath == "/dashboard" && "bg-gray-300"
-                    }`}
-                  >
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <AiOutlineHome className="text-black" size={20} />
-                      </ListItemIcon>
-                      <ListItemText primary="Beranda" />
-                    </ListItemButton>
-                  </ListItem>
-                </Link>
-                {listMenu.map((menu) => (
-                  <Link href={`/dashboard/${menu.to}`}>
+              <DrawerHeader>
+                <div className="flex flex-row w-full items-center justify-center">
+                  <Link href="/">
+                    <Image
+                      src="/logo.svg"
+                      width={60}
+                      height={60}
+                      alt="Logo Crop Connect"
+                    />
+                  </Link>
+                </div>
+              </DrawerHeader>
+              <Divider />
+              <Box
+                sx={{
+                  width: "auto",
+                }}
+                role="presentation"
+                onClick={handleDrawer}
+                onKeyDown={handleDrawer}
+              >
+                <List className="p-0">
+                  <Link href="/dashboard">
                     <ListItem
-                      key={menu.text}
+                      key="Beranda"
                       disablePadding
                       className={`${
-                        router.asPath.includes(`/dashboard/${menu.to}`) &&
-                        "bg-gray-300"
+                        router.asPath == "/dashboard" && "bg-gray-300"
                       }`}
                     >
                       <ListItemButton>
-                        <ListItemIcon>{menu.icon}</ListItemIcon>
-                        <ListItemText primary={menu.text} />
+                        <ListItemIcon>
+                          <AiOutlineHome className="text-black" size={20} />
+                        </ListItemIcon>
+                        <ListItemText primary="Beranda" />
                       </ListItemButton>
                     </ListItem>
                   </Link>
-                ))}
-              </List>
-            </Box>
-          </SwipeableDrawer>
-        )}
-        <Box
-          component="main"
-          className="bg-[#F7F6F0] flex flex-col min-h-screen"
-          sx={{ flexGrow: 1, p: 3 }}
-        >
-          <DrawerHeader />
-          <main className="z-0">{children}</main>
+                  {listMenu.map((menu) => (
+                    <Link href={`/dashboard/${menu.to}`}>
+                      <ListItem
+                        key={menu.text}
+                        disablePadding
+                        className={`${
+                          router.asPath.includes(`/dashboard/${menu.to}`) &&
+                          "bg-gray-300"
+                        }`}
+                      >
+                        <ListItemButton>
+                          <ListItemIcon>{menu.icon}</ListItemIcon>
+                          <ListItemText primary={menu.text} />
+                        </ListItemButton>
+                      </ListItem>
+                    </Link>
+                  ))}
+                </List>
+              </Box>
+            </SwipeableDrawer>
+          )}
+          <Box
+            component="main"
+            className="bg-[#F7F6F0] flex flex-col min-h-screen"
+            sx={{ flexGrow: 1, p: 3 }}
+          >
+            <DrawerHeader />
+            <main className="z-0">{children}</main>
+          </Box>
         </Box>
-      </Box>
+      )}
     </>
   );
 };

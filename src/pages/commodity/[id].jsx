@@ -39,29 +39,37 @@ export default () => {
     batch: {},
     treatmentRecord: {},
   });
+  const [dataCommodity, setDataCommodity] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
   /* Fetch */
-  const { data: dataCommodity, isLoading: commodityLoading } = useSWR(
-    [`api/v1/commodity/${id}`, {}],
-    ([url, params]) => {
-      const data = fetcher(url, params);
-      setIsLoading(false);
-      return data;
-    },
-    runOnce
-  );
-  // const { data: dataProposal, isLoading: proposalLoading } = useSWR(
-  //   [`api/v1/proposal/commodity/${id}`, {}],
-  //   ([url, params]) => fetcher(url, params),
+  // const { data: dataCommodity, isLoading: commodityLoading } = useSWR(
+  //   [`api/v1/commodity/${id}`, {}],
+  //   ([url, params]) => {
+  //     const data = fetcher(url, params);
+  //     setIsLoading(false);
+  //     return data;
+  //   },
   //   runOnce
   // );
-  // const { data: dataBatch, isLoading: batchLoading } = useSWR(
-  //   [`api/v1/batch/commodity/${id}`, {}],
-  //   ([url, params]) => fetcher(url, params),
-  //   runOnce
-  // );
+
+  const getCommodity = async () => {
+    const data = await fetcher(`api/v1/commodity/${id}`, {});
+
+    if (data.status == HttpStatusCode.Ok) {
+      setDataCommodity(data);
+    }
+
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (id) {
+      getCommodity();
+    }
+  }, [id]);
+
   const { data: dataTotalTransaction, isLoading: totalTransactionLoading } =
     useSWR(
       [`api/v1/transaction/total-commodity/${id}`, {}],
@@ -143,19 +151,6 @@ export default () => {
     }
   }, [input.batch]);
 
-  if (
-    commodityLoading ||
-    mutatingProposal ||
-    mutatingBatch ||
-    mutatingHarvest ||
-    mutatingTotalCommodity ||
-    mutatingTreatmentRecord ||
-    mutatingTotalProposal ||
-    totalTransactionLoading
-  ) {
-    return <Loading />;
-  }
-
   return (
     <>
       <Seo
@@ -170,7 +165,14 @@ export default () => {
         }
       />
       <Default>
-        {dataCommodity?.status != HttpStatusCode.Ok ? (
+        {mutatingProposal ||
+          mutatingBatch ||
+          mutatingHarvest ||
+          mutatingTotalCommodity ||
+          mutatingTreatmentRecord ||
+          mutatingTotalProposal ||
+          (totalTransactionLoading && <Loading />)}
+        {!isLoading && dataCommodity?.status != HttpStatusCode.Ok && (
           <div className="flex flex-col justify-center items-center">
             <Image
               src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
@@ -183,7 +185,8 @@ export default () => {
               <span className="text-[#53A06C]">Kembali ke halaman utama</span>
             </Link>
           </div>
-        ) : (
+        )}
+        {!isLoading && dataCommodity?.status == HttpStatusCode.Ok && (
           <div className="flex flex-col gap-y-6">
             <div className="flex flex-col lg:flex-row items-start gap-5">
               <div className="w-full lg:w-fit flex justify-center ">
@@ -280,35 +283,35 @@ export default () => {
                             Periode Transaksi
                           </h3>
                           <div className="flex flex-row flex-wrap gap-2 mt-2 mb-4">
-                            {Array.isArray(dataBatch?.data) &&
-                              (dataBatch?.data?.length == 0 ? (
-                                <span className="text-xl font-bold mt-4">
-                                  Komoditas tidak memiliki proposal transaksi
+                            {dataBatchTransaction?.data == null ? (
+                              <div className="flex w-full justify-center items-center">
+                                <span className="text-xl text-center mt-4">
+                                  Komoditas ini tidak memiliki periode transaksi
                                 </span>
-                              ) : (
-                                dataBatch?.data?.map((batch) => (
-                                  <button
-                                    value={batch?._id}
-                                    className={`py-1 px-3 border-2 rounded-lg cursor-pointer hover:border-[#53A06C] hover:text-[#53A06C] ${
-                                      !batch.isAvailable &&
-                                      batch._id != input.batchTransaction._id
-                                        ? "text-[#AAB4C8] bg-[#F0F3F7] cursor-default border-gray-200"
-                                        : batch._id ==
-                                          input.batchTransaction._id
-                                        ? "border-[#53A06C] text-[#53A06C] bg-[#53A06C]/[.05]"
-                                        : "border-gray-600"
-                                    } `}
-                                    onClick={() => {
-                                      setInput({
-                                        ...input,
-                                        batchTransaction: batch,
-                                      });
-                                    }}
-                                  >
-                                    {batch?.name}
-                                  </button>
-                                ))
-                              ))}
+                              </div>
+                            ) : (
+                              dataBatchTransaction?.data?.map((batch) => (
+                                <button
+                                  value={batch?._id}
+                                  className={`py-1 px-3 border-2 rounded-lg cursor-pointer hover:border-[#53A06C] hover:text-[#53A06C] ${
+                                    !batch.isAvailable &&
+                                    batch._id != input.batchTransaction._id
+                                      ? "text-[#AAB4C8] bg-[#F0F3F7] cursor-default border-gray-200"
+                                      : batch._id == input.batchTransaction._id
+                                      ? "border-[#53A06C] text-[#53A06C] bg-[#53A06C]/[.05]"
+                                      : "border-gray-600"
+                                  } `}
+                                  onClick={() => {
+                                    setInput({
+                                      ...input,
+                                      batchTransaction: batch,
+                                    });
+                                  }}
+                                >
+                                  {batch?.name}
+                                </button>
+                              ))
+                            )}
                           </div>
                           {input.batchTransaction._id && (
                             <>
@@ -425,36 +428,38 @@ export default () => {
                             Proposal Transaksi
                           </h3>
                           <div className="flex flex-row flex-wrap gap-2 mt-2 mb-4">
-                            {Array.isArray(dataProposal?.data) &&
-                              (dataProposal?.data?.length == 0 ? (
-                                <span className="text-xl font-bold mt-4">
-                                  Komoditas tidak memiliki proposal transaksi
+                            {dataProposal?.data == null ? (
+                              <div className="flex w-full justify-center items-center">
+                                <span className="text-xl text-center mt-4">
+                                  Komoditas ini tidak memiliki proposal
+                                  transaksi
                                 </span>
-                              ) : (
-                                dataProposal?.data?.map((proposal) => (
-                                  <button
-                                    value={proposal?._id}
-                                    className={`py-1 px-3 border-2 rounded-lg cursor-pointer hover:border-[#53A06C] hover:text-[#53A06C] ${
-                                      !proposal.isAvailable &&
-                                      proposal._id !=
+                              </div>
+                            ) : (
+                              dataProposal?.data?.map((proposal) => (
+                                <button
+                                  value={proposal?._id}
+                                  className={`py-1 px-3 border-2 rounded-lg cursor-pointer hover:border-[#53A06C] hover:text-[#53A06C] ${
+                                    !proposal.isAvailable &&
+                                    proposal._id !=
+                                      input.proposalTransaction._id
+                                      ? "text-[#AAB4C8] bg-[#F0F3F7] cursor-default border-gray-200"
+                                      : proposal._id ==
                                         input.proposalTransaction._id
-                                        ? "text-[#AAB4C8] bg-[#F0F3F7] cursor-default border-gray-200"
-                                        : proposal._id ==
-                                          input.proposalTransaction._id
-                                        ? "border-[#53A06C] text-[#53A06C] bg-[#53A06C]/[.05]"
-                                        : "border-gray-600"
-                                    } `}
-                                    onClick={() => {
-                                      setInput({
-                                        ...input,
-                                        proposalTransaction: proposal,
-                                      });
-                                    }}
-                                  >
-                                    {proposal?.name}
-                                  </button>
-                                ))
-                              ))}
+                                      ? "border-[#53A06C] text-[#53A06C] bg-[#53A06C]/[.05]"
+                                      : "border-gray-600"
+                                  } `}
+                                  onClick={() => {
+                                    setInput({
+                                      ...input,
+                                      proposalTransaction: proposal,
+                                    });
+                                  }}
+                                >
+                                  {proposal?.name}
+                                </button>
+                              ))
+                            )}
                           </div>
                           {input.proposalTransaction._id && (
                             <>

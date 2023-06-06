@@ -1,7 +1,9 @@
 import {
   batchStatus,
+  harvestStatus,
   proposalStatus,
   transactionStatus,
+  treatmentRecordStatus,
 } from "@/constant/constant";
 
 export const convertStatusForTransaction = (status) => {
@@ -35,6 +37,34 @@ export const convertStatusForBatch = (status) => {
     case batchStatus.harvest:
       return "success";
     case batchStatus.planting:
+      return "warning";
+    default:
+      return "";
+  }
+};
+
+export const convertStatusForHarvest = (status) => {
+  switch (status) {
+    case harvestStatus.pending:
+      return "warning";
+    case harvestStatus.approved:
+      return "success";
+    case harvestStatus.revision:
+      return "error";
+    default:
+      return "";
+  }
+};
+
+export const convertStatusForTreatmentRecord = (status) => {
+  switch (status) {
+    case treatmentRecordStatus.pending:
+      return "warning";
+    case treatmentRecordStatus.approved:
+      return "success";
+    case treatmentRecordStatus.revision:
+      return "error";
+    case treatmentRecordStatus.waitingResponse:
       return "warning";
     default:
       return "";

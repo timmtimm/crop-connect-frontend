@@ -18,9 +18,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useSWRMutation from "swr/mutation";
-import useSWR from "swr";
 import { setParamRegionFetch } from "@/utils/url";
-import { runOnce } from "@/lib/swr";
 import Loading from "@/components/modules/loading";
 import {
   checkObjectIsNotNullExist,

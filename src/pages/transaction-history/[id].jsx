@@ -5,7 +5,11 @@ import Status, {
 } from "@/components/elements/status";
 import Default from "@/components/layouts/default";
 import { get, putWithJSON } from "@/lib/axios";
-import { dateFormatToIndonesia, setPriceFormat } from "@/utils/utilities";
+import {
+  dateFormatToIndonesia,
+  setNumberFormat,
+  setPriceFormat,
+} from "@/utils/utilities";
 import { Alert, Button, Snackbar } from "@mui/material";
 import Cookies from "js-cookie";
 import Image from "next/image";
@@ -39,12 +43,11 @@ export default () => {
 
   /* State */
   const [dataTransaction, setDataTransaction] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
   /* Function */
   const getTransactionData = async () => {
-    setIsLoading(true);
     const data = await get(`/api/v1/transaction/${id}`, {});
 
     if (data?.data) {
@@ -94,11 +97,9 @@ export default () => {
     handleModal();
   };
 
-  if (isLoading) return <Loading />;
-
   return (
     <>
-      <Seo title={`Detail Transaksi ${id}`} />
+      <Seo title={isLoading ? "Loading..." : "Detail Transaksi"} />
       {openModal && (
         <Modal>
           <Image
@@ -140,6 +141,7 @@ export default () => {
           {error.message}
         </Alert>
       </Snackbar>
+      {isLoading && <Loading />}
       <Default>
         <h1 className="text-2xl font-bold mb-4">Detail Transaksi</h1>
         {error ? (
@@ -195,7 +197,7 @@ export default () => {
                       <span className="hidden md:flex text-right">:</span>
                     </td>
                     <td className="px-2 text-right md:text-left">
-                      {dateFormatToIndonesia(dataTransaction.createdAt)}
+                      {dateFormatToIndonesia(dataTransaction.createdAt, true)}
                     </td>
                   </tr>
                 </tbody>
@@ -270,8 +272,7 @@ export default () => {
                       </div>
                     </td>
                     <td className="px-2 text-right md:text-left">
-                      {dataTransaction.proposal?.plantingArea} km
-                      <sup>2</sup>
+                      {dataTransaction.proposal?.address}
                     </td>
                   </tr>
                   <tr>
@@ -281,8 +282,10 @@ export default () => {
                         <span className="hidden md:flex text-right">:</span>
                       </div>
                     </td>
-                    <td className="flex items-center w-full gap-2 px-2 justify-end md:justify-start">
-                      {dataTransaction.proposal?.address}
+                    <td className="px-2 text-right md:text-left">
+                      {setNumberFormat(dataTransaction.proposal?.plantingArea)}{" "}
+                      km
+                      <sup>2</sup>
                     </td>
                   </tr>
                   <tr>
@@ -291,7 +294,10 @@ export default () => {
                       <span className="hidden md:flex text-right">:</span>
                     </td>
                     <td className="px-2 text-right md:text-left">
-                      {dataTransaction.proposal?.estimatedTotalHarvest} kilogram
+                      {setNumberFormat(
+                        dataTransaction.proposal?.estimatedTotalHarvest
+                      )}{" "}
+                      kilogram
                     </td>
                   </tr>
                 </tbody>
@@ -319,7 +325,9 @@ export default () => {
                         </div>
                       </td>
                       <td className="px-2 text-right md:text-left">
-                        {dataTransaction.proposal?.estimatedTotalHarvest}{" "}
+                        {setNumberFormat(
+                          dataTransaction.proposal?.estimatedTotalHarvest
+                        )}{" "}
                         kilogram
                       </td>
                     </tr>

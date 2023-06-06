@@ -324,15 +324,13 @@ export default () => {
     }
   }, [id]);
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
   return (
     <>
       <Seo
         title={
-          oldInput.name
+          isLoading
+            ? "Loading..."
+            : oldInput.name
             ? `Ubah Komoditas ${oldInput.name}`
             : "Komoditas tidak ditemukan"
         }
@@ -349,9 +347,10 @@ export default () => {
           {error.message}
         </Alert>
       </Snackbar>
+      {isLoading && <Loading />}
       <Dashboard roles={roleUser.farmer}>
         <h1 className="text-2xl mb-4 font-bold">Ubah Komoditas</h1>
-        {oldInput.name ? (
+        {!isLoading && oldInput.name && (
           <div className="w-full bg-white rounded-xl p-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex flex-col gap-4 w-full">
@@ -362,15 +361,7 @@ export default () => {
                       {column.required && <Status status="Wajib" />}
                     </div>
                     <span className="mb-2">{column.description}</span>
-                    {column.isSelect &&
-                    console.log(
-                      "Field:",
-                      column.name,
-                      "Input",
-                      input[column.name],
-                      "option:",
-                      column.options
-                    ) ? (
+                    {column.isSelect ? (
                       <Select
                         disabled={column.disabled}
                         className="w-full"
@@ -442,28 +433,35 @@ export default () => {
                 <span className="text-red-500 text-sm">
                   {error.imageURLs && error.imageURLs}
                 </span>
-                <div className="flex flex-col gap-2 mt-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
                   {input.imageURLs.map((file, key) => (
                     <div
                       key={key}
-                      className="w-full flex flex-row items-center justify-between rounded p-3 bg-gray-200"
+                      className="w-full flex flex-col rounded-lg p-3 gap-2 bg-gray-200"
                     >
-                      <div className="h-12 w-12">
+                      <h4 className="font-bold text-center">
+                        Gambar {key + 1}
+                      </h4>
+                      <div className="w-full flex flex-row items-start justify-between gap-2">
                         <img
-                          className="rounded"
+                          className="w-full h-full rounded-md object-cover"
+                          fill
                           src={isURL(file) ? file : URL.createObjectURL(file)}
                         />
+                        <div
+                          onClick={() => {
+                            removeImage(key);
+                          }}
+                          className="bg-red-400 flex items-center cursor-pointer justify-center rounded-md ml-4 p-2"
+                        >
+                          <FaTrashAlt className="text-white" />
+                        </div>
                       </div>
-                      <span className="truncate w-2/3">
-                        {isURL(file) ? getLastURLSegment(file) : file.name}
-                      </span>
-                      <div
-                        onClick={() => {
-                          removeImage(key);
-                        }}
-                        className="bg-red-400 flex items-center cursor-pointer justify-center rounded-md ml-4 p-2"
-                      >
-                        <FaTrashAlt className="text-white" />
+                      <div className="flex flex-col">
+                        <span className="font-semibold">Nama gambar</span>
+                        <span className="truncate w-full ">
+                          {isURL(file) ? getLastURLSegment(file) : file.name}
+                        </span>
                       </div>
                     </div>
                   ))}
@@ -480,7 +478,8 @@ export default () => {
               </Button>
             </div>
           </div>
-        ) : (
+        )}
+        {!isLoading && !oldInput.name && (
           <div className=" flex min-w-screen flex-col items-center text-center">
             <Image
               src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"

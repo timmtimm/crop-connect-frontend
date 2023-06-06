@@ -111,7 +111,11 @@ export default () => {
         "Luas lahan tanam yang digunakan untuk menanam komoditas yang dijual pada proposal ini. Luas lahan tanam yang dimasukkan berupa satuan kilometer persegi.",
       type: "number",
       prefix: null,
-      suffix: "km2",
+      suffix: (
+        <span>
+          km<sup>2</sup>
+        </span>
+      ),
       multiline: false,
       required: true,
     },
@@ -167,9 +171,9 @@ export default () => {
     const data = await get(`/api/v1/proposal/${id}`);
 
     if (data.status == HttpStatusCode.Ok) {
-      console.log(data.data.commodity._id);
       setInput({
         ...data.data,
+        regionID: data.data.region._id,
         commodityName: data.data.commodity.name,
       });
       setRegion({
@@ -331,7 +335,7 @@ export default () => {
   };
 
   const putToAPI = async () => {
-    const data = await putWithJSON(`/api/v1/proposal/${input.commodityID}`, {
+    const data = await putWithJSON(`/api/v1/proposal/${id}`, {
       ...input,
       estimatedTotalHarvest: parseFloat(input.estimatedTotalHarvest),
       plantingArea: parseFloat(input.plantingArea),
@@ -421,7 +425,6 @@ export default () => {
                       name={column.name}
                     >
                       {column.options.map((option) => {
-                        console.log(option.value);
                         return (
                           <MenuItem key={option.value} value={option.value}>
                             {option.label}

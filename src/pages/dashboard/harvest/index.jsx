@@ -13,107 +13,71 @@ import { harvestStatus, roleUser } from "@/constant/constant";
 import { HttpStatusCode } from "axios";
 import Table from "@/components/modules/table";
 import { useRouter } from "next/router";
+import { dateFormatToIndonesia, setWeightFormat } from "@/utils/utilities";
+import Status, { convertStatusForHarvest } from "@/components/elements/status";
 
 const headCells = [
   {
     id: "commodity",
     label: "Komoditas",
     isSort: false,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: (data) => data.proposal.commodity.name,
+    customDisplayRow: (data) => data.proposal.commodity.name,
   },
   {
     id: "proposal",
     label: "Proposal",
     isSort: false,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: (data) => data.proposal.name,
+    customDisplayRow: (data) => data.proposal.name,
   },
   {
     id: "batch",
-    label: "Batch",
+    label: "Periode",
     isSort: false,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: (data) => data.name,
+    customDisplayRow: (data) => data.batch.name,
   },
   {
     id: "date",
     label: "Tanggal Panen",
     isSort: false,
-    isStatus: false,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isDate: true,
-    statusComponent: false,
-    optDataLocation: null,
+    customDisplayRow: (data) => dateFormatToIndonesia(data.date),
   },
   {
     id: "totalHarvest",
     label: "Total berat panen",
     isSort: true,
-    prefix: null,
-    suffix: null,
-    isNumber: true,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: null,
+    customDisplayRow: (data) => setWeightFormat(data.totalHarvest),
   },
   {
     id: "status",
     label: "Status",
     isSort: true,
-    isStatus: false,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isDate: false,
-    statusComponent: true,
-    optDataLocation: null,
+    customDisplayRow: (data) => (
+      <div className="flex w-full justify-center">
+        <Status
+          className="w-fit"
+          type={convertStatusForHarvest(data.status)}
+          status={data.status}
+        />
+      </div>
+    ),
+  },
+  {
+    id: "validator",
+    label: "Diterima oleh",
+    isSort: false,
+    customDisplayRow: (data) => data?.accepter?.name,
   },
   {
     id: "createdAt",
     label: "Dibuat waktu",
     isSort: true,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isStatus: false,
-    isDate: true,
-    statusComponent: false,
-    optDataLocation: null,
+    customDisplayRow: (data) => dateFormatToIndonesia(data.createdAt, true),
   },
 ];
 
 export default () => {
   const router = useRouter();
   const pagination = getPagination();
-
-  /* Snackbar */
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const handleClickSnackbar = () => setOpenSnackbar(true);
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpenSnackbar(false);
-  };
 
   const [result, setResult] = useState({
     errorMessage: "",
@@ -131,22 +95,7 @@ export default () => {
   return (
     <>
       <Seo title="Daftar Panen" />
-      <Snackbar
-        open={openSnackbar}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        TransitionComponent={Slide}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        message={result.successMessage || result.errorMessage}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity={result.successMessage ? "success" : "error"}
-          sx={{ width: "100%" }}
-        >
-          {result.successMessage || result.errorMessage}
-        </Alert>
-      </Snackbar>
+
       <Dashboard roles={roleUser.farmer}>
         <div className="flex flex-row justify-between items-center mb-4">
           <h1 className="text-2xl font-bold">Daftar Panen</h1>
@@ -166,12 +115,14 @@ export default () => {
           data={data}
           menuAction={(data) => (
             <>
-              {data.status != harvestStatus.approved && (
-                <Link href={`${router.pathname}/fill/${data._id}`}>
+              {data?.status != harvestStatus.approved && (
+                <Link href={`${router.pathname}/edit/${data._id}`}>
                   <MenuItem>Ubah</MenuItem>
                 </Link>
               )}
-              <MenuItem>Lihat detail</MenuItem>
+              <Link href={`${router.pathname}/detail/${data._id}`}>
+                <MenuItem>Lihat detail</MenuItem>
+              </Link>
             </>
           )}
         />

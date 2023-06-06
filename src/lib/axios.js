@@ -47,17 +47,16 @@ export const fetcher = async (url, params = {}) => {
       const { data } = await instance.get(url, {
         params,
       });
-      console.log(data);
+      console.log("hasil", data);
       return data;
     } catch (err) {
+      console.log("ada err", err);
       return errorHandler(err);
     }
   }
 };
 
-export const triggerfetcher = async (url, { arg }) => {
-  return await fetcher(url, arg);
-};
+export const triggerfetcher = async (url, { arg }) => await fetcher(url, arg);
 
 export const get = async (url, params = {}) => {
   try {
@@ -67,6 +66,7 @@ export const get = async (url, params = {}) => {
     console.log(data);
     return data;
   } catch (err) {
+    console.log("ada err", err);
     return errorHandler(err);
   }
 };
@@ -105,6 +105,7 @@ export const PutWithForm = async (url, input) => {
     });
     return data;
   } catch (err) {
+    console.log("ada err", err);
     return errorHandler(err);
   }
 };
@@ -118,6 +119,7 @@ export const putWithJSON = async (url, input) => {
     });
     return data;
   } catch (err) {
+    console.log("ada err", err);
     return errorHandler(err);
   }
 };

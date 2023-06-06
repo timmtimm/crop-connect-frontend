@@ -7,110 +7,79 @@ import { Alert, Button, MenuItem, Slide, Snackbar } from "@mui/material";
 import { HttpStatusCode } from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import Dashboard from "@/components/layouts/dashboard";
 import { GoPlus } from "react-icons/go";
 import Table from "@/components/modules/table";
-import { convertStatusForTransaction } from "@/components/elements/status";
+import Status, {
+  convertStatusForTransaction,
+} from "@/components/elements/status";
+import Seo from "@/components/elements/seo";
+import { dateFormatToIndonesia, setPriceFormat } from "@/utils/utilities";
 
 const headCells = [
+  {
+    id: "_id",
+    label: "ID",
+    isSort: false,
+    customDisplayRow: null,
+  },
   {
     id: "commodity",
     label: "Komoditas",
     isSort: false,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: (data) => data.commodity.name,
+    customDisplayRow: (data) => data.commodity.name,
   },
   {
     id: "transactionType",
     label: "Tipe Transaksi",
     isSort: false,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: null,
+    customDisplayRow: null,
   },
   {
     id: "proposal",
     label: "Proposal",
     isSort: false,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: (data) => data.proposal.name,
+    customDisplayRow: (data) => data.proposal.name,
   },
   {
     id: "batch",
     label: "Periode",
     isSort: false,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: (data) => data.batch.name || "-",
+    customDisplayRow: (data) => data.batch.name || "-",
   },
   {
     id: "buyer",
     label: "Nama Pembeli",
     isSort: false,
-    isStatus: false,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: (data) => data.buyer.name,
+    customDisplayRow: (data) => data.buyer.name,
   },
   {
     id: "totalPrice",
     label: "Total Harga",
     isSort: true,
-    prefix: "Rp",
-    suffix: null,
-    isNumber: true,
-    isStatus: false,
-    isDate: false,
-    statusComponent: false,
-    optDataLocation: null,
+    customDisplayRow: (data) => setPriceFormat(data.totalPrice),
   },
   {
     id: "status",
     label: "Status",
     isSort: true,
-    isStatus: false,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isDate: false,
-    statusComponent: true,
-    convertStatusComponent: (data) => convertStatusForTransaction(data),
-    optDataLocation: null,
+    customDisplayRow: (data) => (
+      <div className="flex w-full justify-center">
+        <Status
+          className="w-fit"
+          type={convertStatusForTransaction(data.status)}
+          status={data.status}
+        />
+      </div>
+    ),
   },
   {
     id: "createdAt",
     label: "Dibuat waktu",
     isSort: true,
-    prefix: null,
-    suffix: null,
-    isNumber: false,
-    isStatus: false,
-    isDate: true,
-    statusComponent: false,
-    optDataLocation: null,
+    customDisplayRow: (data) => dateFormatToIndonesia(data.createdAt, true),
   },
 ];
 
@@ -165,10 +134,9 @@ export default () => {
     handleClickSnackbar();
   };
 
-  if (isLoading) return <Loading />;
-
   return (
     <>
+      <Seo title="Daftar Penjualan" />
       <Snackbar
         open={openSnackbar}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -185,78 +153,43 @@ export default () => {
           {result.successMessage || result.errorMessage}
         </Alert>
       </Snackbar>
+      {isLoading && <Loading />}
       <Dashboard roles={roleUser.farmer}>
         <h1 className="text-2xl font-bold mb-4">Daftar Penjualan</h1>
-        <Table
-          minWidth={400}
-          headCells={headCells}
-          data={data}
-          canDetail={false}
-          menuAction={(data) => (
-            <>
-              {data?.status == "pending" && (
-                <>
-                  <MenuItem
-                    onClick={(e) =>
-                      handleDecision(e, data._id, transactionStatus.accepted)
-                    }
-                  >
-                    Terima
-                  </MenuItem>
-                  <MenuItem
-                    onClick={(e) =>
-                      handleDecision(e, data._id, transactionStatus.rejected)
-                    }
-                  >
-                    Tolak
-                  </MenuItem>
-                </>
-              )}
-              <Link href={`${router.pathname}/detail/${data?._id}`}>
-                <MenuItem>Lihat Detail</MenuItem>
-              </Link>
-            </>
-          )}
-        />
+        {!isLoading && (
+          <Table
+            minWidth={400}
+            headCells={headCells}
+            data={data}
+            canDetail={false}
+            menuAction={(data) => (
+              <>
+                {data?.status == "pending" && (
+                  <>
+                    <MenuItem
+                      onClick={(e) =>
+                        handleDecision(e, data._id, transactionStatus.accepted)
+                      }
+                    >
+                      Terima
+                    </MenuItem>
+                    <MenuItem
+                      onClick={(e) =>
+                        handleDecision(e, data._id, transactionStatus.rejected)
+                      }
+                    >
+                      Tolak
+                    </MenuItem>
+                  </>
+                )}
+                <Link href={`${router.pathname}/detail/${data?._id}`}>
+                  <MenuItem>Lihat Detail</MenuItem>
+                </Link>
+              </>
+            )}
+          />
+        )}
       </Dashboard>
-      {/* <List
-        allowedRole={roleUser.farmer}
-        usedFor="Penjualan"
-        canAdd={false}
-        tableProps={{
-          minWidth: 400,
-          headCells,
-          canDetail: false,
-          logicCanEdit: () => true,
-          logicCanDelete: () => true,
-          canAction: true,
-          customMenuAction: (data) => (
-            <>
-              {data?.status == "pending" && (
-                <>
-                  <MenuItem
-                    onClick={(e) =>
-                      handleDecision(e, data._id, transactionStatus.accepted)
-                    }
-                  >
-                    Terima
-                  </MenuItem>
-                  <MenuItem
-                    onClick={(e) =>
-                      handleDecision(e, data._id, transactionStatus.rejected)
-                    }
-                  >
-                    Batal
-                  </MenuItem>
-                </>
-              )}
-              <Link href={`${router.pathname}/detail/${data?._id}`}>
-                <MenuItem>Lihat Detail</MenuItem>
-              </Link>
-            </>
-          ),
-        }}
-      /> */}
     </>
   );
 };

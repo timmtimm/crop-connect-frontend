@@ -244,7 +244,7 @@ export default () => {
       pricePerKg: input.pricePerKg,
       isPerennials: input.isPerennials,
       isAvailable: input.isAvailable,
-      ...setInputImageCreate(input, 5),
+      ...setInputImageCreate(input.images, 5),
     });
 
     if (data.status == HttpStatusCode.Created) {
@@ -425,26 +425,32 @@ export default () => {
               <span className="text-red-500 text-sm">
                 {error.images && error.images}
               </span>
-              <div className="flex flex-col gap-2 mt-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
                 {input.images.map((file, key) => (
                   <div
                     key={key}
-                    className="w-full flex flex-row items-center justify-between rounded p-3 bg-gray-200"
+                    className="w-full flex flex-col rounded-lg p-3 gap-2 bg-gray-200"
                   >
-                    <div className="h-12 w-12">
-                      <img
-                        className="rounded"
-                        src={URL.createObjectURL(file)}
-                      />
+                    <h4 className="font-bold text-center">Gambar {key + 1}</h4>
+                    <div className="w-full flex flex-row items-start justify-between gap-2">
+                      <div>
+                        <img
+                          className="rounded"
+                          src={URL.createObjectURL(file)}
+                        />
+                      </div>
+                      <div
+                        onClick={() => {
+                          removeImage(key);
+                        }}
+                        className="bg-red-400 flex items-center cursor-pointer justify-center rounded-md ml-4 p-2"
+                      >
+                        <FaTrashAlt className="text-white" />
+                      </div>
                     </div>
-                    <span className="truncate w-2/3">{file.name}</span>
-                    <div
-                      onClick={() => {
-                        removeImage(key);
-                      }}
-                      className="bg-red-400 flex items-center cursor-pointer justify-center rounded-md ml-4 p-2"
-                    >
-                      <FaTrashAlt className="text-white" />
+                    <div className="flex flex-col">
+                      <span className="font-semibold">Nama gambar</span>
+                      <span className="truncate w-full ">{file.name}</span>
                     </div>
                   </div>
                 ))}

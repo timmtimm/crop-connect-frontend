@@ -121,7 +121,11 @@ export default () => {
         "Luas lahan tanam yang digunakan untuk menanam komoditas yang dijual pada proposal ini. Luas lahan tanam yang dimasukkan berupa satuan kilometer persegi.",
       type: "number",
       prefix: null,
-      suffix: "km2",
+      suffix: (
+        <span>
+          km<sup>2</sup>
+        </span>
+      ),
       multiline: false,
       required: true,
     },

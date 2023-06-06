@@ -1,5 +1,5 @@
 import Default from "@/components/layouts/default";
-import { fetcher, get } from "@/lib/axios";
+import { fetcher, get, triggerfetcher } from "@/lib/axios";
 import { getPagination } from "@/utils/url";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -11,6 +11,7 @@ import Card from "@/components/modules/card";
 import useSWR from "swr";
 import { runOnce } from "@/lib/swr";
 import Seo from "@/components/elements/seo";
+import useSWRMutation from "swr/mutation";
 
 const listSorting = [
   {
@@ -72,7 +73,6 @@ export default () => {
     },
     runOnce
   );
-
   const { data: profileFarmer, isLoading: profileLoading } = useSWR(
     [`/api/v1/user/farmer/${queryParam.id}`, {}],
     ([url, params]) => {
@@ -81,10 +81,27 @@ export default () => {
     },
     runOnce
   );
+  const {
+    data: dataTotalProposal,
+    trigger: triggerTotalProposal,
+    isMutating: mutatingTotalProposal,
+  } = useSWRMutation(
+    `/api/v1/proposal/farmer-total/${queryParam.id}`,
+    triggerfetcher
+  );
+
+  useEffect(() => {
+    if (!profileFarmer?.data._id) return;
+    triggerTotalProposal();
+  }, [profileFarmer?.data._id]);
 
   return (
     <>
-      <Seo title={`Petani ${profileFarmer?.data?.name}`} />
+      <Seo
+        title={
+          profileLoading ? "Loading..." : `Petani ${profileFarmer?.data?.name}`
+        }
+      />
       {profileLoading || commodityLoading ? <Loading /> : <></>}
       <Default>
         <div className="flex flex-col gap-8">
@@ -102,7 +119,9 @@ export default () => {
                 <span>
                   Komoditas: {farmerCommodity?.pagination?.totalData} jenis
                 </span>
-                <span>Proposal: belom implement</span>
+                <span>
+                  Proposal: {JSON.stringify(dataTotalProposal?.data)} proposal
+                </span>
               </div>
               <div className="w-full">
                 <div className="flex flex-col lg:ml-4 lg:mt-0 mt-2">

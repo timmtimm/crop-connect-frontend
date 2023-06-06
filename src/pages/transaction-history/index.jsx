@@ -19,7 +19,7 @@ import { runOnce } from "@/lib/swr";
 import Loading from "@/components/modules/loading";
 import { fetcher } from "@/lib/axios";
 import {
-  checkIsValidDate,
+  isValidDate,
   dateFormatToIndonesia,
   setIfNotNull,
   setPriceFormat,
@@ -66,11 +66,10 @@ export default () => {
     search: router.query.search || "",
     status: router.query.status || "none",
     startDate:
-      (checkIsValidDate(router.query.startDate) &&
-        dayjs(router.query.startDate)) ||
+      (isValidDate(router.query.startDate) && dayjs(router.query.startDate)) ||
       null,
     endDate:
-      (checkIsValidDate(router.query.endDate) && dayjs(router.query.endDate)) ||
+      (isValidDate(router.query.endDate) && dayjs(router.query.endDate)) ||
       null,
   });
 
@@ -121,11 +120,11 @@ export default () => {
   const handleFilterDate = ({ target: { name, value } }) => {
     let query = { ...router.query };
 
-    if (!checkIsValidDate(input.startDate)) {
+    if (!isValidDate(input.startDate)) {
       input.startDate = dayjs();
     }
 
-    if (!checkIsValidDate(input.endDate)) {
+    if (!isValidDate(input.endDate)) {
       input.endDate = dayjs();
     }
 
@@ -170,11 +169,11 @@ export default () => {
     query = setIfNotNull(query, "commodity", router.query.search);
     query = setIfNotNone(query, "status", router.query.status);
 
-    if (checkIsValidDate(router.query.startDate)) {
+    if (isValidDate(router.query.startDate)) {
       query.startDate = router.query.startDate;
     }
 
-    if (checkIsValidDate(router.query.endDate)) {
+    if (isValidDate(router.query.endDate)) {
       query.endDate = router.query.endDate;
     }
 

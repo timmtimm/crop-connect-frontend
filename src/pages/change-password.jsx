@@ -154,26 +154,10 @@ export default () => {
       >
         <Alert
           onClose={handleClose}
-          severity={
-            error.message ||
-            checkObjectIsNotNullExist(error, [
-              "oldPassword",
-              "newPassword",
-              "newPasswordConfirmation",
-            ])
-              ? "error"
-              : "success"
-          }
+          severity={error.message ? "error" : "success"}
           sx={{ width: "100%" }}
         >
-          {error.message ||
-          checkObjectIsNotNullExist(error, [
-            "oldPassword",
-            "newPassword",
-            "newPasswordConfirmation",
-          ])
-            ? error.message
-            : "Berhasil mengubah kata sandi"}
+          {error.message ? error.message : "Berhasil mengubah kata sandi"}
         </Alert>
       </Snackbar>
       {isLoading ? <Loading /> : <></>}

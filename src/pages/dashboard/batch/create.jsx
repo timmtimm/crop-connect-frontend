@@ -216,7 +216,7 @@ export default () => {
       <Dashboard roles={roleUser.farmer}>
         <h1 className="text-2xl mb-4 font-bold">Tambah Periode</h1>
         <Alert className="mb-4 border-[1px] border-[#0288D1]" severity="info">
-          <AlertTitle>Informasi</AlertTitle>
+          <AlertTitle className="font-semibold">Informasi</AlertTitle>
           <span>
             Pembuatan periode ini dikhususkan untuk komoditas perennials yang
             dimana setiap panen dilakukan akan membutuhkan petani untuk membuat
