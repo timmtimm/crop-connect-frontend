@@ -9,7 +9,15 @@ import {
   setNumberFormat,
   setPriceFormat,
 } from "@/utils/utilities";
-import { Button, MenuItem, Select } from "@mui/material";
+import {
+  Alert,
+  Button,
+  MenuItem,
+  Select,
+  Slide,
+  Snackbar,
+  TextField,
+} from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -32,11 +40,29 @@ import Status, {
   convertStatusForTreatmentRecord,
 } from "@/components/elements/status";
 import { useProfileUser } from "@/context/profileUserContext";
+import { AiOutlineShareAlt } from "react-icons/ai";
+import Modal from "@/components/elements/modal";
+import QRCode from "react-qr-code";
+import { GrClose } from "react-icons/gr";
 
 export default () => {
   const router = useRouter();
   const { id } = router.query;
   const { profileUser } = useProfileUser();
+
+  /* Modal */
+  const [openModal, setOpenModal] = useState(false);
+  const handleModal = () => setOpenModal(!openModal);
+
+  /* Snackbar */
+  const [open, setOpen] = useState(false);
+  const handleClick = () => setOpen(true);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
   /* State */
   const [input, setInput] = useState({
@@ -171,6 +197,67 @@ export default () => {
         mutatingBatchTransaction ||
         mutatingTotalCommodity ||
         mutatingTotalProposal) && <Loading />}
+      <Snackbar
+        open={open}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        TransitionComponent={Slide}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message="Berhasil menyalin tautan komoditas"
+      >
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+          Berhasil menyalin tautan komoditas
+        </Alert>
+      </Snackbar>
+      {openModal && (
+        <Modal>
+          <div className="flex flex-row justify-end gap-4 items-center mb-4 w-full">
+            <h2 className="text-xl text-center font-bold">
+              Sebar tautan komoditas ini
+            </h2>
+            <GrClose
+              className="cursor-pointer"
+              size={20}
+              onClick={handleModal}
+            />
+          </div>
+          <div className="w-full flex flex-row items-center rounded p-2 bg-gray-200 mb-4">
+            <div className="flex flex-wrap mr-2">
+              <img
+                className="h-12 w-12 rounded object-cover"
+                src={
+                  Array.isArray(dataCommodity?.data?.imageURLs) &&
+                  dataCommodity?.data?.imageURLs[0] != ""
+                    ? dataCommodity?.data?.imageURLs[0]
+                    : "/logo.png"
+                }
+              />
+            </div>
+            <span className="truncate w-2/3 font-semibold cursor-default">
+              {dataCommodity?.data?.name}
+            </span>
+          </div>
+          <QRCode value={process.env.APP_DOMAIN + router.asPath} />
+          <div class="inline-flex items-center justify-center w-full">
+            <hr class="w-full bg-black h-[1px] my-6 border-0 rounded" />
+            <div class="absolute px-4 -translate-x-1/2 bg-white left-1/2">
+              <span className="font-semibold">Atau</span>
+            </div>
+          </div>
+          <Button
+            className="bg-[#53A06C] hover:bg-[#53A06C] w-full text-white normal-case font-bold"
+            onClick={() => {
+              navigator.clipboard.writeText(
+                process.env.APP_DOMAIN + router.asPath
+              );
+              handleModal();
+              handleClick();
+            }}
+          >
+            Salin Tautan
+          </Button>
+        </Modal>
+      )}
       <Default>
         {!isLoading && dataCommodity?.status != HttpStatusCode.Ok && (
           <div className="flex flex-col justify-center items-center">
@@ -270,10 +357,19 @@ export default () => {
                         transaksi
                       </span>
                     </p>
-                    <h2 className="text-2xl font-bold mt-4 mb-5">
-                      {setPriceFormat(dataCommodity?.data?.pricePerKg)} /
-                      kilogram
-                    </h2>
+                    <div className="flex flex-row justify-between gap-4">
+                      <h2 className="text-2xl font-bold mt-4 mb-5">
+                        {setPriceFormat(dataCommodity?.data?.pricePerKg)} /
+                        kilogram
+                      </h2>
+                      <div
+                        className="flex flex-row items-center gap-2 cursor-pointer"
+                        onClick={handleModal}
+                      >
+                        <AiOutlineShareAlt size={20} />
+                        <span className="font-semibold">Sebar</span>
+                      </div>
+                    </div>
                   </div>
                   {dataCommodity?.data?.isAvailable ? (
                     <div className="flex flex-col gap-y-2">
@@ -416,8 +512,6 @@ export default () => {
                                       ? false
                                       : true
                                   }
-                                  variant="contained"
-                                  // onClick={handleSubmit}
                                 >
                                   Lanjutkan Transaksi
                                 </Button>
@@ -534,7 +628,6 @@ export default () => {
                                       : true
                                   }
                                   variant="contained"
-                                  // onClick={handleSubmit}
                                 >
                                   Lanjutkan Transaksi
                                 </Button>

@@ -102,11 +102,6 @@ export default () => {
       triggerProposal();
     }
   }, [queryParam, id]);
-  // const { data: dataBatch?.data, isLoading: batchLoading } = useSWR(
-  //   [`api/v1/batch/id/${id}`, {}],
-  //   ([url, params]) => fetcher(url, params),
-  //   runOnce
-  // );
 
   /* Function */
   const handleChange = ({ target: { name, value } }) => {
