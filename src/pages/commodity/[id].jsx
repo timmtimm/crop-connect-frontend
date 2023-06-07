@@ -5,6 +5,7 @@ import { fetcher, triggerfetcher } from "@/lib/axios";
 import { runOnce } from "@/lib/swr";
 import {
   dateFormatToIndonesia,
+  getLastURLSegment,
   setNumberFormat,
   setPriceFormat,
 } from "@/utils/utilities";
@@ -25,12 +26,17 @@ import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
-import { transactionType } from "@/constant/constant";
-import Status, { convertStatusForBatch } from "@/components/elements/status";
+import { roleUser, transactionType } from "@/constant/constant";
+import Status, {
+  convertStatusForBatch,
+  convertStatusForTreatmentRecord,
+} from "@/components/elements/status";
+import { useProfileUser } from "@/context/profileUserContext";
 
 export default () => {
   const router = useRouter();
   const { id } = router.query;
+  const { profileUser } = useProfileUser();
 
   /* State */
   const [input, setInput] = useState({
@@ -42,17 +48,6 @@ export default () => {
   const [dataCommodity, setDataCommodity] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
-
-  /* Fetch */
-  // const { data: dataCommodity, isLoading: commodityLoading } = useSWR(
-  //   [`api/v1/commodity/${id}`, {}],
-  //   ([url, params]) => {
-  //     const data = fetcher(url, params);
-  //     setIsLoading(false);
-  //     return data;
-  //   },
-  //   runOnce
-  // );
 
   const getCommodity = async () => {
     const data = await fetcher(`api/v1/commodity/${id}`, {});
@@ -105,7 +100,7 @@ export default () => {
     data: dataTreatmentRecord,
     trigger: triggerTreatmentRecord,
     isMutating: mutatingTreatmentRecord,
-  } = useSWRMutation("/api/v1/harvest/batch", triggerfetcher);
+  } = useSWRMutation("/api/v1/treatment-record/batch", triggerfetcher);
   const {
     data: dataTotalCommodityFarmer,
     trigger: triggerTotalCommodity,
@@ -145,6 +140,7 @@ export default () => {
       triggerHarvest({
         "batch-id": input.batch._id,
       });
+      console.log("trigger treatment record");
       triggerTreatmentRecord({
         "batch-id": input.batch._id,
       });
@@ -164,14 +160,18 @@ export default () => {
               }`
         }
       />
+      {(mutatingProposal ||
+        mutatingBatch ||
+        mutatingHarvest ||
+        mutatingTotalCommodity ||
+        mutatingTreatmentRecord ||
+        mutatingTotalProposal ||
+        totalTransactionLoading ||
+        mutatingProposal ||
+        mutatingBatchTransaction ||
+        mutatingTotalCommodity ||
+        mutatingTotalProposal) && <Loading />}
       <Default>
-        {mutatingProposal ||
-          mutatingBatch ||
-          mutatingHarvest ||
-          mutatingTotalCommodity ||
-          mutatingTreatmentRecord ||
-          mutatingTotalProposal ||
-          (totalTransactionLoading && <Loading />)}
         {!isLoading && dataCommodity?.status != HttpStatusCode.Ok && (
           <div className="flex flex-col justify-center items-center">
             <Image
@@ -258,14 +258,14 @@ export default () => {
                       Terjual{" "}
                       <span className="font-bold">
                         {setNumberFormat(
-                          dataTotalTransaction?.data?.totalTransaction
+                          Math.floor(dataTotalTransaction?.data?.totalWeight)
                         )}{" "}
                         kilogram
                       </span>{" "}
                       dari{" "}
                       <span className="font-bold">
                         {setNumberFormat(
-                          dataTotalTransaction?.data?.totalWeight
+                          dataTotalTransaction?.data?.totalTransaction
                         )}{" "}
                         transaksi
                       </span>
@@ -392,7 +392,10 @@ export default () => {
                                   }}
                                 >
                                   <Button
-                                    className="w-full bg-[#52A068] normal-case font-bold mt-2"
+                                    className={`w-full bg-[#52A068] normal-case font-bold mt-2 ${
+                                      profileUser.role != roleUser.buyer &&
+                                      "hidden"
+                                    }`}
                                     disabled={
                                       input.batchTransaction._id &&
                                       input.batchTransaction.isAvailable
@@ -603,7 +606,7 @@ export default () => {
                 <div>
                   <h3 className="text-lg font-bold">Pemilihan periode</h3>
                   <div>
-                    Menampilkan periode penanaman ke -{" "}
+                    Menampilkan periode penanaman{" "}
                     <Select
                       className="bg-white"
                       value={input.proposalTransaction.name}
@@ -625,7 +628,7 @@ export default () => {
                         ))}
                     </Select>{" "}
                     dari{" "}
-                    <span className="font-bold">
+                    <span className="font-semibold">
                       {(Array.isArray(dataBatch?.data) &&
                         dataBatch?.data.length) ||
                         0}{" "}
@@ -643,69 +646,108 @@ export default () => {
                       <h3 className="text-lg font-bold">Panen</h3>
                       <p>
                         Penanaman komoditas dimulai tanggal{" "}
-                        <span className="font-bold">
+                        <span className="font-semibold">
                           {dateFormatToIndonesia(input?.batch?.createdAt)}
                         </span>
                       </p>
-                      <div>
-                        <table>
-                          <tbody>
-                            <tr>
-                              <td>Estimasi</td>
-                              <td>
-                                <div className="flex flex-row px-4 gap-x-2">
-                                  <FaCalendarAlt size={20} />
-                                  <span>
-                                    {dateFormatToIndonesia(
-                                      input?.batch.estimatedHarvestDate
-                                    )}
-                                  </span>
-                                </div>
-                              </td>
-                              <td>
-                                <div className="flex flex-row px-4 gap-x-2">
-                                  <FaShoppingBasket size={20} />
-                                  <span>
-                                    {input.batch._id &&
-                                      `${setNumberFormat(
-                                        input?.batch?.proposal
-                                          .estimatedTotalHarvest
-                                      )} kilogram`}
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>Hasil</td>
-                              <td>
-                                <div className="flex flex-row px-4 gap-x-2">
-                                  <FaCalendarAlt size={20} />
-                                  <span>
-                                    {input.batch._id &&
-                                      (dataharvest?.data?.createdAt
-                                        ? dateFormatToIndonesia(
-                                            dataharvest?.data?.createdAt
-                                          )
-                                        : "Dalam masa penanaman")}
-                                  </span>
-                                </div>
-                              </td>
-                              <td>
-                                <div className="flex flex-row px-4 gap-x-2">
-                                  <FaShoppingBasket size={20} />
-                                  <span>
-                                    {input.batch._id &&
-                                      (dataharvest?.data?.totalHarvest
-                                        ? `${dataharvest?.data?.totalHarvest} kilogram`
-                                        : "Dalam masa penanaman")}
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
+                      <table>
+                        <tbody>
+                          <tr>
+                            <td>Estimasi</td>
+                            <td>
+                              <div className="flex flex-row px-1 sm:px-4 gap-x-2 items-center">
+                                <FaCalendarAlt size={20} />
+                                <span>
+                                  {dateFormatToIndonesia(
+                                    input?.batch.estimatedHarvestDate
+                                  )}
+                                </span>
+                              </div>
+                            </td>
+                            <td>
+                              <div className="flex flex-row px-1 sm:px-4 gap-x-2 items-center">
+                                <FaShoppingBasket size={20} />
+                                <span>
+                                  {input.batch._id &&
+                                    `${setNumberFormat(
+                                      input?.batch?.proposal
+                                        .estimatedTotalHarvest
+                                    )} kilogram`}
+                                </span>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Hasil</td>
+                            <td>
+                              <div className="flex flex-row px-1 sm:px-4 gap-x-2 items-center">
+                                <FaCalendarAlt size={20} />
+                                <span>
+                                  {input.batch._id &&
+                                    (dataharvest?.data?.createdAt
+                                      ? dateFormatToIndonesia(
+                                          dataharvest?.data?.createdAt
+                                        )
+                                      : "Dalam masa penanaman")}
+                                </span>
+                              </div>
+                            </td>
+                            <td>
+                              <div className="flex flex-row px-1 sm:px-4 gap-x-2 items-center">
+                                <FaShoppingBasket size={20} />
+                                <span>
+                                  {input.batch._id &&
+                                    (dataharvest?.data?.totalHarvest
+                                      ? `${dataharvest?.data?.totalHarvest} kilogram`
+                                      : "Dalam masa penanaman")}
+                                </span>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
+                    {dataharvest?.data?.harvest && (
+                      <>
+                        <div>
+                          <h3 className="text-lg font-semibold">Kondisi</h3>
+                          <p>{dataharvest?.data?.condition}</p>
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold">
+                            Gambar dan Catatan Panen
+                          </h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {Array.isArray(dataharvest?.data?.harvest) &&
+                              dataharvest?.data?.harvest?.map((item, index) => (
+                                <div
+                                  key={index}
+                                  className="w-full flex flex-col rounded-lg p-3 gap-2 bg-gray-200"
+                                >
+                                  <h4 className="font-bold text-center">
+                                    Gambar {index + 1}
+                                  </h4>
+                                  <div className="w-full flex flex-row items-start justify-between gap-2">
+                                    <div>
+                                      <img
+                                        className="rounded"
+                                        src={item.imageURL}
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="w-full p-2 bg-white rounded-md">
+                                    <span className="font-semibold mb-2">
+                                      Catatan
+                                    </span>
+                                    <br />
+                                    {item.note}
+                                  </div>
+                                </div>
+                              ))}
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </>
                 )}
               </div>
@@ -723,34 +765,89 @@ export default () => {
                       className="bg-white"
                       value={input.treatmentRecord.number}
                       inputProps={{
-                        className: "py-1",
+                        className: `py-1 ${
+                          input.treatmentRecord?.warningNote && "text-red-500"
+                        }`,
                       }}
                     >
                       {Array.isArray(dataTreatmentRecord?.data) &&
                         dataTreatmentRecord?.data.map((treatmentRecord) => (
                           <MenuItem
-                            key={dataTreatmentRecord.number}
-                            value={dataTreatmentRecord.number}
+                            className={`${
+                              treatmentRecord?.warningNote && "text-red-500"
+                            }`}
+                            key={treatmentRecord.number}
+                            value={treatmentRecord.number}
                             onClick={() => {
                               setInput({ ...input, treatmentRecord });
                             }}
                           >
-                            {dataTreatmentRecord.number}
+                            {treatmentRecord.number}
                           </MenuItem>
                         ))}
                     </Select>{" "}
-                    dari{" "}
-                    <span className="font-bold">
+                    <span className="font-semibold">
                       {(Array.isArray(dataTreatmentRecord?.data) &&
-                        dataTreatmentRecord?.data.length()) ||
+                        dataTreatmentRecord?.data.length) ||
                         0}{" "}
                       riwayat perawatan
                     </span>
                   </div>
                   {input.treatmentRecord._id && (
                     <div>
-                      <h3 className="text-lg font-bold">Catatan perawatan</h3>
-                      <div className="flex flex-row gap-6"></div>
+                      <h3 className="text-lg font-bold mt-4 mb-2">
+                        Catatan perawatan
+                      </h3>
+                      <div className="mb-4">
+                        <h3 className="text-lg font-semibold">Instruksi</h3>
+                        <span>Tanggal Pengisian: </span>
+                        <span>
+                          {dateFormatToIndonesia(input.treatmentRecord?.date)}
+                        </span>
+                        <h4>Deskripsi</h4>
+                        <p>{input.treatmentRecord?.description}</p>
+                      </div>
+                      {input.treatmentRecord?.warningNote && (
+                        <div className="mb-4">
+                          <h3 className="text-lg font-semibold">
+                            Catatan Peringatan
+                          </h3>
+                          <p>{input.treatmentRecord?.warningNote}</p>
+                        </div>
+                      )}
+                      <h3 className="text-lg font-semibold">
+                        Gambar dan Catatan Perawatan
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {Array.isArray(input.treatmentRecord?.treatment) &&
+                          input.treatmentRecord?.treatment?.map(
+                            (item, index) => (
+                              <div
+                                key={index}
+                                className="w-full flex flex-col rounded-lg p-3 gap-2 bg-gray-200"
+                              >
+                                <h4 className="font-bold text-center">
+                                  Gambar {index + 1}
+                                </h4>
+                                <div className="w-full flex flex-row items-start justify-between gap-2">
+                                  <div>
+                                    <img
+                                      className="rounded"
+                                      src={item.imageURL}
+                                    />
+                                  </div>
+                                </div>
+                                <div className="w-full p-2 bg-white rounded-md">
+                                  <span className="font-semibold mb-2">
+                                    Catatan
+                                  </span>
+                                  <br />
+                                  {item.note}
+                                </div>
+                              </div>
+                            )
+                          )}
+                      </div>
                     </div>
                   )}
                 </div>

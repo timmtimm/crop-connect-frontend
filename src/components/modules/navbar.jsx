@@ -110,16 +110,18 @@ export default () => {
       {(isLoadingProfile || isLoading) && <Loading />}
       <nav className="bg-[#52A068]">
         <div className="container mx-auto my-auto py-4">
-          <div className="flex items-center justify-between flex-nowrap gap-2 lg:gap-14">
-            <Link href="/">
-              <Image
-                className="hidden md:block"
-                src="/logo.svg"
-                width={60}
-                height={60}
-                alt="Logo Crop Connect"
-              ></Image>
-            </Link>
+          <div className="flex items-center justify-between flex-nowrap gap-2 sm:gap-4 md:gap-6 lg:gap-14 mx-2">
+            <div className="max-h-full">
+              <Link href="/">
+                <Image
+                  // className="hidden md:block"
+                  src="/logo.svg"
+                  width={60}
+                  height={60}
+                  alt="Logo Crop Connect"
+                ></Image>
+              </Link>
+            </div>
             <FormControl className="flex-auto">
               <FormGroup className="flex items-center flex-row flex-nowrap">
                 <Select
@@ -173,7 +175,7 @@ export default () => {
             {profileUser?.name ? (
               <div>
                 <div
-                  className="flex flex-row items-center bg-white rounded-lg p-3 cursor-pointer max-w-[12rem] mr-2 sm:mr-0"
+                  className="flex flex-row items-center bg-white rounded-lg p-3 cursor-pointer max-w-[12rem] sm:mr-0"
                   id="basic-button"
                   aria-controls={open ? "basic-menu" : undefined}
                   aria-haspopup="true"
@@ -217,7 +219,7 @@ export default () => {
               </div>
             ) : (
               <>
-                <div className="sm:flex gap-2 hidden mr-2 sm:mr-0">
+                <div className="sm:flex gap-2 hidden sm:mr-0">
                   <Link
                     href={{
                       pathname: "/login",

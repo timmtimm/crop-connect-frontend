@@ -2,6 +2,7 @@ import Modal from "@/components/elements/modal";
 import Seo from "@/components/elements/seo";
 import Status, {
   convertStatusForBatch,
+  convertStatusForHarvest,
   convertStatusForTransaction,
   convertStatusForTreatmentRecord,
 } from "@/components/elements/status";
@@ -354,7 +355,34 @@ export default () => {
             <div className=" w-full bg-white p-4 rounded-xl mb-4">
               <h2 className="text-lg font-bold mb-2">Informasi Panen</h2>
               <div className="mb-4">
-                <div className="flex flex-row justify-between sm:justify-start gap-2">
+                <table className="w-full md:w-fit">
+                  <tbody>
+                    <tr>
+                      <td className="flex flex-row items-center justify-between">
+                        <span className="font-semibold">Tanggal Panen</span>
+                        <span className="hidden md:flex text-right">:</span>
+                      </td>
+                      <td className="ml-2 text-right md:text-left">
+                        {dateFormatToIndonesia(dataHarvest?.date)}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="flex flex-row items-center justify-between">
+                        <span className="font-semibold">Status</span>
+                        <span className="hidden md:flex text-right">:</span>
+                      </td>
+                      <td className="ml-2 text-right md:text-left">
+                        <div className="flex items-center w-full justify-end md:justify-start">
+                          <Status
+                            type={convertStatusForHarvest(dataHarvest?.status)}
+                            status={dataHarvest?.status}
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                {/* <div className="flex flex-row justify-between sm:justify-start gap-2">
                   <h3 className="font-semibold">Tanggal Pengisian:</h3>
                   <span>{dateFormatToIndonesia(dataHarvest?.date)}</span>
                 </div>
@@ -368,7 +396,7 @@ export default () => {
                       status={dataHarvest?.status}
                     />
                   </div>
-                </div>
+                </div> */}
                 <h3 className="font-semibold">Kondisi Panen</h3>
                 <p>{dataHarvest?.condition}</p>
               </div>

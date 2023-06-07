@@ -3,7 +3,7 @@ export default () => {
 
   return (
     <footer className="bg-[#2B5456] text-white">
-      <div className="flex flex-col">
+      {/* <div className="flex flex-col">
         <div className="container mx-auto px-4">
           <div className="flex flex-row justify-between py-8">
             <div className="flex flex-col gap-4">
@@ -34,11 +34,11 @@ export default () => {
               <span className="text-sm">Twitter</span>
             </div>
           </div>
-        </div>
-        <div className="flex w-full bg-[#1C3638] justify-center py-1">
-          Crop Connect © {year}
-        </div>
+        </div> */}
+      <div className="flex w-full justify-center py-1">
+        Crop Connect © {year}
       </div>
+      {/* </div> */}
     </footer>
   );
 };

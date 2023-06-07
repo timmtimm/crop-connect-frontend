@@ -50,9 +50,7 @@ export default (props) => {
   return (
     <div className="bg-[#F7F6F0] flex flex-col min-h-screen">
       <Navbar />
-      <main
-        className={`container mx-auto my-8 flex-1 px-2 sm:px-0 ${className}`}
-      >
+      <main className={`container mx-auto my-8 flex-1 px-2 ${className}`}>
         {children}
       </main>
       <Footer />

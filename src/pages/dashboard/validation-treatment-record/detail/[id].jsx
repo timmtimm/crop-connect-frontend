@@ -401,7 +401,7 @@ export default () => {
               </div>
             )}
             <div className=" w-full bg-white p-4 rounded-xl mb-4">
-              <h2 className="text-lg font-bold mb-2">Informasi Perawatan</h2>
+              <h2 className="text-xl font-bold mb-4">Informasi Perawatan</h2>
               <div className="flex flex-row justify-between items-center sm:justify-start gap-2 mb-4">
                 <h3 className="text-lg font-semibold">Status</h3>
                 <div className="w-fit">
