@@ -23,7 +23,6 @@ export default () => {
           <Link href="/">
             <span className="text-[#53A06C]">Kembali ke halaman utama</span>
           </Link>
-          <span></span>
         </div>
       </Default>
     </>

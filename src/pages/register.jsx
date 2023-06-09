@@ -30,6 +30,7 @@ import useSWR from "swr";
 import { setParamRegionFetch } from "@/utils/url";
 import Seo from "@/components/elements/seo";
 import { roleUser } from "@/constant/constant";
+import Loading from "@/components/modules/loading";
 
 const availableRoles = [
   {
@@ -304,6 +305,10 @@ export default () => {
           {error.message}
         </Alert>
       </Snackbar>
+      {(mutatingSubdistrict ||
+        mutatingDistrict ||
+        mutatingRegency ||
+        provinceLoading) && <Loading />}
       <Auth
         srcBanner="/workflow _ to do list, checklist, list, tasks, woman, chores, requirements_lg.png"
         altBanner="Daftar"

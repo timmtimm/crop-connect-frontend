@@ -40,6 +40,7 @@ export default () => {
     e.preventDefault();
     if (validateEmail(input)) {
       const data = await postWithJSON("/api/v1/user/forgot-password", {
+        domain: process.env.APP_DOMAIN,
         email: input,
       });
 

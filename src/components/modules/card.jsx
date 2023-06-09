@@ -38,7 +38,7 @@ export default (props) => {
                 {data.name}
               </span>
             </div>
-            <span className="flex flex-row gap-1 items-center font-bold text-white">
+            <span className="flex flex-row gap-1 items-center font-semibold text-white">
               <ImPriceTag size={15} />
               <span className="text-sm sm:text-base">
                 {setPriceFormat(data.pricePerKg)} / kg

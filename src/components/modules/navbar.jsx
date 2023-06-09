@@ -114,7 +114,6 @@ export default () => {
             <div className="max-h-full">
               <Link href="/">
                 <Image
-                  // className="hidden md:block"
                   src="/logo.svg"
                   width={60}
                   height={60}
@@ -126,13 +125,13 @@ export default () => {
               <FormGroup className="flex items-center flex-row flex-nowrap">
                 <Select
                   inputProps={{
-                    className: "py-3",
+                    className: "py-[0.8rem] md:py-3",
                   }}
                   variant="outlined"
                   value={input.searchBy}
                   name="searchBy"
                   onChange={handleChange}
-                  className="font-bold sm:min-w-[9rem] max-w-[4rem] bg-white rounded-lg rounded-r-none text-sm md:text-base focus:border-0 hover:border-0"
+                  className="font-bold sm:min-w-[9rem] max-w-[4rem] h-full bg-white rounded-lg rounded-r-none text-sm md:text-base focus:border-0 hover:border-0"
                 >
                   {listSearchBy.map((item) => {
                     return (
@@ -149,12 +148,12 @@ export default () => {
                 <TextField
                   placeholder={placeholder}
                   variant="outlined"
-                  className="lg:min-w-[22rem] w-full"
+                  className="lg:min-w-[22rem] w-full h-full"
                   name="searchQuery"
                   required
                   InputProps={{
                     className:
-                      "bg-white rounded-lg rounded-l-none text-sm md:text-base focus:border-0 hover:border-0",
+                      "bg-white rounded-lg rounded-l-none text-sm md:text-base focus:border-0 hover:border-0 h-full",
                     endAdornment: (
                       <InputAdornment position="end">
                         <FaSearch
@@ -165,7 +164,7 @@ export default () => {
                       </InputAdornment>
                     ),
                   }}
-                  sx={{ "& input": { padding: "0.75rem" } }}
+                  sx={{ "& input": { padding: "0.8rem" } }}
                   value={input.searchQuery}
                   onChange={handleChange}
                   onKeyDown={(e) => (e.keyCode === 13 ? handleSearch(e) : null)}
@@ -186,7 +185,7 @@ export default () => {
                   <span className="font-semibold text-gray-500 hidden lg:flex">
                     Hi,{" "}
                   </span>
-                  <span className="font-semibold text-gray-500 hidden lg:flex truncate">
+                  <span className="font-semibold text-gray-500 hidden lg:block truncate">
                     {profileUser.name}
                   </span>
                 </div>

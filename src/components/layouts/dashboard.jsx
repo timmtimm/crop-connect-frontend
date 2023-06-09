@@ -30,7 +30,6 @@ import { GrTransaction, GrValidate } from "react-icons/gr";
 import { useProfileUser } from "@/context/profileUserContext";
 import Loading from "../modules/loading";
 import { roleUser } from "@/constant/constant";
-import Seo from "../elements/seo";
 
 const drawerWidth = 270;
 
@@ -361,7 +360,7 @@ export default (props) => {
                   </ListItem>
                 </Link>
               ) : (
-                <Tooltip title="Dashboard" placement="right">
+                <Tooltip title="Beranda" placement="right">
                   <Link href="/dashboard">
                     <ListItem
                       key={"dashboard"}

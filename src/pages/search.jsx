@@ -22,6 +22,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { Global } from "@emotion/react";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import Seo from "@/components/elements/seo";
+import Image from "next/image";
 
 /* Menu */
 const Root = styled("div")(({ theme }) => ({
@@ -326,22 +327,42 @@ export default () => {
                 </FormControl>
               </div>
             </div>
-            <div
-              className={`gap-7 ${
-                queryParam.searchBy == "komoditas"
-                  ? "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
-                  : "flex-col"
-              }`}
-            >
-              {data?.data?.map((item) => (
-                <Card
-                  className="w-1/4 gap-7"
-                  type={queryParam.searchBy}
-                  withName
-                  data={item}
-                />
-              ))}
-            </div>
+            {!isLoading && data?.data && (
+              <div
+                className={`gap-7 ${
+                  queryParam.searchBy == "komoditas"
+                    ? "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
+                    : "grid grid-cols-2 lg:grid-cols-3"
+                }`}
+              >
+                {data?.data?.map((item) => (
+                  <Card
+                    className="w-1/4 gap-7"
+                    type={queryParam.searchBy}
+                    withName
+                    data={item}
+                  />
+                ))}
+              </div>
+            )}
+            {!isLoading && !data?.data && (
+              <div className=" flex min-w-screen flex-col items-center text-center">
+                <Image
+                  src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
+                  className="mb-16"
+                  style={{ objectFit: "contain" }}
+                  width={400}
+                  height={400}
+                  alt="Ilustrasi Not Found"
+                ></Image>
+                <span className="text-2xl font-semibold">
+                  {queryParam.searchBy == "komoditas" ? "Komoditas" : "Petani"}{" "}
+                  yang kamu cari tidak dapat ditemukan
+                </span>
+                <span>Coba cari dengan kata kunci yang lain</span>
+              </div>
+            )}
+
             <Pagination
               className="flex justify-center"
               count={data?.pagination.totalPage}

@@ -14,6 +14,44 @@ import { SumObjectByKey } from "@/utils/utilities";
 import { HttpStatusCode } from "axios";
 import { FaUserCheck } from "react-icons/fa";
 import Loading from "@/components/modules/loading";
+import { Bar, Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  PointElement,
+  LineElement,
+} from "chart.js";
+
+const listMonth = [
+  "Januari",
+  "Februari",
+  "Maret",
+  "April",
+  "Mei",
+  "Juni",
+  "Juli",
+  "Agustus",
+  "September",
+  "Oktober",
+  "November",
+  "Desember",
+];
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  PointElement,
+  LineElement
+);
 
 export default () => {
   const router = useRouter();
@@ -151,6 +189,197 @@ export default () => {
       }
 
       /* Fetch Statistic For Graph */
+      if (dataTotalTransaction.status == HttpStatusCode.Ok) {
+        const tempTotalTransaction = [];
+        const tempTotalSuccessTransaction = [];
+        const tempTotalUniqueBuyer = [];
+
+        if (Array.isArray(dataTotalTransaction.data)) {
+          dataTotalTransaction.data.forEach((item) => {
+            tempTotalTransaction.push(item.totalTransaction);
+            tempTotalSuccessTransaction.push(item.totalAccepted);
+            tempTotalUniqueBuyer.push(item.totalUniqueBuyer);
+          });
+        }
+
+        tempStatisticGraph.push(
+          {
+            label: "Statistik Transaksi",
+            render: (
+              <Bar
+                options={{
+                  responsive: true,
+                  interaction: {
+                    mode: "index",
+                    intersect: false,
+                  },
+                  scales: {
+                    x: {
+                      stacked: true,
+                    },
+                    y: {
+                      stacked: true,
+                    },
+                  },
+                }}
+                data={{
+                  labels: listMonth,
+                  datasets: [
+                    {
+                      label: "Total transaksi",
+                      data: tempTotalTransaction,
+                      backgroundColor: "rgb(53, 162, 235)",
+                      stack: "Stack 0",
+                    },
+                    {
+                      label: "Transaksi berhasil",
+                      data: tempTotalSuccessTransaction,
+                      backgroundColor: "rgb(75, 192, 192)",
+                      stack: "Stack 1",
+                    },
+                  ],
+                }}
+              />
+            ),
+          },
+          {
+            label: "Statistik Pembeli",
+            render: (
+              <Line
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: "top",
+                    },
+                  },
+                }}
+                data={{
+                  labels: listMonth,
+                  datasets: [
+                    {
+                      label: "Pembeli",
+                      data: tempTotalUniqueBuyer,
+                      backgroundColor: "#52A068",
+                      stack: "Stack 0",
+                    },
+                  ],
+                }}
+              />
+            ),
+          }
+        );
+      }
+
+      const dataTopCommodity = await get(
+        "/api/v1/transaction/statistic-commodity",
+        {
+          year,
+        }
+      );
+
+      if (dataTopCommodity.status == HttpStatusCode.Ok) {
+        tempStatisticGraph.push({
+          label: "Statistik Komoditas Terlaris",
+          render: (
+            <div className="relative overflow-x-auto rounded-lg">
+              <table className="w-full text-center text-gray-500">
+                <thead className="text-sm md:text-md text-gray-800 bg-gray-200">
+                  <tr>
+                    <th scope="col" className="px-6 py-3">
+                      Nama komoditas
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Bibit
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Jumlah transaksi
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.isArray(dataTopCommodity.data) &&
+                    dataTopCommodity.data.map((item, index) => (
+                      <tr
+                        className={`${
+                          index % 2 != 0 ? "bg-gray-50" : "bg-white"
+                        } text-center ${
+                          index != dataTopCommodity.data.length - 1
+                            ? "border-b"
+                            : ""
+                        } text-sm sm:text-md `}
+                      >
+                        <th
+                          scope="row"
+                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+                        >
+                          {item.commodity.name}
+                        </th>
+                        <td className="px-6 py-4">{item.commodity.seed}</td>
+                        <td className="px-6 py-4">{item.total}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          ),
+        });
+
+        const dataTopProvince = await get(
+          "/api/v1/transaction/statistic-province",
+          {
+            year,
+          }
+        );
+
+        if (dataTopProvince.status == HttpStatusCode.Ok) {
+          tempStatisticGraph.push({
+            label: "Provinsi Terlaris",
+            render: (
+              <div className="relative overflow-x-auto rounded-lg">
+                <table className="w-full text-center text-gray-500">
+                  <thead className="text-sm md:text-md text-gray-800 bg-gray-200">
+                    <tr>
+                      <th scope="col" className="px-6 py-3">
+                        Provinsi
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Jumlah transaksi
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Transaksi berhasil
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Array.isArray(dataTopProvince.data) &&
+                      dataTopProvince.data.map((item, index) => (
+                        <tr
+                          className={`${
+                            index % 2 != 0 ? "bg-gray-50" : "bg-white"
+                          } text-center ${
+                            index != dataTopCommodity.data.length - 1
+                              ? "border-b"
+                              : ""
+                          } text-sm sm:text-md `}
+                        >
+                          <th
+                            scope="row"
+                            className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+                          >
+                            {item.province}
+                          </th>
+                          <td className="px-6 py-4">{item.totalTransaction}</td>
+                          <td className="px-6 py-4">{item.totalAccepted}</td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            ),
+          });
+        }
+      }
     } else if (profileUser?.role == roleUser.farmer) {
       /* Fetch Statistic For Card */
       const dataTotalTransactionNow = await get(
@@ -184,17 +413,6 @@ export default () => {
         const diffWeight = countDifferences(
           SumObjectByKey(dataTotalTransactionNow.data, "totalWeight"),
           SumObjectByKey(dataTotalTransactionLastYear.data, "totalWeight")
-        );
-
-        console.log(
-          month - 1,
-          month,
-          dataTotalTransactionNow.data[month - 1].totalUniqueBuyer
-        );
-        console.log(
-          month - 2,
-          month - 1,
-          dataTotalTransactionNow.data[month - 2].totalUniqueBuyer
         );
 
         const diffUniqueBuyer = countDifferences(
@@ -253,7 +471,172 @@ export default () => {
       }
 
       /* Fetch Statistic For Graph */
+      if (dataTotalTransactionNow.status == HttpStatusCode.Ok) {
+        const tempTotalTransaction = [];
+        const tempTotalSuccessTransaction = [];
+        const tempTotalWeight = [];
+        const tempTotalIncome = [];
+
+        if (Array.isArray(dataTotalTransactionNow.data)) {
+          dataTotalTransactionNow.data.forEach((item) => {
+            tempTotalTransaction.push(item.totalTransaction);
+            tempTotalSuccessTransaction.push(item.totalAccepted);
+            tempTotalWeight.push(item.totalWeight);
+            tempTotalIncome.push(item.totalIncome);
+          });
+        }
+
+        tempStatisticGraph.push(
+          {
+            label: "Statistik Transaksi",
+            render: (
+              <Bar
+                options={{
+                  responsive: true,
+                  interaction: {
+                    mode: "index",
+                    intersect: false,
+                  },
+                  scales: {
+                    x: {
+                      stacked: true,
+                    },
+                    y: {
+                      stacked: true,
+                    },
+                  },
+                }}
+                data={{
+                  labels: listMonth,
+                  datasets: [
+                    {
+                      label: "Total transaksi",
+                      data: tempTotalTransaction,
+                      backgroundColor: "rgb(53, 162, 235)",
+                      stack: "Stack 0",
+                    },
+                    {
+                      label: "Transaksi berhasil",
+                      data: tempTotalSuccessTransaction,
+                      backgroundColor: "rgb(75, 192, 192)",
+                      stack: "Stack 1",
+                    },
+                  ],
+                }}
+              />
+            ),
+          },
+          {
+            label: "Statistik Perkiraan Berat Transaksi",
+            render: (
+              <Line
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: "top",
+                    },
+                  },
+                }}
+                data={{
+                  labels: listMonth,
+                  datasets: [
+                    {
+                      label: "Berat (Kg)",
+                      data: tempTotalWeight,
+                      backgroundColor: "#52A068",
+                      stack: "Stack 0",
+                    },
+                  ],
+                }}
+              />
+            ),
+          },
+          {
+            label: "Statistik Pendapatan",
+            render: (
+              <Line
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: "top",
+                    },
+                  },
+                }}
+                data={{
+                  labels: listMonth,
+                  datasets: [
+                    {
+                      label: "Pendapatan (Rp)",
+                      data: tempTotalIncome,
+                      backgroundColor: "#52A068",
+                      stack: "Stack 0",
+                    },
+                  ],
+                }}
+              />
+            ),
+          }
+        );
+      }
+
+      const dataTopCommodity = await get(
+        "/api/v1/transaction/statistic-commodity",
+        {
+          year,
+        }
+      );
+
+      if (dataTopCommodity.status == HttpStatusCode.Ok) {
+        tempStatisticGraph.push({
+          label: "Komoditas Terlaris",
+          render: (
+            <div className="relative overflow-x-auto rounded-lg">
+              <table className="w-full text-center text-gray-500">
+                <thead className="text-xs text-gray-800 bg-gray-200">
+                  <tr>
+                    <th scope="col" className="px-6 py-3">
+                      Nama komoditas
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Bibit
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Jumlah transaksi
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.isArray(dataTopCommodity.data) &&
+                    dataTopCommodity.data.map((item, index) => (
+                      <tr
+                        className={`${
+                          index % 2 != 0 ? "bg-gray-50" : "bg-white"
+                        } text-center ${
+                          index != dataTopCommodity.data.length - 1
+                            ? "border-b"
+                            : ""
+                        } text-sm sm:text-md `}
+                      >
+                        <th
+                          scope="row"
+                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+                        >
+                          {item.commodity.name}
+                        </th>
+                        <td className="px-6 py-4">{item.commodity.seed}</td>
+                        <td className="px-6 py-4">{item.total}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          ),
+        });
+      }
     } else if (profileUser?.role == roleUser.validator) {
+      /* Fetch Statistic For Card */
       const dataTotalCommodityNow = await get(
         "/api/v1/commodity/statistic-total",
         {
@@ -381,6 +764,132 @@ export default () => {
           timeBased: "tahun",
         });
       }
+
+      /* Fetch Statistic For Graph */
+      const tempTotalCommodity = [];
+      const labelYear = [];
+      for (let i = 5; i >= 0; i--) {
+        labelYear.push(year - i);
+        const dataTotalCommodity = await get(
+          "/api/v1/commodity/statistic-total",
+          {
+            year: year - i,
+          }
+        );
+
+        if (dataTotalCommodity.status == HttpStatusCode.Ok) {
+          tempTotalCommodity.push(dataTotalCommodity.data);
+        }
+      }
+
+      tempStatisticGraph.push({
+        label: "Statistik Komoditas",
+        render: (
+          <Line
+            options={{
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: "top",
+                },
+              },
+            }}
+            data={{
+              labels: labelYear,
+              datasets: [
+                {
+                  label: "Komoditas",
+                  data: tempTotalCommodity,
+                  backgroundColor: "#52A068",
+                  stack: "Stack 0",
+                },
+              ],
+            }}
+          />
+        ),
+      });
+
+      const tempTotalBatch = [];
+      for (let i = 0; i < labelYear.length; i++) {
+        const dataTotalBatch = await get("/api/v1/batch/statistic-total", {
+          year: labelYear[i],
+        });
+
+        if (dataTotalBatch.status == HttpStatusCode.Ok) {
+          tempTotalBatch.push(dataTotalBatch.data);
+        }
+      }
+
+      tempStatisticGraph.push({
+        label: "Statistik Periode Terlaksana",
+        render: (
+          <Line
+            options={{
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: "top",
+                },
+              },
+            }}
+            data={{
+              labels: labelYear,
+              datasets: [
+                {
+                  label: "Periode",
+                  data: tempTotalBatch,
+                  backgroundColor: "#52A068",
+                  stack: "Stack 0",
+                },
+              ],
+            }}
+          />
+        ),
+      });
+
+      const dataTotalValidation = await get(
+        "/api/v1/treatment-record/statistic",
+        {
+          year,
+        }
+      );
+
+      if (dataTotalValidation.status == HttpStatusCode.Ok) {
+        const tempTotalValidation = [];
+        console.log("data validasi", dataTotalValidation.data);
+        if (Array.isArray(dataTotalValidation.data)) {
+          dataTotalValidation.data.map((item) => {
+            tempTotalValidation.push(item.total);
+          });
+        }
+
+        tempStatisticGraph.push({
+          label: "Statistik Validasi Perawatan",
+          render: (
+            <Line
+              options={{
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: "top",
+                  },
+                },
+              }}
+              data={{
+                labels: listMonth,
+                datasets: [
+                  {
+                    label: "Periode",
+                    data: tempTotalValidation,
+                    backgroundColor: "#52A068",
+                    stack: "Stack 0",
+                  },
+                ],
+              }}
+            />
+          ),
+        });
+      }
     }
 
     setStatisticCard(tempStatisticCard);
@@ -398,29 +907,31 @@ export default () => {
     ) {
       getStatistic();
     }
-    setIsLoading(false);
   }, [isLoadingProfile, isAuthenticated]);
-
-  if (isLoading) {
-    return <Loading />;
-  }
 
   return (
     <>
       <Seo title="Dashboard" />
+      {isLoading && <Loading />}
       <Dashboard roles={[roleUser.admin, roleUser.admin, roleUser.validator]}>
-        <h1 className="text-xl font-bold mb-4">Dashboard</h1>
-        <div className="flex flex-col gap-2 w-full">
+        <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+        <div className="flex flex-col gap-4 w-full">
           <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-2">
             {statisticCard?.map((item, index) => (
               <StatisticCard key={index} data={item} />
             ))}
           </div>
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+            {statisticGraph.map((item) => (
+              <div className="min-h-[12rem] bg-white p-4 rounded-lg shadow-md">
+                <h2 className="text-md sm:text-lg md:text-xl text-center mb-4 font-bold cursor-default">
+                  {item.label}
+                </h2>
+                {item.render}
+              </div>
+            ))}
+          </div>
         </div>
-
-        {/* {profileUser?.role == roleUser.admin && <>admin</>}
-        {profileUser?.role == roleUser.farmer && <>farmer</>}
-        {profileUser?.role == roleUser.validator && <>validator</>} */}
       </Dashboard>
     </>
   );

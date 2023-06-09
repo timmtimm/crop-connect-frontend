@@ -18,7 +18,7 @@ export default (props) => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 h-screen">
-      <section className="relative p-32 hidden flex-col lg:flex">
+      <section className="relative md:p-16 lg:p-20 xl:p-32 hidden flex-col lg:flex">
         <div className="relative h-full w-full">
           <Image
             src={srcBanner}
