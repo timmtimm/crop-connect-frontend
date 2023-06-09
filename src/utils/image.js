@@ -9,7 +9,6 @@ export const initiateUpdateImage = (lengthArray) => {
 };
 
 export const validateImage = (file, fileSizeInMB = 5) => {
-  console.log(file);
   const validTypes = ["image/jpeg", "image/jpg", "image/png"];
   return (
     validTypes.includes(file?.type) && file?.size < fileSizeInMB * 1024 * 1024

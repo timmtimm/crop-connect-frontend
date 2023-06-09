@@ -159,7 +159,6 @@ export default () => {
   const handleChange = ({ target: { name, value } }) => {
     setError({ ...error, [name]: "" });
     setInput({ ...input, [name]: value });
-    console.log(input);
   };
 
   const handleDate = ({ target: { name, value } }) => {

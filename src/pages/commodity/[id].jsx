@@ -166,7 +166,6 @@ export default () => {
       triggerHarvest({
         "batch-id": input.batch._id,
       });
-      console.log("trigger treatment record");
       triggerTreatmentRecord({
         "batch-id": input.batch._id,
       });

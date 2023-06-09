@@ -219,7 +219,6 @@ export default () => {
   const handleChange = ({ target: { name, value } }) => {
     setError({ ...error, [name]: "" });
     setInput({ ...input, [name]: value });
-    console.log(input);
   };
 
   const handleImage = (e) => {
@@ -309,7 +308,6 @@ export default () => {
     tempInput.isChange = JSON.stringify(input.isChange);
     tempInput.isDelete = JSON.stringify(input.isDelete);
 
-    console.log(input.notes);
     return {
       ...tempInput,
       date: dayjs(input.date).format("YYYY-MM-DD"),

@@ -293,7 +293,6 @@ export default () => {
     tempInput.isChange = JSON.stringify(input.isChange);
     tempInput.isDelete = JSON.stringify(input.isDelete);
 
-    console.log(input.notes);
     return {
       ...tempInput,
       note1: input.notes[0],

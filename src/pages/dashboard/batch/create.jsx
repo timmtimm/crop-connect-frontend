@@ -172,10 +172,7 @@ export default () => {
 
   const { data: commodityData, isLoading: commodityLoading } = useSWR(
     ["/api/v1/commodity/perennials", {}],
-    ([url, params]) => {
-      console.log("panggil");
-      return fetcher(url, params);
-    },
+    ([url, params]) => fetcher(url, params),
     runOnce
   );
   const {

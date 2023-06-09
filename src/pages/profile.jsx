@@ -77,9 +77,6 @@ export default () => {
 
     let tempProfile = profileUser;
 
-    console.log("tempProfile", tempProfile);
-    console.log("profileUser", profileUser);
-
     tempProfile.regionID = tempProfile.region._id;
     setProfile(tempProfile);
     setRegion(tempProfile.region);

@@ -93,12 +93,9 @@ export default () => {
   } = useSWRMutation(`api/v1/batch/transaction/id/${id}`, triggerfetcher);
 
   useEffect(() => {
-    console.log(id);
     if (id && queryParam.transactionType == transactionType.perennials) {
-      console.log("masuk batch");
       triggerBatch();
     } else if (id && queryParam.transactionType == transactionType.annuals) {
-      console.log("masuk proposal");
       triggerProposal();
     }
   }, [queryParam, id]);

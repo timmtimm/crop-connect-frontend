@@ -856,7 +856,6 @@ export default () => {
 
       if (dataTotalValidation.status == HttpStatusCode.Ok) {
         const tempTotalValidation = [];
-        console.log("data validasi", dataTotalValidation.data);
         if (Array.isArray(dataTotalValidation.data)) {
           dataTotalValidation.data.map((item) => {
             tempTotalValidation.push(item.total);
