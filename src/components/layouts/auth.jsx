@@ -29,20 +29,22 @@ export default (props) => {
         </div>
       </section>
       <section className="bg-[#2C5456] overflow-hidden">
-        <div className="flex flex-col justify-center items-center py-8 px-8 md:px-16 overflow-y-scroll h-full w-full">
-          <div className="mb-8 w-1/3 md:w-2/5">
-            <Link href={"/"}>
-              <Image
-                className="mx-auto"
-                src={"/logo.svg"}
-                width={160}
-                height={160}
-                alt="Logo Crop Connect"
-              />
-            </Link>
-          </div>
-          <div className="rounded-xl flex flex-col gap-4 bg-white p-6 pb-8 drop-shadow-md divide-y-2 w-full">
-            {children}
+        <div className="flex flex-col overflow-y-scroll h-full w-full">
+          <div className="grow flex flex-col justify-center items-center py-8 px-8 md:px-16">
+            <div className="mb-8 w-1/3 md:w-2/5">
+              <Link href={"/"}>
+                <Image
+                  className="mx-auto"
+                  src={"/logo.svg"}
+                  width={160}
+                  height={160}
+                  alt="Logo Crop Connect"
+                />
+              </Link>
+            </div>
+            <div className="rounded-xl flex flex-col gap-4 bg-white p-6 pb-8 drop-shadow-md divide-y-2 w-full">
+              {children}
+            </div>
           </div>
         </div>
       </section>
