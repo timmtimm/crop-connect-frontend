@@ -449,7 +449,7 @@ export default () => {
                   Silahkan melakukan pencarian periode melalui kolom pencarian
                   dan pilih periode melalui ID pada tabel.
                 </p>
-                {input.batchID && input.farmerID && (
+                {input.batchID && (
                   <span>
                     Periode yang dipilih:{" "}
                     <span className="font-semibold">
@@ -531,53 +531,59 @@ export default () => {
             )}
           </>
         )}
-        <div className="flex flex-row justify-between items-center mb-4">
-          <h3 className="text-xl font-semibold">
-            Permintaan Pengisian Riwayat Perawatan
-          </h3>
-        </div>
-        {dataTreatmentRecordPending && !treamentRecordPendingLoading && (
-          <Table
-            minWidth={400}
-            headCells={headCells}
-            data={dataTreatmentRecordPending}
-            menuAction={(data) => (
-              <>
-                {data.status != treatmentRecordStatus.approved && (
-                  <Link href={`${router.pathname}/fill/${data._id}`}>
-                    <MenuItem>Pengisian</MenuItem>
-                  </Link>
+        {!input.batchID && (
+          <>
+            <div className="flex flex-row justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold">
+                Permintaan Pengisian Riwayat Perawatan
+              </h3>
+            </div>
+            {dataTreatmentRecordPending && !treamentRecordPendingLoading && (
+              <Table
+                minWidth={400}
+                headCells={headCells}
+                data={dataTreatmentRecordPending}
+                menuAction={(data) => (
+                  <>
+                    {data.status != treatmentRecordStatus.approved && (
+                      <Link href={`${router.pathname}/fill/${data._id}`}>
+                        <MenuItem>Pengisian</MenuItem>
+                      </Link>
+                    )}
+                    <Link href={`${router.pathname}/detail/${data._id}`}>
+                      <MenuItem>Lihat Detail</MenuItem>
+                    </Link>
+                  </>
                 )}
-                <Link href={`${router.pathname}/detail/${data._id}`}>
-                  <MenuItem>Lihat Detail</MenuItem>
-                </Link>
-              </>
+                uniqueKeyPagination={"treatmentRecordPending"}
+              />
             )}
-            uniqueKeyPagination={"treatmentRecordPending"}
-          />
-        )}
-        <div className="flex flex-row justify-between items-center mb-4">
-          <h3 className="text-xl font-semibold">Revisi Riwayat Perawatan</h3>
-        </div>
-        {dataTreatmentRecordRevision && !treamentRecordRevisionLoading && (
-          <Table
-            minWidth={400}
-            headCells={headCells}
-            data={dataTreatmentRecordRevision}
-            menuAction={(data) => (
-              <>
-                {data.status != treatmentRecordStatus.approved && (
-                  <Link href={`${router.pathname}/fill/${data._id}`}>
-                    <MenuItem>Pengisian</MenuItem>
-                  </Link>
+            <div className="flex flex-row justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold">
+                Revisi Riwayat Perawatan
+              </h3>
+            </div>
+            {dataTreatmentRecordRevision && !treamentRecordRevisionLoading && (
+              <Table
+                minWidth={400}
+                headCells={headCells}
+                data={dataTreatmentRecordRevision}
+                menuAction={(data) => (
+                  <>
+                    {data.status != treatmentRecordStatus.approved && (
+                      <Link href={`${router.pathname}/fill/${data._id}`}>
+                        <MenuItem>Pengisian</MenuItem>
+                      </Link>
+                    )}
+                    <Link href={`${router.pathname}/detail/${data._id}`}>
+                      <MenuItem>Lihat Detail</MenuItem>
+                    </Link>
+                  </>
                 )}
-                <Link href={`${router.pathname}/detail/${data._id}`}>
-                  <MenuItem>Lihat Detail</MenuItem>
-                </Link>
-              </>
+                uniqueKeyPagination={"treatmentRecordRevision"}
+              />
             )}
-            uniqueKeyPagination={"treatmentRecordRevision"}
-          />
+          </>
         )}
       </Dashboard>
     </>

@@ -336,7 +336,7 @@ export default () => {
   } = useSWRMutation("/api/v1/treatment-record", triggerfetcher);
 
   useEffect(() => {
-    if (input.batchID && input.commodityID && input.farmerID) {
+    if (input.batchID) {
       triggerTreatmentRecord({
         ...pagination,
         batchID: input.batchID,
@@ -461,7 +461,7 @@ export default () => {
                 });
               }}
             >
-              Reset Periode yang dipilih
+              Reset Periode
             </Button>
           </div>
           <Stepper activeStep={activeStep} alternativeLabel>
@@ -594,7 +594,7 @@ export default () => {
                   Silahkan melakukan pencarian periode melalui kolom pencarian
                   dan pilih periode melalui ID pada tabel.
                 </p>
-                {input.batchID && input.farmerID && (
+                {input.batchID && (
                   <span>
                     Periode yang dipilih:{" "}
                     <span className="font-semibold">
@@ -648,7 +648,7 @@ export default () => {
         <div className="flex flex-row justify-between items-center mb-4">
           <h3 className="text-xl font-semibold">
             {input.batchID
-              ? "Riwayat Perawatan"
+              ? `Riwayat Perawatan ${input.batchName}`
               : "Permintaan Validasi Riwayat Perawatan"}
           </h3>
           {input.batchID &&
