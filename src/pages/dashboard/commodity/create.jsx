@@ -463,7 +463,7 @@ export default () => {
           </div>
           <div className="flex mt-2 gap-2 justify-end">
             <Button
-              className="normal-case text-gray-500 hover:bg-white font-bold"
+              className="normal-case text-gray-500 bg-white hover:bg-white font-bold"
               variant="contained"
               onClick={handleSubmitAgain}
             >
