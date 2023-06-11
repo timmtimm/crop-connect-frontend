@@ -10,17 +10,17 @@ export default (props) => {
   const { type, data, withName } = props;
 
   return (
-    <div className="cursor-pointer shadow rounded-lg hover:bg-[#161D22] bg-[#222C34] text-white">
+    <div className="cursor-pointer shadow rounded-lg hover:scale-105 transition bg-[#EDECE3] text-black">
       {type == "komoditas" ? (
         <Link href={`/commodity/${data._id}`}>
-          <div className="pt-[75%] relative">
+          <div
+            className={`pt-[75%] relative ${
+              !data.imageURLs[0] ? "bg-white rounded-lg" : ""
+            }`}
+          >
             <Image
               className="rounded-lg"
-              src={
-                data.imageURLs[0]
-                  ? data.imageURLs[0]
-                  : "/logo-no-background-white.png"
-              }
+              src={data.imageURLs[0] ? data.imageURLs[0] : "/logo.png"}
               fill
               style={{ objectFit: "cover" }}
               alt={
@@ -30,7 +30,7 @@ export default (props) => {
               }
             />
             {!data.isAvailable && (
-              <div className="absolute inset-0 bg-gray-700/60 rounded-lg flex items-center justify-center">
+              <div className="absolute inset-0 bg-gray-700/60 text-white rounded-lg flex items-center justify-center">
                 Tidak tersedia
               </div>
             )}
@@ -39,25 +39,23 @@ export default (props) => {
           <div className="flex flex-col pt-2 p-4">
             <div className="flex flex-row items-center gap-1">
               <TbPlant size={15} />
-              <span className="text-white text-md md:text-xl truncate">
-                {data.name}
-              </span>
+              <span className=" text-md md:text-lg truncate">{data.name}</span>
             </div>
-            <span className="flex flex-row gap-1 items-center font-semibold text-white">
+            <span className="flex flex-row gap-1 items-center font-semibold ">
               <ImPriceTag size={15} />
               <span className="text-sm sm:text-base">
                 {setPriceFormat(data.pricePerKg)} / kg
               </span>
             </span>
             <div
-              className={`text-white text-base truncate flex flex-row items-center gap-1 ${
+              className={` text-base truncate flex flex-row items-center gap-1 ${
                 !withName && "hidden"
               }`}
             >
               <GiFarmer size={15} />
               <span>{data.farmer.name}</span>
             </div>
-            <div className="flex flex-row gap-1 items-center text-white ">
+            <div className="flex flex-row gap-1 items-center  ">
               <MdLocationOn size={15} />
               <span className="truncate text-sm sm:text-base">
                 {data.farmer.region.province}

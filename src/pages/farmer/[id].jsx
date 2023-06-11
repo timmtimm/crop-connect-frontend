@@ -12,6 +12,9 @@ import useSWR from "swr";
 import { runOnce } from "@/lib/swr";
 import Seo from "@/components/elements/seo";
 import useSWRMutation from "swr/mutation";
+import { FiInfo } from "react-icons/fi";
+import { GrNotes } from "react-icons/gr";
+import { AiOutlineContacts } from "react-icons/ai";
 
 const listSorting = [
   {
@@ -105,13 +108,16 @@ export default () => {
       {profileLoading || commodityLoading ? <Loading /> : <></>}
       <Default>
         <div className="flex flex-col gap-8">
-          <div className="flex flex-col gap-4 bg-white rounded-xl px-7 py-4">
+          <div className="flex flex-col gap-4 bg-[#EDECE3] rounded-xl px-7 py-4">
             <span className="text-2xl font-bold">
               {profileFarmer?.data?.name}
             </span>
-            <div className="flex lg:flex-row gap-2 lg:divide-x-2 lg:divide-y-0 flex-col divide-y-2">
+            <div className="flex lg:flex-row gap-2 lg:divide-x-2 lg:divide-y-0 flex-col divide-y-2 divide-black">
               <div className="flex flex-col w-full">
-                <span className="text-xl font-bold mb-2">Informasi</span>
+                <div className="flex flex-row items-center gap-2 mb-2">
+                  <FiInfo size={20} />
+                  <span className="text-xl font-bold">Informasi</span>
+                </div>
                 <span>
                   Bergabung sejak{" "}
                   {dateFormatToIndonesia(profileFarmer?.data?.createdAt)}
@@ -125,13 +131,19 @@ export default () => {
               </div>
               <div className="w-full">
                 <div className="flex flex-col lg:ml-4 lg:mt-0 mt-2">
-                  <span className="text-xl font-bold mb-2">Deskripsi</span>
+                  <div className="flex flex-row items-center gap-2 mb-2">
+                    <GrNotes size={20} />
+                    <span className="text-xl font-bold">Deskripsi</span>
+                  </div>
                   <p>{profileFarmer?.data.description}</p>
                 </div>
               </div>
               <div className="w-full">
                 <div className="flex flex-col lg:ml-4 lg:mt-0 mt-2">
-                  <span className="text-xl font-bold mb-2">Kontak</span>
+                  <div className="flex flex-row items-center gap-2 mb-2">
+                    <AiOutlineContacts size={20} />
+                    <span className="text-xl font-bold">Kontak</span>
+                  </div>
                   <span>Email: {profileFarmer?.data.email}</span>
                   <span>Nomor telepon: {profileFarmer?.data.phoneNumber}</span>
                 </div>

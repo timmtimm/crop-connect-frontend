@@ -8,7 +8,6 @@ import { useEffect } from "react";
 export default (props) => {
   const { altBanner, srcBanner, children } = props;
   const router = useRouter();
-  const { isAuthenticated, isLoadingProfile } = useProfileUser();
 
   useEffect(() => {
     if (Cookies.get("token")) {

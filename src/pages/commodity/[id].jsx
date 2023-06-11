@@ -226,7 +226,7 @@ export default () => {
                 className="h-12 w-12 rounded object-cover"
                 src={
                   Array.isArray(dataCommodity?.data?.imageURLs) &&
-                  dataCommodity?.data?.imageURLs[0] != ""
+                  dataCommodity?.data?.imageURLs[0]
                     ? dataCommodity?.data?.imageURLs[0]
                     : "/logo.png"
                 }
@@ -299,7 +299,12 @@ export default () => {
                     dataCommodity?.data?.imageURLs.length > 0 ? (
                       dataCommodity?.data?.imageURLs?.map((image) => (
                         <SwiperSlide>
-                          <img src={image} />
+                          <div className="h-[300px] w-full">
+                            <img
+                              src={image}
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
                         </SwiperSlide>
                       ))
                     ) : (
@@ -323,7 +328,12 @@ export default () => {
                     dataCommodity?.data?.imageURLs.length > 0 ? (
                       dataCommodity?.data?.imageURLs?.map((image) => (
                         <SwiperSlide>
-                          <img src={image} />
+                          <div className="h-[80px]">
+                            <img
+                              src={image}
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
                         </SwiperSlide>
                       ))
                     ) : (

@@ -94,8 +94,8 @@ export default () => {
       <Default homepage={true}>
         {domLoaded && (
           <div className="flex flex-col w-full gap-10 lg:gap-24 mb-10 cursor-default">
-            <div className="w-full bg-[#EDECE3] py-8 lg:py-16 px-8">
-              <div className="container mx-auto flex lg:flex-row flex-col-reverse justify-center items-cnter lg:justify-between items-center gap-0 md:gap-4">
+            <section className="bg-[#EDECE3] py-8 lg:py-16 px-8">
+              <div className="layout flex lg:flex-row flex-col-reverse justify-center items-cnter lg:justify-between items-center gap-0 md:gap-4">
                 <div>
                   <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-center lg:text-left mb-2 md:mb-4">
                     Selamat datang di{" "}
@@ -150,74 +150,78 @@ export default () => {
                   />
                 </div>
               </div>
-            </div>
-            <div className="container mx-auto px-2">
-              <h1 className="text-3xl font-bold text-center">
-                Mengapa menggunakan Crop Connect?
-              </h1>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
-                {reason.map((item, index) => (
-                  <div key={index} className="flex flex-col items-center gap-4">
-                    <div className="w-24 h-24 rounded-full bg-[#EDECE3] flex justify-center items-center">
-                      {item.icon}
-                    </div>
-                    <h2 className="text-xl lg:text-2xl font-semibold text-center">
-                      {item.title}
-                    </h2>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div
-              className={`container mx-auto ${
-                !Cookies.get("token") ? "mb-10" : ""
-              } px-2`}
-            >
-              <h1 className="text-3xl font-bold text-center">
-                Bagaimana cara kerja Crop Connect?
-              </h1>
-              <p className="text-lg mt-6 md:my-6 text-center">
-                Memulai dengan Crop Connect sangatlah mudah. Cari komoditas yang
-                Anda inginkan, lakukan pembelian dengan cepat. Kami menjamin
-                kualitas komoditas yang Anda beli dengan memantau penanaman
-                secara langsung oleh ahlinya.
-              </p>
-              <div className="flex flex-row justify-center flex-wrap gap-4 mt-10">
-                {ways.map((item, index) => (
-                  <>
+            </section>
+            <section className="">
+              <div className="layout">
+                <h1 className="text-3xl font-bold text-center">
+                  Mengapa menggunakan Crop Connect?
+                </h1>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
+                  {reason.map((item, index) => (
                     <div
                       key={index}
-                      className="flex flex-col items-center bg-[#EDECE3] p-6 gap-2 rounded-xl grow shrink basis-0 shadow-md min-w-[12rem]"
+                      className="flex flex-col items-center gap-4"
                     >
-                      <span className="text-2xl font-semibold">
-                        {index + 1}
-                      </span>
-                      {item.icon}
-                      <h2 className="lg:text-xl font-semibold text-center">
+                      <div className="w-24 h-24 rounded-full bg-[#EDECE3] flex justify-center items-center">
+                        {item.icon}
+                      </div>
+                      <h2 className="text-xl lg:text-2xl font-semibold text-center">
                         {item.title}
                       </h2>
-                      <p className="lg:text-lg text-center">
-                        {item.description}
-                      </p>
                     </div>
-                    {index !== ways.length - 1 && (
-                      <div className="hidden xl:flex flex-col justify-center items-center">
-                        <BsArrowRight className="text-4xl text-gray-500" />
-                      </div>
-                    )}
-                  </>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            </section>
+            <section className={`${!Cookies.get("token") ? "mb-10" : ""}`}>
+              <div className="layout">
+                <h1 className="text-3xl font-bold text-center">
+                  Bagaimana cara kerja Crop Connect?
+                </h1>
+                <p className="text-lg mt-6 md:my-6 text-center">
+                  Memulai dengan Crop Connect sangatlah mudah. Cari komoditas
+                  yang Anda inginkan, lakukan pembelian dengan cepat. Kami
+                  menjamin kualitas komoditas yang Anda beli dengan memantau
+                  penanaman secara langsung oleh ahlinya.
+                </p>
+                <div className="flex flex-row justify-center flex-wrap gap-4 mt-10">
+                  {ways.map((item, index) => (
+                    <>
+                      <div
+                        key={index}
+                        className="flex flex-col items-center bg-[#EDECE3] p-6 gap-2 rounded-xl grow shrink basis-0 shadow-md min-w-[12rem]"
+                      >
+                        <span className="text-2xl font-semibold">
+                          {index + 1}
+                        </span>
+                        {item.icon}
+                        <h2 className="lg:text-xl font-semibold text-center">
+                          {item.title}
+                        </h2>
+                        <p className="lg:text-lg text-center">
+                          {item.description}
+                        </p>
+                      </div>
+                      {index !== ways.length - 1 && (
+                        <div className="hidden 2xl:flex flex-col justify-center items-center">
+                          <BsArrowRight className="text-4xl text-gray-500" />
+                        </div>
+                      )}
+                    </>
+                  ))}
+                </div>
+              </div>
+            </section>
             {!Cookies.get("token") && (
-              <div className="w-full">
-                <div className="container mx-auto flex flex-col lg:flex-row justify-center lg:justify-between items-center text-center">
-                  <div className="min-w-[16rem] md:min-w-[24rem] lg:min-w-[30rem] mr-8">
+              <section className="">
+                <div className="layout lg:flex justify-between items-center text-center">
+                  <div className="min-w-[16rem] md:min-w-[24rem] lg:min-w-[30rem] lg:mr-8 flex justify-center lg:justify-start">
                     <Image
                       src="/e-commerce, shopping _ shop, purchase, store, check out, shopping bags, woman_lg.png"
                       width={450}
                       height={450}
                       alt="Ilustrasi Bergabung Ke CropConnect"
+                      className=""
                     />
                   </div>
                   <div>
@@ -230,11 +234,13 @@ export default () => {
                       Bersama-sama, mari kita dukung pertanian lokal dan petani
                       Indonesia.
                     </p>
-                    <div className="flex flex-row justify-center gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                       {role.map((item, index) => (
                         <div
                           key={index}
-                          className="flex flex-col items-center bg-[#EDECE3] p-6 gap-2 rounded-xl grow shrink basis-0 shadow-md"
+                          className={`${
+                            index === 2 ? "col-span-2 md:col-span-1" : ""
+                          } flex flex-col items-center bg-[#EDECE3] p-6 gap-2 rounded-xl shadow-md`}
                         >
                           {item.icon}
                           <h2 className="text-xl font-semibold text-center">
@@ -245,7 +251,7 @@ export default () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </section>
             )}
           </div>
         )}

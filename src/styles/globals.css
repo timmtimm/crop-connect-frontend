@@ -11,3 +11,9 @@ opacity: 0.4;
 .mySwiper .swiper-slide-thumb-active {
 opacity: 1;
 }
+
+.layout {
+    width: 90%;
+    max-width: 1536px;
+    margin: 0 auto;
+}
