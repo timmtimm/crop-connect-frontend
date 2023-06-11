@@ -83,7 +83,7 @@ export default () => {
   });
 
   const { data, isLoading, mutate } = useSWR(
-    ["/api/v1/commodity", { ...pagination }],
+    ["/api/v1/commodity/farmer", { ...pagination }],
     ([url, params]) => fetcher(url, params),
     runOnce
   );

@@ -2,7 +2,7 @@ export default () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#2B5456] text-white">
+    <footer className="bg-[#EDECE3] flex w-full justify-center py-2 text-center text-bold">
       {/* <div className="flex flex-col">
         <div className="container mx-auto px-4">
           <div className="flex flex-row justify-between py-8">
@@ -35,9 +35,9 @@ export default () => {
             </div>
           </div>
         </div> */}
-      <div className="flex w-full justify-center py-1">
-        Crop Connect © {year}
-      </div>
+      Crop Connect
+      <br />
+      Copyright © {year}. All right reserved.
       {/* </div> */}
     </footer>
   );

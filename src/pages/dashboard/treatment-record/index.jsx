@@ -284,7 +284,7 @@ export default () => {
     data: dataCommodity,
     trigger: triggerCommodity,
     isMutating: mutatingCommodity,
-  } = useSWRMutation("/api/v1/commodity", triggerfetcher);
+  } = useSWRMutation("/api/v1/commodity/farmer", triggerfetcher);
 
   const handleSearchCommodity = () => {
     if (search.commodity || input.farmerID) {

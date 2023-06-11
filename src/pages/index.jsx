@@ -170,7 +170,7 @@ export default () => {
             </div>
             <div
               className={`container mx-auto ${
-                Cookies.get("token") ? "mb-10" : ""
+                !Cookies.get("token") ? "mb-10" : ""
               } px-2`}
             >
               <h1 className="text-3xl font-bold text-center">

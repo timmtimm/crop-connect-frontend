@@ -29,6 +29,11 @@ export default (props) => {
                   : "Ilustrasi Komoditas"
               }
             />
+            {!data.isAvailable && (
+              <div className="absolute inset-0 bg-gray-700/60 rounded-lg flex items-center justify-center">
+                Tidak tersedia
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col pt-2 p-4">

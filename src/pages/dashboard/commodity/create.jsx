@@ -431,14 +431,10 @@ export default () => {
                     key={key}
                     className="w-full flex flex-col rounded-lg p-3 gap-2 bg-gray-200"
                   >
-                    <h4 className="font-bold text-center">Gambar {key + 1}</h4>
-                    <div className="w-full flex flex-row items-start justify-between gap-2">
-                      <div>
-                        <img
-                          className="rounded"
-                          src={URL.createObjectURL(file)}
-                        />
-                      </div>
+                    <div className="flex flex-row justify-between w-full items-center">
+                      <h4 className="font-bold text-center">
+                        Gambar {key + 1}
+                      </h4>
                       <div
                         onClick={() => {
                           removeImage(key);
@@ -446,6 +442,14 @@ export default () => {
                         className="bg-red-400 flex items-center cursor-pointer justify-center rounded-md ml-4 p-2"
                       >
                         <FaTrashAlt className="text-white" />
+                      </div>
+                    </div>
+                    <div className="w-full flex flex-row items-start justify-between gap-2">
+                      <div>
+                        <img
+                          className="rounded"
+                          src={URL.createObjectURL(file)}
+                        />
                       </div>
                     </div>
                     <div className="flex flex-col">
