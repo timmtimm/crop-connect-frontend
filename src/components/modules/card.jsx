@@ -10,7 +10,7 @@ export default (props) => {
   const { type, data, withName } = props;
 
   return (
-    <div className="cursor-pointer shadow rounded-lg hover:scale-105 transition bg-[#EDECE3] text-black">
+    <div className="cursor-pointer shadow rounded-lg hover:scale-105 transition bg-[#EDECE3] text-gray-700">
       {type == "komoditas" ? (
         <Link href={`/commodity/${data._id}`}>
           <div
