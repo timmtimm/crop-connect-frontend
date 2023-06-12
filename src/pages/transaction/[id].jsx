@@ -75,17 +75,11 @@ export default () => {
   const [isSuccess, setIsSuccess] = useState(false);
 
   /* Fetch */
-  // const { data: dataProposal, isLoading: proposalLoading } = useSWR(
-  //   [`api/v1/proposal/id/${id}`, {}],
-  //   ([url, params]) => fetcher(url, params),
-  //   runOnce
-  // );
-
   const {
     data: dataProposal,
     trigger: triggerProposal,
     isMutating: mutatingProposal,
-  } = useSWRMutation(`api/v1/proposal/${id}`, triggerfetcher);
+  } = useSWRMutation(`api/v1/proposal/id/${id}`, triggerfetcher);
   const {
     data: dataBatch,
     trigger: triggerBatch,
@@ -96,6 +90,7 @@ export default () => {
     if (id && queryParam.transactionType == transactionType.perennials) {
       triggerBatch();
     } else if (id && queryParam.transactionType == transactionType.annuals) {
+      console.log("trigger");
       triggerProposal();
     }
   }, [queryParam, id]);
@@ -319,6 +314,12 @@ export default () => {
           </div>
         </Modal>
       )}
+      {(mutatingProposal ||
+        mutatingBatch ||
+        provinceLoading ||
+        mutatingRegency ||
+        mutatingDistrict ||
+        mutatingSubdistrict) && <Loading />}
       <Default>
         {/* {JSON.stringify(dataBatch?.data)}
         {JSON.stringify(dataProposal)} */}
