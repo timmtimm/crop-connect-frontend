@@ -54,6 +54,16 @@ export const findErrorMessageFromResponse = (errorArray, key) => {
   return errorMessage;
 };
 
+export const setIfNotNone = (object, key, value) => {
+  if (value != "none") {
+    object[key] = value;
+  } else {
+    delete object[key];
+  }
+
+  return object;
+};
+
 export const setIfNotNull = (object, key, value) => {
   if (value) {
     object[key] = value;

@@ -223,7 +223,7 @@ export default () => {
             otomatis.
           </span>
         </Alert>
-        <div className="w-full bg-white rounded-xl p-4">
+        <div className="w-full bg-white rounded-xl shadow-md p-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {formColumn.map((column) => (
               <div className="flex flex-col">

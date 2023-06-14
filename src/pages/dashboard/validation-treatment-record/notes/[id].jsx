@@ -279,7 +279,7 @@ export default () => {
         )}
         {dataTreatment._id && (
           <>
-            <div className=" w-full bg-white p-4 rounded-xl mb-4">
+            <div className=" w-full bg-white p-4 rounded-xl shadow-md mb-4">
               <h2 className="text-lg font-bold mb-2">
                 Informasi Periode Penanaman
               </h2>
@@ -316,7 +316,7 @@ export default () => {
                 ))}
               </div>
             </div>
-            <div className=" w-full bg-white p-4 rounded-xl mb-4">
+            <div className=" w-full bg-white p-4 rounded-xl shadow-md mb-4">
               <h2 className="text-lg font-bold mb-2">
                 Kontak Validator Pengaju
               </h2>
@@ -339,7 +339,7 @@ export default () => {
               </table>
             </div>
             {dataTreatment?.accepter && (
-              <div className=" w-full bg-white p-4 rounded-xl mb-4">
+              <div className=" w-full bg-white p-4 rounded-xl shadow-md mb-4">
                 <h2 className="text-lg font-bold mb-2">
                   Kontak Validator Penerima
                 </h2>
@@ -362,7 +362,7 @@ export default () => {
                 </table>
               </div>
             )}
-            <div className=" w-full bg-white p-4 rounded-xl mb-4">
+            <div className=" w-full bg-white p-4 rounded-xl shadow-md mb-4">
               <h2 className="text-lg font-bold mb-2">Informasi Perawatan</h2>
               <div className="flex flex-col mb-4">
                 <h3 className="text-lg font-bold">Status</h3>
@@ -426,7 +426,7 @@ export default () => {
                   ))}
               </div>
             </div>
-            <div className=" w-full bg-white p-4 rounded-xl mb-4">
+            <div className=" w-full bg-white p-4 rounded-xl shadow-md mb-4">
               <h2 className="text-lg font-bold mb-2">Ubah Catatan</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {notesForm.map((item, index) => (

@@ -164,12 +164,6 @@ export default (props) => {
     if (!Cookies.get("token")) {
       router.replace({
         pathname: "/login",
-        query: {
-          redirect: JSON.stringify({
-            pathname: router.pathname,
-            query: router.query,
-          }),
-        },
       });
     }
   }, []);

@@ -1,6 +1,7 @@
 import Loading from "@/components/modules/loading";
 import Seo from "@/components/elements/seo";
 import Status, {
+  convertStatusForBatch,
   convertStatusForTransaction,
 } from "@/components/elements/status";
 import Default from "@/components/layouts/default";
@@ -9,6 +10,7 @@ import {
   dateFormatToIndonesia,
   setNumberFormat,
   setPriceFormat,
+  setWeightFormat,
 } from "@/utils/utilities";
 import { Alert, Button, Snackbar } from "@mui/material";
 import Cookies from "js-cookie";
@@ -17,15 +19,13 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Slide from "@mui/material/Slide";
-import { useProfileUser } from "@/context/profileUserContext";
-import { roleUser, transactionStatus } from "@/constant/constant";
+import { batchStatus, roleUser, transactionStatus } from "@/constant/constant";
 import Modal from "@/components/elements/modal";
 import { HttpStatusCode } from "axios";
 
 export default () => {
   const router = useRouter();
   const { id } = router.query;
-  const { checkRole, isLoadingProfile } = useProfileUser();
 
   /* Snackbar */
   const [open, setOpen] = useState(false);
@@ -51,7 +51,21 @@ export default () => {
     const data = await get(`/api/v1/transaction/${id}`, {});
 
     if (data?.data) {
-      setDataTransaction(data.data);
+      let tempTransaction = data.data;
+      if (data.data?.batch?.status == batchStatus.harvest) {
+        const dataHarvest = await get(`/api/v1/harvest/batch`, {
+          "batch-id": data.data.batch._id,
+        });
+
+        if (dataHarvest.status == HttpStatusCode.Ok) {
+          tempTransaction = {
+            ...tempTransaction,
+            harvest: dataHarvest.data,
+          };
+        }
+      }
+
+      setDataTransaction(tempTransaction);
     } else {
       setError(data.message);
     }
@@ -60,19 +74,6 @@ export default () => {
   };
 
   /* useEffect */
-  useEffect(() => {
-    if (!Cookies.get("token")) {
-      router.replace({
-        pathname: "/login",
-        query: {
-          redirect: router.pathname,
-        },
-      });
-    } else if (!isLoadingProfile && !checkRole(true, roleUser.buyer)) {
-      router.replace("/");
-    }
-  }, []);
-
   useEffect(() => {
     if (!id) return;
     else {
@@ -99,7 +100,15 @@ export default () => {
 
   return (
     <>
-      <Seo title={isLoading ? "Loading..." : "Detail Transaksi"} />
+      <Seo
+        title={
+          isLoading
+            ? "Loading..."
+            : dataTransaction?.status != HttpStatusCode.Ok
+            ? `Transaksi Tidak Ditemukan`
+            : `Detail Transaksi ${dataTransaction._id}`
+        }
+      />
       {openModal && (
         <Modal>
           <Image
@@ -142,9 +151,9 @@ export default () => {
         </Alert>
       </Snackbar>
       {isLoading && <Loading />}
-      <Default>
+      <Default isAuth={true} roles={roleUser.buyer}>
         <h1 className="text-2xl font-bold mb-4">Detail Transaksi</h1>
-        {error ? (
+        {!isLoading && error && (
           <div className="flex flex-col justify-center items-center">
             <Image
               src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
@@ -159,8 +168,9 @@ export default () => {
               </span>
             </Link>
           </div>
-        ) : (
-          <div className="flex flex-col gap-4 w-full bg-white p-4 rounded-xl divide-y-2">
+        )}
+        {!isLoading && dataTransaction._id && (
+          <div className="flex flex-col gap-4 w-full bg-white p-4 rounded-xl shadow-md divide-y-2">
             <div>
               <h2 className="text-lg font-bold mb-2">Informasi Transaksi</h2>
               <table className="w-full md:w-fit">
@@ -205,8 +215,9 @@ export default () => {
             </div>
             <div>
               <h2 className="text-lg font-bold my-2">Informasi Komoditas</h2>
-              <div className="flex flex-row items-start gap-x-6">
+              <div className="flex flex-row items-center gap-x-6">
                 <Image
+                  className="rounded-lg"
                   src={
                     dataTransaction.commodity?.imageURLs[0]
                       ? dataTransaction.commodity?.imageURLs[0]
@@ -214,6 +225,7 @@ export default () => {
                   }
                   width={100}
                   height={100}
+                  alt={`Foto ${dataTransaction.commodity?.name}`}
                 />
                 <table className="w-full md:w-fit">
                   <tbody>
@@ -303,6 +315,121 @@ export default () => {
                 </tbody>
               </table>
             </div>
+            {dataTransaction.batch && (
+              <div>
+                <h2 className="text-lg font-bold my-2">Informasi Periode</h2>
+                <table className="w-full md:w-fit">
+                  <tbody>
+                    <tr>
+                      <td className="flex flex-row items-center justify-between">
+                        <span>Periode</span>
+                        <span className="hidden md:flex text-right">:</span>
+                      </td>
+                      <td className="px-2 text-right md:text-left">
+                        {dataTransaction.batch?.name}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div className="flex flex-row justify-between">
+                          <span>Status</span>
+                          <span className="hidden md:flex text-right">:</span>
+                        </div>
+                      </td>
+                      <td className="flex items-center w-full gap-2 px-2 justify-end md:justify-start">
+                        {" "}
+                        <Status
+                          type={convertStatusForBatch(
+                            dataTransaction.batch.status
+                          )}
+                          status={dataTransaction.batch?.status}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="flex flex-row justify-between">
+                        <span>Ditanam mulai</span>
+                        <span className="hidden md:flex text-right">:</span>
+                      </td>
+                      <td className="px-2 text-right md:text-left">
+                        {dateFormatToIndonesia(
+                          dataTransaction.batch?.createdAt
+                        )}
+                      </td>
+                    </tr>
+                    {dataTransaction?.harvest && (
+                      <>
+                        <tr>
+                          <td className="flex flex-row justify-between">
+                            <span>Panen tanggal</span>
+                            <span className="hidden md:flex text-right">:</span>
+                          </td>
+                          <td className="px-2 text-right md:text-left">
+                            {dateFormatToIndonesia(
+                              dataTransaction.harvest?.createdAt
+                            )}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="flex flex-row justify-between">
+                            <span>Berat panen</span>
+                            <span className="hidden md:flex text-right">:</span>
+                          </td>
+                          <td className="px-2 text-right md:text-left">
+                            {setWeightFormat(
+                              dataTransaction.harvest?.totalHarvest
+                            )}
+                          </td>
+                        </tr>
+                      </>
+                    )}
+                  </tbody>
+                </table>
+                {dataTransaction?.harvest && (
+                  <>
+                    <div className="my-2">
+                      <h3 className="font-semibold">Kondisi</h3>
+                      <p>{dataTransaction.harvest?.condition}</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">
+                        Gambar dan Catatan Panen
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {Array.isArray(dataTransaction.harvest?.harvest) &&
+                          dataTransaction.harvest?.harvest?.map(
+                            (item, index) => (
+                              <div
+                                key={index}
+                                className="w-full flex flex-col rounded-lg p-3 gap-2 bg-gray-200"
+                              >
+                                <h4 className="font-bold text-center">
+                                  Gambar {index + 1}
+                                </h4>
+                                <div className="w-full flex flex-row items-start justify-between gap-2">
+                                  <div>
+                                    <img
+                                      className="rounded"
+                                      src={item.imageURL}
+                                    />
+                                  </div>
+                                </div>
+                                <div className="w-full p-2 bg-white rounded-md">
+                                  <span className="font-semibold mb-2">
+                                    Catatan
+                                  </span>
+                                  <br />
+                                  {item.note}
+                                </div>
+                              </div>
+                            )
+                          )}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
             <div>
               <h2 className="text-lg font-bold my-2">Rincian Pembayaran</h2>
               <div className="flex flex-col gap-y-1 divide-y divide-dashed">

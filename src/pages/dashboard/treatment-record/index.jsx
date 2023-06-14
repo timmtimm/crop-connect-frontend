@@ -341,7 +341,7 @@ export default () => {
             pemilihan periode komoditas.
           </span>
         </Alert>
-        <div className="bg-white w-full mb-4 p-4 rounded-xl shadow-lg">
+        <div className="bg-white w-full mb-4 p-4 rounded-xl shadow-md">
           <div className="flex flex-row justify-between items-start">
             <div>
               <h2 className="font-semibold mb-2">
@@ -368,7 +368,7 @@ export default () => {
                 });
               }}
             >
-              Reset Periode
+              Reset
             </Button>
           </div>
           <Stepper activeStep={activeStep} alternativeLabel>

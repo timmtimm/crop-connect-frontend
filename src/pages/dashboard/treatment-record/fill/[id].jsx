@@ -397,7 +397,7 @@ export default () => {
         <h1 className="text-2xl mb-4 font-bold">Pengisian Riwayat Perawatan</h1>
         {!isLoading && treatmentRecord._id && (
           <>
-            <div className=" w-full bg-white p-4 rounded-xl  mb-4">
+            <div className=" w-full bg-white p-4 rounded-xl shadow-md mb-4">
               <h2 className="text-xl font-bold mb-4 divide-y-0">
                 Informasi Periode Penanaman
               </h2>

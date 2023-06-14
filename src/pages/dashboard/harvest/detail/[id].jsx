@@ -195,7 +195,7 @@ export default () => {
         )}
         {dataHarvest._id && (
           <>
-            <div className=" w-full bg-white p-4 rounded-xl mb-4">
+            <div className=" w-full bg-white shadow-md p-4 rounded-xl mb-4">
               <h2 className="text-lg font-bold mb-2">
                 Informasi Periode Penanaman
               </h2>

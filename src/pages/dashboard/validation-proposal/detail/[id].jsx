@@ -234,7 +234,7 @@ export default () => {
         ) : (
           <>
             <h1 className="text-2xl font-bold mb-4">Detail Proposal</h1>
-            <div className="flex flex-col gap-4 w-full bg-white p-4 rounded-xl divide-y-2">
+            <div className="flex flex-col gap-4 w-full bg-white p-4 rounded-xl shadow-md divide-y-2">
               {column.map((section, index) => (
                 <div key={index}>
                   <h2

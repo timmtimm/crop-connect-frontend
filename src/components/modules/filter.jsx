@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { setParamRegionFetch } from "@/utils/url";
 import { useRouter } from "next/router";
-import { setIfNotNull } from "@/utils/utilities";
+import { setIfNotNone, setIfNotNull } from "@/utils/utilities";
 
 export default (props) => {
   const { type, onSubmit } = props;
@@ -38,16 +38,6 @@ export default (props) => {
   /* Function */
   const handleChangeInput = ({ target: { name, value } }) => {
     setInput({ ...input, [name]: value });
-  };
-
-  const setIfNotNone = (object, key, value) => {
-    if (value != "none") {
-      object[key] = value;
-    } else {
-      delete object[key];
-    }
-
-    return object;
   };
 
   /* Region */

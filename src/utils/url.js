@@ -13,26 +13,35 @@ export const getPagination = () => {
 };
 
 export const getUniquePagination = (uniqueKey) => {
-  const router = useRouter();
+  const query = useRouter().query;
 
   return {
     page:
-      router.query[`page-${uniqueKey}`] &&
-      !isNaN(router.query[`page-${uniqueKey}`])
-        ? parseInt(router.query[`page-${uniqueKey}`])
+      query[`page-${uniqueKey}`] && !isNaN(query[`page-${uniqueKey}`])
+        ? parseInt(query[`page-${uniqueKey}`])
         : 1,
     limit:
-      router.query[`limit-${uniqueKey}`] &&
-      !isNaN(router.query[`limit-${uniqueKey}`])
-        ? parseInt(router.query[`limit-${uniqueKey}`])
+      query[`limit-${uniqueKey}`] && !isNaN(query[`limit-${uniqueKey}`])
+        ? parseInt(query[`limit-${uniqueKey}`])
         : 20,
-    sort: router.query[`sortBy-${uniqueKey}`]
-      ? router.query[`sortBy-${uniqueKey}`]
+    sort: query[`sortBy-${uniqueKey}`]
+      ? query[`sortBy-${uniqueKey}`]
       : "createdAt",
-    order: router.query[`orderBy-${uniqueKey}`]
-      ? router.query[`orderBy-${uniqueKey}`]
+    order: query[`orderBy-${uniqueKey}`]
+      ? query[`orderBy-${uniqueKey}`]
       : "desc",
   };
+};
+
+export const deleteUniquePagination = (router, uniqueKey) => {
+  const query = router.query;
+
+  delete query[`page-${uniqueKey}`];
+  delete query[`limit-${uniqueKey}`];
+  delete query[`sortBy-${uniqueKey}`];
+  delete query[`orderBy-${uniqueKey}`];
+
+  return query;
 };
 
 export const setParamRegionFetch = (input, region) => {

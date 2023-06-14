@@ -90,7 +90,6 @@ export default () => {
     if (id && queryParam.transactionType == transactionType.perennials) {
       triggerBatch();
     } else if (id && queryParam.transactionType == transactionType.annuals) {
-      console.log("trigger");
       triggerProposal();
     }
   }, [queryParam, id]);
@@ -239,7 +238,7 @@ export default () => {
         transactionType: queryParam.transactionType,
         address: input.address,
         proposalID:
-          queryParam.transactionType == transactionType.annuals ? null : id,
+          queryParam.transactionType == transactionType.annuals ? id : null,
         batchID:
           queryParam.transactionType == transactionType.perennials ? id : null,
         regionID:

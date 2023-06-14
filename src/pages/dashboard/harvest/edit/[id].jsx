@@ -418,7 +418,7 @@ export default () => {
           harvest._id &&
           harvest.status != harvestStatus.approved && (
             <>
-              <div className=" w-full bg-white p-4 rounded-xl  mb-4">
+              <div className=" w-full bg-white p-4 rounded-xl shadow-md mb-4">
                 <h2 className="text-xl font-bold mb-4 divide-y-0">
                   Informasi Periode Penanaman
                 </h2>

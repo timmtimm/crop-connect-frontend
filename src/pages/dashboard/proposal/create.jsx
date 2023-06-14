@@ -418,7 +418,7 @@ export default () => {
       {(isLoading || commodityLoading) && <Loading />}
       <Dashboard roles={roleUser.farmer}>
         <h1 className="text-2xl mb-4 font-bold">Tambah Proposal</h1>
-        <div className="w-full bg-white rounded-xl p-4">
+        <div className="w-full bg-white rounded-xl shadow-md p-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {formColumn.map((column) => (
               <div className="flex flex-col">

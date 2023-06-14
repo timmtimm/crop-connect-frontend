@@ -13,7 +13,7 @@ import {
   Pagination,
   Select,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { runOnce } from "@/lib/swr";
 import { FaFilter, FaSort } from "react-icons/fa";
 import { styled } from "@mui/material/styles";
@@ -263,7 +263,7 @@ export default () => {
               <div className="flex flex-row items-center gap-4">
                 <Button
                   variant="contained"
-                  className="text-black normal-case hover:bg-white"
+                  className="text-black normal-case bg-white hover:bg-white"
                   onClick={toggleDrawer("filter")}
                 >
                   <FaFilter className="text-[#52A068] mr-2" />
@@ -271,7 +271,7 @@ export default () => {
                 </Button>
                 <Button
                   variant="contained"
-                  className="text-black normal-case hover:bg-white"
+                  className="text-black normal-case bg-white hover:bg-white"
                   onClick={toggleDrawer("sorting")}
                 >
                   <FaSort className="text-[#52A068] mr-2" />

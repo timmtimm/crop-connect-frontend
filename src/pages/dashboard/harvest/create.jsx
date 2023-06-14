@@ -382,7 +382,7 @@ export default () => {
             pengisian dengan minimal sebanyak sekali.
           </span>
         </Alert>
-        <div className="w-full bg-white rounded-xl p-4">
+        <div className="w-full bg-white rounded-xl shadow-md p-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col gap-4 w-full">
               <div className="flex flex-col">

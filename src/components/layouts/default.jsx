@@ -35,13 +35,13 @@ export default (props) => {
             }),
           },
         });
-      }
 
-      if (roles) {
-        if (handleCheckRole()) {
-          router.replace({
-            pathname: "/",
-          });
+        if (roles) {
+          if (handleCheckRole()) {
+            router.replace({
+              pathname: "/",
+            });
+          }
         }
       }
     }, [isLoadingProfile, isAuthenticated]);

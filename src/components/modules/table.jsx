@@ -107,15 +107,11 @@ export default (props) => {
     setAnchorEl(null);
   };
 
-  const [input, setInput] = useState({
-    ...pagination,
-    page: pagination.page - 1,
-  });
   const [choosenMenuIndex, setChoosenMenuIndex] = useState(0);
 
   /* Function */
   const handleRequestSort = (event, property) => {
-    const isAsc = input.sort === property && input.order === "asc";
+    const isAsc = pagination.sort === property && pagination.order === "asc";
     let query = {
       ...router.query,
     };
@@ -189,14 +185,6 @@ export default (props) => {
       ? headCell.customDisplayRow(data)
       : data[headCell.id];
 
-  /* useEffect */
-  useEffect(() => {
-    setInput({
-      ...pagination,
-      page: pagination.page - 1,
-    });
-  }, [router.query]);
-
   return (
     <div className="overflow-auto w-full table table-fixed">
       <Menu
@@ -219,8 +207,8 @@ export default (props) => {
               size={"medium"}
             >
               <EnhancedTableHead
-                order={input.order || "desc"}
-                orderBy={input.sort || "createdAt"}
+                order={pagination.order || "desc"}
+                orderBy={pagination.sort || "createdAt"}
                 onRequestSort={handleRequestSort}
                 rowCount={data.pagination.totalData}
                 headCells={headCells}
@@ -279,8 +267,8 @@ export default (props) => {
             rowsPerPageOptions={[10, 20, 25]}
             component="div"
             count={data?.pagination?.totalData}
-            rowsPerPage={input.limit}
-            page={input.page}
+            rowsPerPage={pagination.limit}
+            page={pagination.page - 1}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />

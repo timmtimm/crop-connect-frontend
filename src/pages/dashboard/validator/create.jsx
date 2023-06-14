@@ -345,7 +345,7 @@ export default () => {
       </Snackbar>
       <Dashboard roles={roleUser.admin}>
         <h1 className="text-2xl mb-4 font-bold">Tambah Validator</h1>
-        <div className="w-full bg-white rounded-xl p-4">
+        <div className="w-full bg-white rounded-xl shadow-md p-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col gap-4 w-full">
               {formColumn.map((column) => (
