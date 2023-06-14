@@ -253,7 +253,7 @@ export default () => {
         <div className="flex flex-row gap-8">
           <div className="hidden lg:block">
             <h1 className="text-xl font-bold mb-4">Filter</h1>
-            <div className="flex flex-col gap-4 min-w-[15rem] max-w-[24ch] bg-white rounded-xl p-4">
+            <div className="flex flex-col gap-4 min-w-[15rem] max-w-[24ch] bg-white rounded-xl p-4 shadow-md">
               <Filter type={queryParam.searchBy} />
             </div>
           </div>

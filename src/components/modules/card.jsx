@@ -30,7 +30,7 @@ export default (props) => {
               }
             />
             {!data.isAvailable && (
-              <div className="absolute inset-0 bg-gray-700/60 text-white rounded-lg flex items-center justify-center">
+              <div className="absolute inset-0 bg-gray-700/60 text-white rounded-lg flex items-center justify-center font-bold">
                 Tidak tersedia
               </div>
             )}
