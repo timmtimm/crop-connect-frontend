@@ -915,7 +915,7 @@ export default () => {
       <Dashboard roles={[roleUser.admin, roleUser.admin, roleUser.validator]}>
         <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
         <div className="flex flex-col gap-4 w-full">
-          <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-2">
+          <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
             {statisticCard?.map((item, index) => (
               <StatisticCard key={index} data={item} />
             ))}
