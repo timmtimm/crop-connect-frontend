@@ -1,14 +1,11 @@
 import Seo from "@/components/elements/seo";
 import Dashboard from "@/components/layouts/dashboard";
 import {
-  Alert,
   Button,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
-  Slide,
-  Snackbar,
   TextField,
 } from "@mui/material";
 import Link from "next/link";
@@ -17,10 +14,9 @@ import useSWR from "swr";
 import { getPagination } from "@/utils/url";
 import { runOnce } from "@/lib/swr";
 import Loading from "@/components/modules/loading";
-import { Delete, fetcher } from "@/lib/axios";
+import { fetcher } from "@/lib/axios";
 import { useEffect, useState } from "react";
-import { batchStatus, harvestStatus, roleUser } from "@/constant/constant";
-import { HttpStatusCode } from "axios";
+import { batchStatus, roleUser } from "@/constant/constant";
 import Table from "@/components/modules/table";
 import { useRouter } from "next/router";
 import Status, { convertStatusForBatch } from "@/components/elements/status";
@@ -28,7 +24,6 @@ import {
   dateFormatToIndonesia,
   setIfNotNone,
   setIfNotNull,
-  setNumberFormat,
 } from "@/utils/utilities";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";

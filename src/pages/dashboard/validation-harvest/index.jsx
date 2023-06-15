@@ -13,22 +13,16 @@ import {
   TextField,
 } from "@mui/material";
 import Link from "next/link";
-import { GoPlus } from "react-icons/go";
 import useSWR from "swr";
 import { getPagination } from "@/utils/url";
 import { runOnce } from "@/lib/swr";
 import Loading from "@/components/modules/loading";
-import { Delete, fetcher, putWithJSON } from "@/lib/axios";
+import { fetcher } from "@/lib/axios";
 import { useEffect, useState } from "react";
-import { harvestStatus, proposalStatus, roleUser } from "@/constant/constant";
-import { HttpStatusCode } from "axios";
+import { harvestStatus, roleUser } from "@/constant/constant";
 import Table from "@/components/modules/table";
 import { useRouter } from "next/router";
-import Status, {
-  convertStatusForBatch,
-  convertStatusForHarvest,
-  convertStatusForProposal,
-} from "@/components/elements/status";
+import Status, { convertStatusForHarvest } from "@/components/elements/status";
 import {
   dateFormatToIndonesia,
   setIfNotNone,

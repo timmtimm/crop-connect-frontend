@@ -3,25 +3,18 @@ import Seo from "@/components/elements/seo";
 import Status, {
   convertStatusForBatch,
   convertStatusForHarvest,
-  convertStatusForTransaction,
-  convertStatusForTreatmentRecord,
 } from "@/components/elements/status";
 import Dashboard from "@/components/layouts/dashboard";
 import Loading from "@/components/modules/loading";
-import {
-  harvestStatus,
-  roleUser,
-  transactionStatus,
-} from "@/constant/constant";
+import { harvestStatus, roleUser } from "@/constant/constant";
 import { get, putWithJSON } from "@/lib/axios";
 import {
   dateFormatToIndonesia,
   getLastURLSegment,
   setNumberFormat,
-  setPriceFormat,
   setWeightFormat,
 } from "@/utils/utilities";
-import { Alert, Button, Slide, Snackbar, TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { HttpStatusCode } from "axios";
 import Image from "next/image";
 import Link from "next/link";

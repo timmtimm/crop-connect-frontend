@@ -15,11 +15,6 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import Slide from "@mui/material/Slide";
-import {
-  checkObjectIsNotNullExist,
-  findErrorMessageFromResponse,
-  validateStringInputLogic,
-} from "@/utils/utilities";
 import { useRouter } from "next/router";
 import Loading from "@/components/modules/loading";
 import { fetcher, postWithJSON, triggerfetcher } from "@/lib/axios";

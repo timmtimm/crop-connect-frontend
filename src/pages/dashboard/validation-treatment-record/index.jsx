@@ -14,27 +14,20 @@ import {
 import Link from "next/link";
 import { GoPlus } from "react-icons/go";
 import useSWRMutation from "swr/mutation";
-import {
-  deleteUniquePagination,
-  getPagination,
-  getUniquePagination,
-} from "@/utils/url";
+import { deleteUniquePagination, getUniquePagination } from "@/utils/url";
 import { runOnce } from "@/lib/swr";
 import Loading from "@/components/modules/loading";
-import { Delete, fetcher, putWithJSON, triggerfetcher } from "@/lib/axios";
+import { triggerfetcher } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import {
   batchStatus,
-  proposalStatus,
   roleUser,
   treatmentRecordStatus,
 } from "@/constant/constant";
-import { HttpStatusCode } from "axios";
 import Table from "@/components/modules/table";
 import { useRouter } from "next/router";
 import Status, {
   convertStatusForBatch,
-  convertStatusForProposal,
   convertStatusForTreatmentRecord,
 } from "@/components/elements/status";
 import { FaSearch } from "react-icons/fa";

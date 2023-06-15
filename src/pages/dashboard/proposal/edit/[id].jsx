@@ -21,13 +21,7 @@ import {
 } from "@/utils/utilities";
 import { useRouter } from "next/router";
 import Loading from "@/components/modules/loading";
-import {
-  fetcher,
-  get,
-  postWithJSON,
-  putWithJSON,
-  triggerfetcher,
-} from "@/lib/axios";
+import { fetcher, get, putWithJSON, triggerfetcher } from "@/lib/axios";
 import { HttpStatusCode } from "axios";
 import Status from "@/components/elements/status";
 import useSWR from "swr";

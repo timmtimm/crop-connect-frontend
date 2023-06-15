@@ -12,20 +12,13 @@ import {
   TextField,
 } from "@mui/material";
 import Link from "next/link";
-import { GoPlus } from "react-icons/go";
 import useSWRMutation from "swr/mutation";
-import { getPagination } from "@/utils/url";
+import { deleteUniquePagination, getUniquePagination } from "@/utils/url";
 import { runOnce } from "@/lib/swr";
 import Loading from "@/components/modules/loading";
 import { Delete, fetcher, putWithJSON, triggerfetcher } from "@/lib/axios";
 import { useEffect, useState } from "react";
-import {
-  batchStatus,
-  proposalStatus,
-  roleUser,
-  treatmentRecordStatus,
-} from "@/constant/constant";
-import { HttpStatusCode } from "axios";
+import { roleUser, treatmentRecordStatus } from "@/constant/constant";
 import Table from "@/components/modules/table";
 import { useRouter } from "next/router";
 import Status, {
@@ -98,7 +91,15 @@ const steps = ["Pilih Komoditas", "Pilih Periode"];
 
 export default () => {
   const router = useRouter();
-  const pagination = getPagination();
+  const paginationCommodity = getUniquePagination("commodity");
+  const paginationBatch = getUniquePagination("batch");
+  const paginationTreatmentRecord = getUniquePagination("treatmentRecord");
+  const paginationTreatmentRecordPending = getUniquePagination(
+    "treatmentRecordPending"
+  );
+  const paginationTreatmentRecordRevision = getUniquePagination(
+    "treatmentRecordRevision"
+  );
 
   const headCellsCommodity = [
     {
@@ -117,7 +118,7 @@ export default () => {
               batchName: "",
             });
             triggerBatch({
-              ...pagination,
+              ...paginationBatch,
               commodityID: data._id,
             });
             setActiveStep(1);
@@ -257,16 +258,30 @@ export default () => {
   const {
     data: dataTreatmentRecordPending,
     isLoading: treamentRecordPendingLoading,
+    mutate: mutateTreatmentRecordPending,
   } = useSWR(
-    ["/api/v1/treatment-record", { status: treatmentRecordStatus.pending }],
+    [
+      "/api/v1/treatment-record",
+      {
+        ...paginationTreatmentRecordPending,
+        status: treatmentRecordStatus.pending,
+      },
+    ],
     ([url, params]) => fetcher(url, params),
     runOnce
   );
   const {
     data: dataTreatmentRecordRevision,
     isLoading: treamentRecordRevisionLoading,
+    mutate: mutateTreatmentRecordRevision,
   } = useSWR(
-    ["/api/v1/treatment-record", { status: treatmentRecordStatus.revision }],
+    [
+      "/api/v1/treatment-record",
+      {
+        ...paginationTreatmentRecordRevision,
+        status: treatmentRecordStatus.revision,
+      },
+    ],
     ([url, params]) => fetcher(url, params),
     runOnce
   );
@@ -274,11 +289,11 @@ export default () => {
   useEffect(() => {
     if (input.batchID && input.commodityID) {
       triggerTreatmentRecord({
-        ...pagination,
+        ...paginationTreatmentRecord,
         batchID: input.batchID,
       });
     }
-  }, [input.batchID]);
+  }, [input.batchID, router.query]);
 
   const {
     data: dataCommodity,
@@ -286,18 +301,22 @@ export default () => {
     isMutating: mutatingCommodity,
   } = useSWRMutation("/api/v1/commodity/farmer", triggerfetcher);
 
-  const handleSearchCommodity = () => {
-    if (search.commodity || input.farmerID) {
-      triggerCommodity({
-        ...pagination,
-        farmerID: input.farmerID,
-        name: search.commodity,
-      });
+  const handleSearchCommodity = (e) => {
+    e.preventDefault();
+
+    let query = { ...router.query };
+    query = deleteUniquePagination(router, "commodity");
+
+    if (search.commodity) {
+      query.commodityName = search.commodity;
     } else {
-      triggerCommodity({
-        ...pagination,
-      });
+      delete query.commodityName;
     }
+
+    router.push({
+      pathname: router.pathname,
+      query: query,
+    });
   };
 
   const {
@@ -306,23 +325,63 @@ export default () => {
     isMutating: mutatingBatch,
   } = useSWRMutation("/api/v1/batch", triggerfetcher);
 
-  const handleSearchBatch = () => {
-    if (search.batch || input.commodityID) {
+  const handleSearchBatch = (e) => {
+    e.preventDefault();
+
+    let query = { ...router.query };
+    query = deleteUniquePagination(router, "batch");
+
+    if (search.batch) {
+      query.batchName = search.batch;
+    } else {
+      delete query.batchName;
+    }
+
+    router.push({
+      pathname: router.pathname,
+      query: query,
+    });
+  };
+
+  useEffect(() => {
+    triggerCommodity({
+      ...paginationCommodity,
+      ...router.query,
+      name: router.query.commodityName,
+    });
+
+    if (input.commodityID) {
       triggerBatch({
-        ...pagination,
+        ...paginationBatch,
         commodityID: input.commodityID,
         name: search.batch,
       });
     } else {
       triggerBatch({
-        ...pagination,
+        ...paginationBatch,
       });
     }
-  };
 
-  useEffect(() => {
-    handleSearchCommodity();
-  }, []);
+    if (search.commodity || input.farmerID) {
+      triggerCommodity({
+        ...paginationCommodity,
+        farmerID: input.farmerID,
+        name: search.commodity,
+      });
+    } else {
+      triggerCommodity({
+        ...paginationCommodity,
+      });
+    }
+
+    mutateTreatmentRecordPending();
+    mutateTreatmentRecordRevision();
+
+    setSearch({
+      commodity: router.query.commodityName || "",
+      batch: router.query.batchName || "",
+    });
+  }, [router.query]);
 
   return (
     <>
@@ -401,35 +460,33 @@ export default () => {
                     </span>
                   </span>
                 )}
-                {input.farmerID && (
-                  <div className="flex justify-end mt-2">
-                    <TextField
-                      placeholder="Komoditas"
-                      variant="outlined"
-                      name="commodity"
-                      required
-                      InputProps={{
-                        className:
-                          "bg-white rounded-lg text-sm md:text-base focus:border-0 hover:border-0",
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <FaSearch
-                              className="cursor-pointer"
-                              onClick={(e) => handleSearchCommodity(e)}
-                              size={20}
-                            />
-                          </InputAdornment>
-                        ),
-                      }}
-                      sx={{ "& input": { padding: "0.75rem" } }}
-                      value={search.commodity}
-                      onChange={handleChangeSearch}
-                      onKeyDown={(e) =>
-                        e.keyCode === 13 ? handleSearchCommodity(e) : null
-                      }
-                    />
-                  </div>
-                )}
+                <div className="flex justify-end mt-2">
+                  <TextField
+                    placeholder="Komoditas"
+                    variant="outlined"
+                    name="commodity"
+                    required
+                    InputProps={{
+                      className:
+                        "bg-white rounded-lg text-sm md:text-base focus:border-0 hover:border-0",
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <FaSearch
+                            className="cursor-pointer"
+                            onClick={(e) => handleSearchCommodity(e)}
+                            size={20}
+                          />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{ "& input": { padding: "0.75rem" } }}
+                    value={search.commodity}
+                    onChange={handleChangeSearch}
+                    onKeyDown={(e) =>
+                      e.keyCode === 13 ? handleSearchCommodity(e) : null
+                    }
+                  />
+                </div>
                 {dataCommodity && !mutatingCommodity && (
                   <div className="mt-4">
                     <Table
@@ -457,7 +514,7 @@ export default () => {
                     </span>
                   </span>
                 )}
-                {input.commodityID && input.farmerID && (
+                {input.commodityID && (
                   <div className="flex justify-end mt-2">
                     <TextField
                       placeholder="Periode"

@@ -1,4 +1,3 @@
-import Modal from "@/components/elements/modal";
 import Seo from "@/components/elements/seo";
 import Status, {
   convertStatusForBatch,
@@ -6,17 +5,14 @@ import Status, {
 } from "@/components/elements/status";
 import Dashboard from "@/components/layouts/dashboard";
 import Loading from "@/components/modules/loading";
-import { roleUser, transactionStatus } from "@/constant/constant";
-import { get, putWithJSON } from "@/lib/axios";
+import { roleUser } from "@/constant/constant";
+import { get } from "@/lib/axios";
 import {
   dateFormatToIndonesia,
   getLastURLSegment,
   setNumberFormat,
-  setPriceFormat,
   setWeightFormat,
 } from "@/utils/utilities";
-import { Alert, Button, Slide, Snackbar } from "@mui/material";
-import { HttpStatusCode } from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";

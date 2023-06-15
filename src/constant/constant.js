@@ -26,7 +26,6 @@ export const transactionStatus = {
 export const batchStatus = {
   planting: "planting",
   harvest: "harvest",
-  cancel: "cancel",
 };
 
 export const harvestStatus = {

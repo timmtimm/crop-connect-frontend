@@ -1,4 +1,3 @@
-import { useProfileUser } from "@/context/profileUserContext";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import Link from "next/link";
