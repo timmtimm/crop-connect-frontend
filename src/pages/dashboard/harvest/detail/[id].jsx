@@ -1,7 +1,11 @@
 import Seo from "@/components/elements/seo";
-import Status, { convertStatusForBatch } from "@/components/elements/status";
+import Status, {
+  convertStatusForBatch,
+  convertStatusForHarvest,
+} from "@/components/elements/status";
 import Dashboard from "@/components/layouts/dashboard";
 import Loading from "@/components/modules/loading";
+import NotFound from "@/components/templates/notFound";
 import { roleUser } from "@/constant/constant";
 import { get } from "@/lib/axios";
 import {
@@ -166,25 +170,24 @@ export default () => {
 
   return (
     <>
-      <Seo title="Detail Panen" />
+      <Seo
+        title={
+          isLoading
+            ? "Loading..."
+            : dataHarvest?.batch?.name
+            ? `Detail Panen ${dataHarvest?.batch?.name}`
+            : "Panen Tidak Ditemukan"
+        }
+      />
       {isLoading && <Loading />}
       <Dashboard roles={roleUser.farmer}>
         <h1 className="text-2xl mb-4 font-bold">Detail Panen</h1>
         {result.errorMessage && (
-          <div className="flex flex-col justify-center items-center">
-            <Image
-              src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
-              width={400}
-              height={400}
-              alt="Ilustrasi Not Found"
-            />
-            <h2 className="text-xl font-bold">Panen tidak ditemukan</h2>
-            <Link href="/dashboard/treatment-record">
-              <span className="text-[#53A06C]">
-                Kembali ke halaman daftar Panen
-              </span>
-            </Link>
-          </div>
+          <NotFound
+            content="Panen"
+            urlRedirect="/dashboard/harvest"
+            redirectPageTitle="daftar panen"
+          />
         )}
         {dataHarvest._id && (
           <>
@@ -226,7 +229,7 @@ export default () => {
               </div>
             </div>
             {dataHarvest?.accepter && (
-              <div className=" w-full bg-white p-4 rounded-xl mb-4">
+              <div className=" w-full bg-white p-4 rounded-xl shadow-md mb-4">
                 <h2 className="text-lg font-bold mb-2">
                   Kontak Validator Penerima
                 </h2>
@@ -249,15 +252,47 @@ export default () => {
                 </table>
               </div>
             )}
-            <div className=" w-full bg-white p-4 rounded-xl mb-4">
+            <div className=" w-full bg-white p-4 rounded-xl shadow-md mb-4">
               <h2 className="text-lg font-bold mb-2">Informasi Panen</h2>
               <div className="mb-4">
-                <div className="flex flex-row justify-between sm:justify-start gap-2">
-                  <h3 className="font-semibold">Tanggal Pengisian:</h3>
-                  <span>{dateFormatToIndonesia(dataHarvest?.date)}</span>
-                </div>
+                <table className="w-full md:w-fit">
+                  <tbody>
+                    <tr>
+                      <td className="flex flex-row items-center justify-between">
+                        <span className="font-semibold">Tanggal Panen</span>
+                        <span className="hidden md:flex text-right">:</span>
+                      </td>
+                      <td className="ml-2 text-right md:text-left">
+                        {dateFormatToIndonesia(dataHarvest?.date)}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="flex flex-row items-center justify-between">
+                        <span className="font-semibold">Status</span>
+                        <span className="hidden md:flex text-right">:</span>
+                      </td>
+                      <td className="ml-2 text-right md:text-left">
+                        <div className="flex items-center w-full justify-end md:justify-start">
+                          <Status
+                            type={convertStatusForHarvest(dataHarvest?.status)}
+                            status={dataHarvest?.status}
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="flex flex-row items-center justify-between">
+                        <span className="font-semibold">Berat Panen</span>
+                        <span className="hidden md:flex text-right">:</span>
+                      </td>
+                      <td className="ml-2 text-right md:text-left">
+                        {setWeightFormat(dataHarvest?.totalHarvest)}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
                 <h3 className="font-semibold">Kondisi Panen</h3>
-                <p>{dataHarvest?.condition}</p>
+                <p className="whitespace-pre-line">{dataHarvest?.condition}</p>
               </div>
               <h3 className="text-lg font-semibold">
                 Gambar dan Catatan Panen
@@ -272,10 +307,8 @@ export default () => {
                       <h4 className="font-bold text-center">
                         Gambar {index + 1}
                       </h4>
-                      <div className="w-full flex flex-row items-start justify-between gap-2">
-                        <div>
-                          <img className="rounded" src={item.imageURL} />
-                        </div>
+                      <div className="w-full flex flex-row items-start justify-center">
+                        <img className="rounded" src={item.imageURL} />
                       </div>
                       <div className="flex flex-col">
                         <span className="font-semibold">Nama gambar</span>
@@ -283,7 +316,7 @@ export default () => {
                           {getLastURLSegment(item.imageURL)}
                         </span>
                       </div>
-                      <div className="w-full p-2 bg-white rounded-md">
+                      <div className="w-full p-2 bg-white rounded-md whitespace-pre-line">
                         <span className="font-semibold mb-2">Catatan</span>
                         <br />
                         {item.note}

@@ -47,6 +47,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Link from "next/link";
 import Image from "next/image";
+import NotFound from "@/components/templates/notFound";
 
 const informationColumn = [
   {
@@ -347,22 +348,11 @@ export default () => {
           Permintaan Pengisian Riwayat Perawatan
         </h1>
         {!batchLoading && batchData?.status != HttpStatusCode.Ok && (
-          <div className="flex flex-col justify-center items-center">
-            <Image
-              src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
-              width={400}
-              height={400}
-              alt="Ilustrasi Not Found"
-            />
-            <h2 className="text-xl font-bold">
-              Periode Penanaman tidak ditemukan
-            </h2>
-            <Link href="/dashboard/validation-treatment-record">
-              <span className="text-[#53A06C]">
-                Kembali ke halaman Riwayat Perawatan
-              </span>
-            </Link>
-          </div>
+          <NotFound
+            content="Periode Penanaman"
+            urlRedirect="/dashboard/validation-treatment-record"
+            redirectPageTitle="daftar riwayat perawatan"
+          />
         )}
         {!batchLoading && batchData?.status == HttpStatusCode.Ok && (
           <>

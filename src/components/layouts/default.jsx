@@ -53,7 +53,7 @@ export default (props) => {
       <main className={`${!homepage && "container mx-auto my-8 px-2"} flex-1`}>
         {children}
       </main>
-      {homepage && <Footer />}
+      <Footer />
     </div>
   );
 };

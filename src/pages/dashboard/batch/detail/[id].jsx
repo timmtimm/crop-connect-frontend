@@ -3,6 +3,7 @@ import Seo from "@/components/elements/seo";
 import Status, { convertStatusForBatch } from "@/components/elements/status";
 import Dashboard from "@/components/layouts/dashboard";
 import Loading from "@/components/modules/loading";
+import NotFound from "@/components/templates/notFound";
 import { roleUser, transactionStatus } from "@/constant/constant";
 import { get, putWithJSON } from "@/lib/axios";
 import {
@@ -156,27 +157,25 @@ export default () => {
 
   return (
     <>
-      <Seo title="Detail Periode" />
+      <Seo
+        title={
+          isLoading
+            ? "Loading..."
+            : dataBatch?.name
+            ? `Detail Periode ${dataBatch?.name}`
+            : "Periode Tidak Ditemukan"
+        }
+      />
       {isLoading && <Loading />}
       <Dashboard roles={roleUser.farmer}>
         <h1 className="text-2xl mb-4 font-bold">Detail Periode</h1>
         {result.errorMessage && (
-          <div className="flex flex-col justify-center items-center">
-            <Image
-              src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
-              width={400}
-              height={400}
-              alt="Ilustrasi Not Found"
-            />
-            <h2 className="text-xl font-bold">Periode tidak ditemukan</h2>
-            <Link href="/transaction-history">
-              <span className="text-[#53A06C]">
-                Kembali ke halaman daftar periode
-              </span>
-            </Link>
-          </div>
+          <NotFound
+            content="Periode Penanaman"
+            urlRedirect="/dashboard/batch"
+          />
         )}
-        {dataBatch && (
+        {!isLoading && dataBatch._id && (
           <div className=" w-full bg-white p-4 rounded-xl shadow-md mb-4">
             <div className="flex flex-col gap-4 divide-y-2">
               {informationColumn.map((section, index) => (

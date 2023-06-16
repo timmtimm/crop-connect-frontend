@@ -503,7 +503,7 @@ export default () => {
               <span className="text-red-500 text-sm">
                 {error.images && error.images}
               </span>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mt-2">
                 {input.images.map((file, key) => (
                   <div
                     key={key}
@@ -523,13 +523,11 @@ export default () => {
                       </div>
                     </div>
 
-                    <div className="w-full">
-                      <div>
-                        <img
-                          className="rounded"
-                          src={isURL(file) ? file : URL.createObjectURL(file)}
-                        />
-                      </div>
+                    <div className="w-full flex justify-center">
+                      <img
+                        className="rounded"
+                        src={isURL(file) ? file : URL.createObjectURL(file)}
+                      />
                     </div>
                     <div className="flex flex-col">
                       <span className="font-semibold">Nama gambar</span>

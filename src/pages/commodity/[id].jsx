@@ -44,6 +44,7 @@ import { AiOutlineShareAlt } from "react-icons/ai";
 import Modal from "@/components/elements/modal";
 import QRCode from "react-qr-code";
 import { GrClose } from "react-icons/gr";
+import NotFound from "@/components/templates/notFound";
 
 export default () => {
   const router = useRouter();
@@ -259,18 +260,7 @@ export default () => {
       )}
       <Default>
         {!isLoading && dataCommodity?.status != HttpStatusCode.Ok && (
-          <div className="flex flex-col justify-center items-center">
-            <Image
-              src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
-              width={400}
-              height={400}
-              alt="Ilustrasi Not Found"
-            />
-            <h2 className="text-xl font-bold">Komoditas tidak ditemukan</h2>
-            <Link href="/">
-              <span className="text-[#53A06C]">Kembali ke halaman utama</span>
-            </Link>
-          </div>
+          <NotFound content="Komoditas" redirectPageTitle="utama" />
         )}
         {!isLoading && dataCommodity?.status == HttpStatusCode.Ok && (
           <div className="flex flex-col gap-y-6">
@@ -654,7 +644,7 @@ export default () => {
                     </div>
                   )}
                 </div>
-                <div className="bg-white h-min rounded-xl p-4 divide-y-2 min-w-max">
+                <div className="bg-white h-min rounded-xl p-4 divide-y-2 min-w-max shadow-md">
                   <Link href={`/farmer/${dataCommodity?.data?.farmer?._id}`}>
                     <p className="text-xl font-bold mb-2">
                       {dataCommodity?.data?.farmer?.name}
@@ -813,7 +803,9 @@ export default () => {
                       <>
                         <div>
                           <h3 className="text-lg font-semibold">Kondisi</h3>
-                          <p>{dataharvest?.data?.condition}</p>
+                          <p className="whitespace-pre-line">
+                            {dataharvest?.data?.condition}
+                          </p>
                         </div>
                         <div>
                           <h3 className="text-lg font-semibold">
@@ -829,15 +821,13 @@ export default () => {
                                   <h4 className="font-bold text-center">
                                     Gambar {index + 1}
                                   </h4>
-                                  <div className="w-full flex flex-row items-start justify-between gap-2">
-                                    <div>
-                                      <img
-                                        className="rounded"
-                                        src={item.imageURL}
-                                      />
-                                    </div>
+                                  <div className="w-full flex flex-row items-start justify-center">
+                                    <img
+                                      className="rounded"
+                                      src={item.imageURL}
+                                    />
                                   </div>
-                                  <div className="w-full p-2 bg-white rounded-md">
+                                  <div className="w-full p-2 bg-white rounded-md whitespace-pre-line">
                                     <span className="font-semibold mb-2">
                                       Catatan
                                     </span>
@@ -907,14 +897,18 @@ export default () => {
                           {dateFormatToIndonesia(input.treatmentRecord?.date)}
                         </span>
                         <h4>Deskripsi</h4>
-                        <p>{input.treatmentRecord?.description}</p>
+                        <p className="whitespace-pre-line">
+                          {input.treatmentRecord?.description}
+                        </p>
                       </div>
                       {input.treatmentRecord?.warningNote && (
                         <div className="mb-4">
                           <h3 className="text-lg font-semibold">
                             Catatan Peringatan
                           </h3>
-                          <p>{input.treatmentRecord?.warningNote}</p>
+                          <p className="whitespace-pre-line">
+                            {input.treatmentRecord?.warningNote}
+                          </p>
                         </div>
                       )}
                       <h3 className="text-lg font-semibold">
@@ -931,15 +925,13 @@ export default () => {
                                 <h4 className="font-bold text-center">
                                   Gambar {index + 1}
                                 </h4>
-                                <div className="w-full flex flex-row items-start justify-between gap-2">
-                                  <div>
-                                    <img
-                                      className="rounded"
-                                      src={item.imageURL}
-                                    />
-                                  </div>
+                                <div className="w-full flex flex-row items-start justify-center">
+                                  <img
+                                    className="rounded"
+                                    src={item.imageURL}
+                                  />
                                 </div>
-                                <div className="w-full p-2 bg-white rounded-md">
+                                <div className="w-full p-2 bg-white rounded-md whitespace-pre-line">
                                   <span className="font-semibold mb-2">
                                     Catatan
                                   </span>

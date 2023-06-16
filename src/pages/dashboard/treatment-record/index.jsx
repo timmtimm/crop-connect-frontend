@@ -94,8 +94,8 @@ export default () => {
   const paginationCommodity = getUniquePagination("commodity");
   const paginationBatch = getUniquePagination("batch");
   const paginationTreatmentRecord = getUniquePagination("treatmentRecord");
-  const paginationTreatmentRecordPending = getUniquePagination(
-    "treatmentRecordPending"
+  const paginationTreatmentRecordWaitingResponse = getUniquePagination(
+    "treatmentRecordWaitingResponse"
   );
   const paginationTreatmentRecordRevision = getUniquePagination(
     "treatmentRecordRevision"
@@ -256,15 +256,15 @@ export default () => {
   } = useSWRMutation("/api/v1/treatment-record", triggerfetcher);
 
   const {
-    data: dataTreatmentRecordPending,
-    isLoading: treamentRecordPendingLoading,
-    mutate: mutateTreatmentRecordPending,
+    data: dataTreatmentRecordWaitingResponse,
+    isLoading: treamentRecordWaitingResponse,
+    mutate: mutateTreatmentRecordWaitingResponse,
   } = useSWR(
     [
       "/api/v1/treatment-record",
       {
-        ...paginationTreatmentRecordPending,
-        status: treatmentRecordStatus.pending,
+        ...paginationTreatmentRecordWaitingResponse,
+        status: treatmentRecordStatus.waitingResponse,
       },
     ],
     ([url, params]) => fetcher(url, params),
@@ -374,7 +374,7 @@ export default () => {
       });
     }
 
-    mutateTreatmentRecordPending();
+    mutateTreatmentRecordWaitingResponse();
     mutateTreatmentRecordRevision();
 
     setSearch({
@@ -595,26 +595,27 @@ export default () => {
                 Permintaan Pengisian Riwayat Perawatan
               </h3>
             </div>
-            {dataTreatmentRecordPending && !treamentRecordPendingLoading && (
-              <Table
-                minWidth={400}
-                headCells={headCells}
-                data={dataTreatmentRecordPending}
-                menuAction={(data) => (
-                  <>
-                    {data.status != treatmentRecordStatus.approved && (
-                      <Link href={`${router.pathname}/fill/${data._id}`}>
-                        <MenuItem>Pengisian</MenuItem>
+            {dataTreatmentRecordWaitingResponse &&
+              !treamentRecordWaitingResponse && (
+                <Table
+                  minWidth={400}
+                  headCells={headCells}
+                  data={dataTreatmentRecordWaitingResponse}
+                  menuAction={(data) => (
+                    <>
+                      {data.status != treatmentRecordStatus.approved && (
+                        <Link href={`${router.pathname}/fill/${data._id}`}>
+                          <MenuItem>Pengisian</MenuItem>
+                        </Link>
+                      )}
+                      <Link href={`${router.pathname}/detail/${data._id}`}>
+                        <MenuItem>Lihat Detail</MenuItem>
                       </Link>
-                    )}
-                    <Link href={`${router.pathname}/detail/${data._id}`}>
-                      <MenuItem>Lihat Detail</MenuItem>
-                    </Link>
-                  </>
-                )}
-                uniqueKeyPagination={"treatmentRecordPending"}
-              />
-            )}
+                    </>
+                  )}
+                  uniqueKeyPagination={"treatmentRecordWaitingResponse"}
+                />
+              )}
             <div className="flex flex-row justify-between items-center mb-4">
               <h3 className="text-xl font-semibold">
                 Revisi Riwayat Perawatan

@@ -56,11 +56,8 @@ export default () => {
   };
 
   const handleLogout = () => {
-    setIsLoading(true);
     setAnchorEl(null);
-    router.push("/");
     logout();
-    setIsLoading(false);
   };
 
   const handleClick = (event) => {

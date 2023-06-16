@@ -6,6 +6,7 @@ import Status, {
 } from "@/components/elements/status";
 import Dashboard from "@/components/layouts/dashboard";
 import Loading from "@/components/modules/loading";
+import NotFound from "@/components/templates/notFound";
 import { roleUser, transactionStatus } from "@/constant/constant";
 import { get, putWithJSON } from "@/lib/axios";
 import {
@@ -253,7 +254,15 @@ export default () => {
 
   return (
     <>
-      <Seo title="Detail Penjualan" />
+      <Seo
+        title={
+          isLoading
+            ? "Loading..."
+            : dataTransaction?._id
+            ? `Detail Penjualan ${dataTransaction._id}`
+            : "Penjualan Tidak Ditemukan"
+        }
+      />
       <Snackbar
         open={openSnackbar}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -277,7 +286,7 @@ export default () => {
             src="/search _ find, research, scan, article, document, file, magnifier_lg.png"
             width={160}
             height={160}
-            alt="ilustrasi Batal Transaksi"
+            alt="ilustrasi Cek Kembali"
           />
           <h2 className="text-xl text-center mt-4 font-bold">
             {decision == transactionStatus.accepted
@@ -308,20 +317,11 @@ export default () => {
       <Dashboard roles={roleUser.farmer}>
         <h1 className="text-2xl mb-4 font-bold">Detail Penjualan</h1>
         {result.errorMessage && (
-          <div className="flex flex-col justify-center items-center">
-            <Image
-              src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
-              width={400}
-              height={400}
-              alt="Ilustrasi Not Found"
-            />
-            <h2 className="text-xl font-bold">Penjualan tidak ditemukan</h2>
-            <Link href="/dashboard/sales">
-              <span className="text-[#53A06C]">
-                Kembali ke halaman daftar penjualan
-              </span>
-            </Link>
-          </div>
+          <NotFound
+            content="Penjualan"
+            urlRedirect="/dashboard/sales"
+            redirectPageTitle="daftar penjualan"
+          />
         )}
         {dataTransaction._id && (
           <div className=" w-full bg-white p-4 rounded-xl shadow-md mb-4">
@@ -385,6 +385,27 @@ export default () => {
             >
               Terima
             </Button>
+          </div>
+        )}
+        {!dataTransaction._id && (
+          <div className=" flex min-w-screen flex-col items-center text-center">
+            <Image
+              src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
+              className="mb-16"
+              style={{ objectFit: "contain" }}
+              width={400}
+              height={400}
+              alt="Ilustrasi Not Found"
+            />
+            <span className="text-2xl font-bold">
+              Penjualan yang kamu cari tidak dapat ditemukan
+            </span>
+            <Link href="/dashboard/sales">
+              <span className="text-[#53A06C]">
+                Kembali ke halaman daftar penjualan
+              </span>
+            </Link>
+            <span></span>
           </div>
         )}
       </Dashboard>

@@ -22,6 +22,7 @@ import Slide from "@mui/material/Slide";
 import { batchStatus, roleUser, transactionStatus } from "@/constant/constant";
 import Modal from "@/components/elements/modal";
 import { HttpStatusCode } from "axios";
+import NotFound from "@/components/templates/notFound";
 
 export default () => {
   const router = useRouter();
@@ -104,9 +105,9 @@ export default () => {
         title={
           isLoading
             ? "Loading..."
-            : dataTransaction?.status != HttpStatusCode.Ok
+            : dataTransaction?.data
             ? `Transaksi Tidak Ditemukan`
-            : `Detail Transaksi ${dataTransaction._id}`
+            : `Detail Transaksi ${dataTransaction.commodity?.name}`
         }
       />
       {openModal && (
@@ -115,7 +116,7 @@ export default () => {
             src="/search _ find, research, scan, article, document, file, magnifier_lg.png"
             width={160}
             height={160}
-            alt="ilustrasi Batal Transaksi"
+            alt="ilustrasi Cek Kembali"
           />
           <h2 className="text-xl text-center mt-4 font-bold">
             Apakah anda yakin ingin membatalkan transaksi ini?
@@ -154,20 +155,11 @@ export default () => {
       <Default isAuth={true} roles={roleUser.buyer}>
         <h1 className="text-2xl font-bold mb-4">Detail Transaksi</h1>
         {!isLoading && error && (
-          <div className="flex flex-col justify-center items-center">
-            <Image
-              src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
-              width={400}
-              height={400}
-              alt="Ilustrasi Not Found"
-            />
-            <h2 className="text-xl font-bold">Transaksi tidak ditemukan</h2>
-            <Link href="/transaction-history">
-              <span className="text-[#53A06C]">
-                Kembali ke halaman riwayat transaksi
-              </span>
-            </Link>
-          </div>
+          <NotFound
+            content="Transaksi"
+            urlRedirect="/transaction-history"
+            redirectPageTitle="daftar riwayat transaksi"
+          />
         )}
         {!isLoading && dataTransaction._id && (
           <div className="flex flex-col gap-4 w-full bg-white p-4 rounded-xl shadow-md divide-y-2">
@@ -215,7 +207,7 @@ export default () => {
             </div>
             <div>
               <h2 className="text-lg font-bold my-2">Informasi Komoditas</h2>
-              <div className="flex flex-row items-center gap-x-6">
+              <div className="flex flex-row items-start gap-x-6">
                 <Image
                   className="rounded-lg"
                   src={
@@ -315,7 +307,7 @@ export default () => {
                 </tbody>
               </table>
             </div>
-            {dataTransaction.batch && (
+            {dataTransaction.batch?._id && (
               <div>
                 <h2 className="text-lg font-bold my-2">Informasi Periode</h2>
                 <table className="w-full md:w-fit">
@@ -389,7 +381,9 @@ export default () => {
                   <>
                     <div className="my-2">
                       <h3 className="font-semibold">Kondisi</h3>
-                      <p>{dataTransaction.harvest?.condition}</p>
+                      <p className="whitespace-pre-line">
+                        {dataTransaction.harvest?.condition}
+                      </p>
                     </div>
                     <div>
                       <h3 className="font-semibold">
@@ -406,15 +400,13 @@ export default () => {
                                 <h4 className="font-bold text-center">
                                   Gambar {index + 1}
                                 </h4>
-                                <div className="w-full flex flex-row items-start justify-between gap-2">
-                                  <div>
-                                    <img
-                                      className="rounded"
-                                      src={item.imageURL}
-                                    />
-                                  </div>
+                                <div className="w-full flex flex-row items-start justify-center">
+                                  <img
+                                    className="rounded"
+                                    src={item.imageURL}
+                                  />
                                 </div>
-                                <div className="w-full p-2 bg-white rounded-md">
+                                <div className="w-full p-2 bg-white rounded-md whitespace-pre-line">
                                   <span className="font-semibold mb-2">
                                     Catatan
                                   </span>

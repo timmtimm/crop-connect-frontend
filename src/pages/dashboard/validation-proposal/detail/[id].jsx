@@ -3,6 +3,7 @@ import Seo from "@/components/elements/seo";
 import Status, { convertStatusForProposal } from "@/components/elements/status";
 import Dashboard from "@/components/layouts/dashboard";
 import Loading from "@/components/modules/loading";
+import NotFound from "@/components/templates/notFound";
 import { proposalStatus, roleUser } from "@/constant/constant";
 import { fetcher, putWithJSON } from "@/lib/axios";
 import { runOnce } from "@/lib/swr";
@@ -10,6 +11,7 @@ import { dateFormatToIndonesia, setNumberFormat } from "@/utils/utilities";
 import { Alert, Button, Slide, Snackbar } from "@mui/material";
 import { HttpStatusCode } from "axios";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import useSWR from "swr";
@@ -130,7 +132,7 @@ export default () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [decision, setDecision] = useState("");
   const [error, setError] = useState({ message: "" });
 
@@ -177,18 +179,18 @@ export default () => {
           proposalLoading
             ? "Loading..."
             : dataProposal?.status == HttpStatusCode.Ok
-            ? `Detail Proposal`
+            ? `Detail Proposal ${dataProposal.data.name}`
             : `Proposal Tidak Ditemukan`
         }
       />
-      {isLoading && <Loading />}
+      {(isLoading || proposalLoading) && <Loading />}
       {openModal && (
         <Modal>
           <Image
             src="/search _ find, research, scan, article, document, file, magnifier_lg.png"
             width={160}
             height={160}
-            alt="ilustrasi Batal Transaksi"
+            alt="ilustrasi Cek Kembali"
           />
           <h2 className="text-xl text-center mt-4 font-bold">
             {decision == proposalStatus.approved
@@ -229,9 +231,14 @@ export default () => {
         </Alert>
       </Snackbar>
       <Dashboard roles={roleUser.validator}>
-        {proposalLoading ? (
-          <Loading />
-        ) : (
+        {!proposalLoading && dataProposal?.status != HttpStatusCode.Ok && (
+          <NotFound
+            content="Proposal"
+            urlRedirect="/dashboard/validation-proposal"
+            redirectPageTitle="daftar proposal"
+          />
+        )}
+        {!proposalLoading && dataProposal?.status == HttpStatusCode.Ok && (
           <>
             <h1 className="text-2xl font-bold mb-4">Detail Proposal</h1>
             <div className="flex flex-col gap-4 w-full bg-white p-4 rounded-xl shadow-md divide-y-2">

@@ -57,6 +57,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Link from "next/link";
 import Image from "next/image";
+import NotFound from "@/components/templates/notFound";
 
 const informationColumn = [
   {
@@ -522,16 +523,10 @@ export default () => {
                       key={key}
                       className="w-full flex flex-col rounded-lg p-3 gap-2 bg-gray-200"
                     >
-                      <h4 className="font-bold text-center">
-                        Gambar {key + 1}
-                      </h4>
-                      <div className="w-full flex flex-row items-start justify-between gap-2">
-                        <div>
-                          <img
-                            className="rounded"
-                            src={isURL(file) ? file : URL.createObjectURL(file)}
-                          />
-                        </div>
+                      <div className="flex flex-row justify-between w-full items-center">
+                        <h4 className="font-bold text-center">
+                          Gambar {key + 1}
+                        </h4>
                         <div
                           onClick={() => {
                             removeImage(key);
@@ -540,6 +535,12 @@ export default () => {
                         >
                           <FaTrashAlt className="text-white" />
                         </div>
+                      </div>
+                      <div className="w-full flex justify-center">
+                        <img
+                          className="rounded"
+                          src={isURL(file) ? file : URL.createObjectURL(file)}
+                        />
                       </div>
                       <div className="flex flex-col">
                         <span className="font-semibold">Nama gambar</span>
@@ -577,22 +578,11 @@ export default () => {
           </>
         )}
         {!isLoading && !treatmentRecord._id && (
-          <div className="flex flex-col justify-center items-center">
-            <Image
-              src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
-              width={400}
-              height={400}
-              alt="Ilustrasi Not Found"
-            />
-            <h2 className="text-xl font-bold">
-              Riwayat Perawatan tidak ditemukan
-            </h2>
-            <Link href="/dashboard/treatment-record">
-              <span className="text-[#53A06C]">
-                Kembali ke halaman daftar riwayat perawatan
-              </span>
-            </Link>
-          </div>
+          <NotFound
+            content="Riwayat Perawatan"
+            urlRedirect="/dashboard/treatment-record"
+            redirectPageTitle="daftar riwayat perawatan"
+          />
         )}
       </Dashboard>
     </>

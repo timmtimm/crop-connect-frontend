@@ -7,6 +7,7 @@ import Status, {
 } from "@/components/elements/status";
 import Dashboard from "@/components/layouts/dashboard";
 import Loading from "@/components/modules/loading";
+import NotFound from "@/components/templates/notFound";
 import {
   roleUser,
   transactionStatus,
@@ -28,6 +29,32 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const informationColumn = [
+  {
+    section: "Petani",
+    tableColumn: [
+      {
+        id: "_id",
+        label: "ID",
+        customDisplayRow: (data) => data?.proposal?.commodity?.farmer?._id,
+      },
+      {
+        id: "name",
+        label: "Nama",
+        customDisplayRow: (data) => data?.proposal?.commodity?.farmer?.name,
+      },
+      {
+        id: "email",
+        label: "Email",
+        customDisplayRow: (data) => data?.proposal?.commodity?.farmer?.email,
+      },
+      {
+        id: "phoneNumber",
+        label: "Nomor handphone",
+        customDisplayRow: (data) =>
+          data?.proposal?.commodity?.farmer?.phoneNumber,
+      },
+    ],
+  },
   {
     section: "Komoditas",
     tableColumn: [
@@ -147,7 +174,7 @@ const notesForm = [
   {
     id: "revisionNote",
     label: "Revisi",
-    description: "Catatan revisi yang diberikan oleh validator",
+    description: "Catatan revisi yang diberikan oleh validator kepada petani.",
     type: "text",
     multiline: true,
   },
@@ -155,7 +182,7 @@ const notesForm = [
     id: "warningNote",
     label: "Peringatan",
     description:
-      "Catatan peringatan yang diberikan oleh validator. Catatan ini dapat dilihat oleh pembeli.",
+      "Catatan peringatan yang diberikan oleh validator jika terindikasi terjadinya pelanggaran dari petani.",
     type: "text",
     multiline: true,
   },
@@ -235,7 +262,15 @@ export default () => {
 
   return (
     <>
-      <Seo title="Ubah Catatan Riwayat Perawatan" />
+      <Seo
+        title={
+          isLoading
+            ? "Loading..."
+            : dataTreatment._id
+            ? `Ubah Catatan Riwayat Perawatan ${dataTreatment._id}`
+            : `Riwayat Perawatan Tidak Ditemukan`
+        }
+      />
       {isLoading && <Loading />}
       <Snackbar
         open={open}
@@ -260,22 +295,11 @@ export default () => {
           Ubah Catatan Riwayat Perawatan
         </h1>
         {result.errorMessage && (
-          <div className="flex flex-col justify-center items-center">
-            <Image
-              src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
-              width={400}
-              height={400}
-              alt="Ilustrasi Not Found"
-            />
-            <h2 className="text-xl font-bold">
-              Riwayat Perawatan tidak ditemukan
-            </h2>
-            <Link href="/dashboard/treatment-record">
-              <span className="text-[#53A06C]">
-                Kembali ke halaman daftar riwayat perawatan
-              </span>
-            </Link>
-          </div>
+          <NotFound
+            content="Riwayat Perawatan"
+            urlRedirect="/dashboard/validation-treatment-record"
+            redirectPageTitle="daftar riwayat perawatan"
+          />
         )}
         {dataTreatment._id && (
           <>
@@ -345,7 +369,7 @@ export default () => {
                 </h2>
                 <table className="w-full md:w-fit">
                   <tbody>
-                    {requesterColumn.map((column, index) => (
+                    {validatorColumn.map((column, index) => (
                       <tr key={index}>
                         <td className="flex flex-row items-center justify-between">
                           <span>{column.label}</span>
@@ -391,7 +415,9 @@ export default () => {
                   </tbody>
                 </table>
                 <h4 className="font-semibold">Deskripsi</h4>
-                <p>{dataTreatment?.description}</p>
+                <p className="whitespace-pre-line">
+                  {dataTreatment?.description}
+                </p>
               </div>
               <h3 className="text-lg font-bold">
                 Gambar dan Catatan Perawatan
@@ -406,10 +432,8 @@ export default () => {
                       <h4 className="font-bold text-center">
                         Gambar {index + 1}
                       </h4>
-                      <div className="w-full flex flex-row items-start justify-between gap-2">
-                        <div>
-                          <img className="rounded" src={item.imageURL} />
-                        </div>
+                      <div className="w-full flex flex-row items-start justify-center">
+                        <img className="rounded" src={item.imageURL} />
                       </div>
                       <div className="flex flex-col">
                         <span className="font-semibold">Nama gambar</span>
@@ -417,7 +441,7 @@ export default () => {
                           {getLastURLSegment(item.imageURL)}
                         </span>
                       </div>
-                      <div className="w-full p-2 bg-white rounded-md">
+                      <div className="w-full p-2 bg-white rounded-md whitespace-pre-line">
                         <span className="font-semibold mb-2">Catatan</span>
                         <br />
                         {item.note}

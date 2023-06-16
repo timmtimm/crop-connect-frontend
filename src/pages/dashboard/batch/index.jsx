@@ -170,7 +170,7 @@ export default () => {
 
   return (
     <>
-      <Seo title="Daftar Periode" />
+      <Seo title="Daftar Periode Penanaman" />
       <Root>
         <CssBaseline />
         <Global
@@ -262,7 +262,7 @@ export default () => {
       <Dashboard roles={roleUser.farmer}>
         <div className="flex flex-col gap-4">
           <div className="flex flex-row justify-between items-center mb-4">
-            <h1 className="text-2xl font-bold">Daftar Periode</h1>
+            <h1 className="text-2xl font-bold">Daftar Periode Penanaman</h1>
             <Link href={`${router.pathname}/create`}>
               <Button
                 className="text-white bg-[#52A068] normal-case font-bold"

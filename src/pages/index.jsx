@@ -115,7 +115,7 @@ export default () => {
                       Komoditas Pertanian Segar{" "}
                     </span>
                   </h2>
-                  <p className="hidden md:block md:text-md lg:text-lg my-6">
+                  <p className="hidden md:block text-center lg:text-left md:text-md lg:text-lg my-6">
                     Kami berkomitmen untuk menghubungkan petani dengan pembeli
                     komoditas pertanian secara langsung, memungkinkan Anda
                     mendapatkan komoditas pertanian segar langsung dari

@@ -28,6 +28,9 @@ import useSWR from "swr";
 import { runOnce } from "@/lib/swr";
 import useSWRMutation from "swr/mutation";
 import { setParamRegionFetch } from "@/utils/url";
+import Link from "next/link";
+import Image from "next/image";
+import NotFound from "@/components/templates/notFound";
 
 export default () => {
   const router = useRouter();
@@ -153,6 +156,7 @@ export default () => {
     address: "",
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [proposalName, setProposalName] = useState("");
 
   const handleChange = ({ target: { name, value } }) => {
     setError({ ...error, [name]: "" });
@@ -177,6 +181,7 @@ export default () => {
         district: data.data.region.district,
         subdistrict: data.data.region.subdistrict,
       });
+      setProposalName(data.data.name);
       let tempFormColumn = [...formColumn];
       tempFormColumn[6].disabled = data.data.commodity.isPerennials;
       setFormColumn([...tempFormColumn]);
@@ -376,7 +381,15 @@ export default () => {
 
   return (
     <>
-      <Seo title="Edit Proposal" />
+      <Seo
+        title={
+          isLoading
+            ? "Loading..."
+            : input.name
+            ? `Edit Proposal ${proposalName}`
+            : `Proposal Tidak Ditemukan`
+        }
+      />
       <Snackbar
         open={open}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -395,205 +408,216 @@ export default () => {
       </Snackbar>
       {isLoading && <Loading />}
       <Dashboard roles={roleUser.farmer}>
-        <h1 className="text-2xl mb-4 font-bold">Edit Proposal</h1>
-        <div className="w-full bg-white rounded-xl shadow-md p-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {formColumn.map((column) => (
-              <div className="flex flex-col">
-                <div className="flex flex-row items-center gap-2">
-                  <h2 className="text-lg font-bold">{column.label}</h2>
-                  {column.required && <Status status="Wajib" />}
-                </div>
-                <span className="mb-2">{column.description}</span>
-                {column.isSelect ? (
-                  <FormControl disabled={column.disabled}>
+        {!isLoading && !input.name && (
+          <NotFound
+            content="Proposal"
+            urlRedirect="/dashboard/proposal"
+            redirectPageTitle="daftar proposal"
+          />
+        )}
+        {!isLoading && input.name && (
+          <>
+            <h1 className="text-2xl mb-4 font-bold">Edit Proposal</h1>
+            <div className="w-full bg-white rounded-xl shadow-md p-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {formColumn.map((column) => (
+                  <div className="flex flex-col">
+                    <div className="flex flex-row items-center gap-2">
+                      <h2 className="text-lg font-bold">{column.label}</h2>
+                      {column.required && <Status status="Wajib" />}
+                    </div>
+                    <span className="mb-2">{column.description}</span>
+                    {column.isSelect ? (
+                      <FormControl disabled={column.disabled}>
+                        <Select
+                          error={error[column.name] ? true : false}
+                          className="w-full"
+                          value={
+                            column.isBoolean
+                              ? Boolean(input[column.name])
+                              : input[column.name]
+                          }
+                          onChange={handleChange}
+                          name={column.name}
+                        >
+                          {column.options.map((option) => {
+                            return (
+                              <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                        <FormHelperText className="text-[#d32f2f]">
+                          {error[column.name]}
+                        </FormHelperText>
+                      </FormControl>
+                    ) : (
+                      <TextField
+                        disabled={column.disabled}
+                        error={error[column.name] ? true : false}
+                        name={column.name}
+                        placeholder={column.placeholder}
+                        onChange={handleChange}
+                        type={column.type || "text"}
+                        value={input[column.name]}
+                        InputProps={{
+                          startAdornment: column?.prefix && (
+                            <InputAdornment position="start">
+                              {column.prefix}
+                            </InputAdornment>
+                          ),
+                          endAdornment: column?.suffix && (
+                            <InputAdornment position="end">
+                              {column.suffix}
+                            </InputAdornment>
+                          ),
+                        }}
+                        helperText={error[column.name]}
+                        multiline={column.multiline}
+                        rows={column.multiline ? 4 : 1}
+                      />
+                    )}
+                  </div>
+                ))}
+                <div className="flex flex-col">
+                  <div className="flex flex-row items-center gap-2">
+                    <h2 className="text-lg font-bold">Provinsi</h2>
+                    <Status status="Wajib" />
+                  </div>
+                  <span className="mb-2">
+                    Lokasi lahan penanaman komoditas pada proposal ini berada di
+                    provinsi apa.
+                  </span>
+                  <FormControl error={error.province ? true : false}>
                     <Select
-                      error={error[column.name] ? true : false}
-                      className="w-full"
-                      value={
-                        column.isBoolean
-                          ? Boolean(input[column.name])
-                          : input[column.name]
-                      }
-                      onChange={handleChange}
-                      name={column.name}
+                      name="province"
+                      disabled={provinceLoading}
+                      defaultValue=""
+                      onChange={handleChangeRegion}
+                      value={region.province || ""}
                     >
-                      {column.options.map((option) => {
-                        return (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        );
-                      })}
+                      {province?.data?.map((item) => (
+                        <MenuItem key={item} value={item}>
+                          {item}
+                        </MenuItem>
+                      ))}
                     </Select>
-                    <FormHelperText className="text-[#d32f2f]">
-                      {error[column.name]}
-                    </FormHelperText>
+                    <FormHelperText>{error.province}</FormHelperText>
                   </FormControl>
-                ) : (
-                  <TextField
-                    disabled={column.disabled}
-                    error={error[column.name] ? true : false}
-                    name={column.name}
-                    placeholder={column.placeholder}
-                    onChange={handleChange}
-                    type={column.type || "text"}
-                    value={input[column.name]}
-                    InputProps={{
-                      startAdornment: column?.prefix && (
-                        <InputAdornment position="start">
-                          {column.prefix}
-                        </InputAdornment>
-                      ),
-                      endAdornment: column?.suffix && (
-                        <InputAdornment position="end">
-                          {column.suffix}
-                        </InputAdornment>
-                      ),
-                    }}
-                    helperText={error[column.name]}
-                    multiline={column.multiline}
-                    rows={column.multiline ? 4 : 1}
-                  />
+                </div>
+
+                {region.province && (
+                  <div className="flex flex-col">
+                    <div className="flex flex-row items-center gap-2">
+                      <h2 className="text-lg font-bold">Kabupaten</h2>
+                      <Status status="Wajib" />
+                    </div>
+                    <span className="mb-2">
+                      Lokasi lahan penanaman komoditas pada proposal ini berada
+                      di kabupaten apa.
+                    </span>
+                    <FormControl error={error.regency ? true : false}>
+                      <Select
+                        name="regency"
+                        disabled={mutatingRegency}
+                        defaultValue=""
+                        onChange={handleChangeRegion}
+                        value={region.regency || ""}
+                      >
+                        {regency?.data?.map((item) => (
+                          <MenuItem key={item} value={item}>
+                            {item}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText>{error.regency}</FormHelperText>
+                    </FormControl>
+                  </div>
+                )}
+
+                {region.regency && (
+                  <div className="flex flex-col">
+                    <div className="flex flex-row items-center gap-2">
+                      <h2 className="text-lg font-bold">Kecamatan</h2>
+                      <Status status="Wajib" />
+                    </div>
+                    <span className="mb-2">
+                      Lokasi lahan penanaman komoditas pada proposal ini berada
+                      di kecamatan apa.
+                    </span>
+                    <FormControl error={error.district ? true : false}>
+                      <Select
+                        name="district"
+                        disabled={mutatingDistrict}
+                        defaultValue=""
+                        onChange={handleChangeRegion}
+                        value={region.district || ""}
+                      >
+                        {district?.data?.map((item) => (
+                          <MenuItem key={item} value={item}>
+                            {item}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText>{error.district}</FormHelperText>
+                    </FormControl>
+                  </div>
+                )}
+
+                {region.district && (
+                  <div className="flex flex-col">
+                    <div className="flex flex-row items-center gap-2">
+                      <h2 className="text-lg font-bold">Kelurahan</h2>
+                      <Status status="Wajib" />
+                    </div>
+                    <span className="mb-2">
+                      Lokasi lahan penanaman komoditas pada proposal ini berada
+                      di kelurahan apa.
+                    </span>
+                    <FormControl error={error.subdistrict ? true : false}>
+                      <Select
+                        name="subdistrict"
+                        disabled={mutatingSubdistrict}
+                        defaultValue=""
+                        onChange={handleChangeRegion}
+                        value={region.subdistrict}
+                      >
+                        {subdistrict?.data?.map((item) => (
+                          <MenuItem
+                            name="subdistrict"
+                            key={item.subdistrict}
+                            value={item.subdistrict}
+                            onClick={() =>
+                              handleChange({
+                                target: {
+                                  name: "regionID",
+                                  value: item._id,
+                                },
+                              })
+                            }
+                          >
+                            {item.subdistrict}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText>{error.subdistrict}</FormHelperText>
+                    </FormControl>
+                  </div>
                 )}
               </div>
-            ))}
-            <div className="flex flex-col">
-              <div className="flex flex-row items-center gap-2">
-                <h2 className="text-lg font-bold">Provinsi</h2>
-                <Status status="Wajib" />
-              </div>
-              <span className="mb-2">
-                Lokasi lahan penanaman komoditas pada proposal ini berada di
-                provinsi apa.
-              </span>
-              <FormControl error={error.province ? true : false}>
-                <Select
-                  name="province"
-                  disabled={provinceLoading}
-                  defaultValue=""
-                  onChange={handleChangeRegion}
-                  value={region.province || ""}
+              <div className="flex mt-2 gap-2 justify-end">
+                <Button
+                  className="text-white bg-[#52A068] normal-case font-bold"
+                  variant="contained"
+                  onClick={handleSubmit}
                 >
-                  {province?.data?.map((item) => (
-                    <MenuItem key={item} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <FormHelperText>{error.province}</FormHelperText>
-              </FormControl>
+                  Simpan
+                </Button>
+              </div>
             </div>
-
-            {region.province && (
-              <div className="flex flex-col">
-                <div className="flex flex-row items-center gap-2">
-                  <h2 className="text-lg font-bold">Kabupaten</h2>
-                  <Status status="Wajib" />
-                </div>
-                <span className="mb-2">
-                  Lokasi lahan penanaman komoditas pada proposal ini berada di
-                  kabupaten apa.
-                </span>
-                <FormControl error={error.regency ? true : false}>
-                  <Select
-                    name="regency"
-                    disabled={mutatingRegency}
-                    defaultValue=""
-                    onChange={handleChangeRegion}
-                    value={region.regency || ""}
-                  >
-                    {regency?.data?.map((item) => (
-                      <MenuItem key={item} value={item}>
-                        {item}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText>{error.regency}</FormHelperText>
-                </FormControl>
-              </div>
-            )}
-
-            {region.regency && (
-              <div className="flex flex-col">
-                <div className="flex flex-row items-center gap-2">
-                  <h2 className="text-lg font-bold">Kecamatan</h2>
-                  <Status status="Wajib" />
-                </div>
-                <span className="mb-2">
-                  Lokasi lahan penanaman komoditas pada proposal ini berada di
-                  kecamatan apa.
-                </span>
-                <FormControl error={error.district ? true : false}>
-                  <Select
-                    name="district"
-                    disabled={mutatingDistrict}
-                    defaultValue=""
-                    onChange={handleChangeRegion}
-                    value={region.district || ""}
-                  >
-                    {district?.data?.map((item) => (
-                      <MenuItem key={item} value={item}>
-                        {item}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText>{error.district}</FormHelperText>
-                </FormControl>
-              </div>
-            )}
-
-            {region.district && (
-              <div className="flex flex-col">
-                <div className="flex flex-row items-center gap-2">
-                  <h2 className="text-lg font-bold">Kelurahan</h2>
-                  <Status status="Wajib" />
-                </div>
-                <span className="mb-2">
-                  Lokasi lahan penanaman komoditas pada proposal ini berada di
-                  kelurahan apa.
-                </span>
-                <FormControl error={error.subdistrict ? true : false}>
-                  <Select
-                    name="subdistrict"
-                    disabled={mutatingSubdistrict}
-                    defaultValue=""
-                    onChange={handleChangeRegion}
-                    value={region.subdistrict}
-                  >
-                    {subdistrict?.data?.map((item) => (
-                      <MenuItem
-                        name="subdistrict"
-                        key={item.subdistrict}
-                        value={item.subdistrict}
-                        onClick={() =>
-                          handleChange({
-                            target: {
-                              name: "regionID",
-                              value: item._id,
-                            },
-                          })
-                        }
-                      >
-                        {item.subdistrict}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText>{error.subdistrict}</FormHelperText>
-                </FormControl>
-              </div>
-            )}
-          </div>
-          <div className="flex mt-2 gap-2 justify-end">
-            <Button
-              className="text-white bg-[#52A068] normal-case font-bold"
-              variant="contained"
-              onClick={handleSubmit}
-            >
-              Simpan
-            </Button>
-          </div>
-        </div>
+          </>
+        )}
       </Dashboard>
     </>
   );

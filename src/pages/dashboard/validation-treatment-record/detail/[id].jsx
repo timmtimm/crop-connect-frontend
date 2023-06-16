@@ -7,6 +7,7 @@ import Status, {
 } from "@/components/elements/status";
 import Dashboard from "@/components/layouts/dashboard";
 import Loading from "@/components/modules/loading";
+import NotFound from "@/components/templates/notFound";
 import {
   roleUser,
   transactionStatus,
@@ -28,6 +29,32 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const informationColumn = [
+  {
+    section: "Petani",
+    tableColumn: [
+      {
+        id: "_id",
+        label: "ID",
+        customDisplayRow: (data) => data?.proposal?.commodity?.farmer?._id,
+      },
+      {
+        id: "name",
+        label: "Nama",
+        customDisplayRow: (data) => data?.proposal?.commodity?.farmer?.name,
+      },
+      {
+        id: "email",
+        label: "Email",
+        customDisplayRow: (data) => data?.proposal?.commodity?.farmer?.email,
+      },
+      {
+        id: "phoneNumber",
+        label: "Nomor handphone",
+        customDisplayRow: (data) =>
+          data?.proposal?.commodity?.farmer?.phoneNumber,
+      },
+    ],
+  },
   {
     section: "Komoditas",
     tableColumn: [
@@ -225,7 +252,15 @@ export default () => {
 
   return (
     <>
-      <Seo title="Detail Riwayat Perawatan" />
+      <Seo
+        title={
+          isLoading
+            ? "Loading..."
+            : dataTreatment._id
+            ? `Detail Riwayat Perawatan ${dataTreatment.batch?.name} - ${dataTreatment.number}`
+            : "Riwayat Perawatan Tidak Ditemukan"
+        }
+      />
       {isLoading && <Loading />}
       {openModal && (
         <Modal>
@@ -233,7 +268,7 @@ export default () => {
             src="/search _ find, research, scan, article, document, file, magnifier_lg.png"
             width={160}
             height={160}
-            alt="ilustrasi Batal Transaksi"
+            alt="ilustrasi Cek Kembali"
           />
           <h2 className="text-xl text-center mt-4 font-bold">
             {input.status == treatmentRecordStatus.approved
@@ -298,24 +333,13 @@ export default () => {
       <Dashboard roles={roleUser.validator}>
         <h1 className="text-2xl mb-4 font-bold">Detail Riwayat Perawatan</h1>
         {result.errorMessage && (
-          <div className="flex flex-col justify-center items-center">
-            <Image
-              src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
-              width={400}
-              height={400}
-              alt="Ilustrasi Not Found"
-            />
-            <h2 className="text-xl font-bold">
-              Riwayat Perawatan tidak ditemukan
-            </h2>
-            <Link href="/dashboard/treatment-record">
-              <span className="text-[#53A06C]">
-                Kembali ke halaman daftar riwayat perawatan
-              </span>
-            </Link>
-          </div>
+          <NotFound
+            content="Riwayat Perawatan"
+            urlRedirect="/dashboard/validation-treatment-record"
+            redirectPageTitle="daftar riwayat perawatan"
+          />
         )}
-        {dataTreatment._id && (
+        {!isLoading && dataTreatment._id && (
           <>
             <div className=" w-full bg-white p-4 rounded-xl shadow-md mb-4">
               <h2 className="text-lg font-bold mb-2">
@@ -429,7 +453,9 @@ export default () => {
                   </tbody>
                 </table>
                 <h4>Deskripsi</h4>
-                <p>{dataTreatment?.description}</p>
+                <p className="whitespace-pre-line">
+                  {dataTreatment?.description}
+                </p>
               </div>
               {(dataTreatment?.revisionNote || dataTreatment?.warningNote) && (
                 <div className="mb-4">
@@ -438,13 +464,17 @@ export default () => {
                     {dataTreatment?.revisionNote && (
                       <div>
                         <h4>Revisi</h4>
-                        <p>{dataTreatment?.revisionNote}</p>
+                        <p className="whitespace-pre-line">
+                          {dataTreatment?.revisionNote}
+                        </p>
                       </div>
                     )}
                     {dataTreatment?.warningNote && (
                       <div>
                         <h4>Peringatan</h4>
-                        <p>{dataTreatment?.warningNote}</p>
+                        <p className="whitespace-pre-line">
+                          {dataTreatment?.warningNote}
+                        </p>
                       </div>
                     )}
                   </div>
@@ -463,10 +493,8 @@ export default () => {
                       <h4 className="font-bold text-center">
                         Gambar {index + 1}
                       </h4>
-                      <div className="w-full flex flex-row items-start justify-between gap-2">
-                        <div>
-                          <img className="rounded" src={item.imageURL} />
-                        </div>
+                      <div className="w-full flex flex-row items-start justify-center">
+                        <img className="rounded" src={item.imageURL} />
                       </div>
                       <div className="flex flex-col">
                         <span className="font-semibold">Nama gambar</span>

@@ -36,6 +36,7 @@ import { roleUser, transactionType } from "@/constant/constant";
 import { HttpStatusCode } from "axios";
 import Status, { convertStatusForBatch } from "@/components/elements/status";
 import Modal from "@/components/elements/modal";
+import NotFound from "@/components/templates/notFound";
 
 export default () => {
   const router = useRouter();
@@ -290,7 +291,7 @@ export default () => {
             src="/search _ find, research, scan, article, document, file, magnifier_lg.png"
             width={160}
             height={160}
-            alt="ilustrasi Batal Transaksi"
+            alt="ilustrasi Cek Kembali"
           />
           <h2 className="text-xl text-center mt-4 font-bold">
             Apakah anda sudah yakin dengan data yang anda masukkan?
@@ -320,25 +321,12 @@ export default () => {
         mutatingDistrict ||
         mutatingSubdistrict) && <Loading />}
       <Default>
-        {/* {JSON.stringify(dataBatch?.data)}
-        {JSON.stringify(dataProposal)} */}
         <h1 className="text-2xl font-bold mb-4">
           Perjanjian Transaksi Pembelian
         </h1>
         {queryParam.transactionType == transactionType.annuals &&
           (dataProposal?.status != HttpStatusCode.Ok ? (
-            <div className="flex flex-col justify-center items-center">
-              <Image
-                src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
-                width={400}
-                height={400}
-                alt="Ilustrasi Not Found"
-              />
-              <h2 className="text-xl font-bold">Transaksi tidak ditemukan</h2>
-              <Link href="/">
-                <span className="text-[#53A06C]">Kembali ke halaman utama</span>
-              </Link>
-            </div>
+            <NotFound content="Proposal" redirectPageTitle="utama" />
           ) : isSuccess ? (
             <div className="flex flex-col justify-center items-center">
               <Image
@@ -631,18 +619,7 @@ export default () => {
           ))}
         {queryParam.transactionType == transactionType.perennials &&
           (dataBatch?.status != HttpStatusCode.Ok ? (
-            <div className="flex flex-col justify-center items-center">
-              <Image
-                src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
-                width={400}
-                height={400}
-                alt="Ilustrasi Not Found"
-              />
-              <h2 className="text-xl font-bold">Transaksi tidak ditemukan</h2>
-              <Link href="/">
-                <span className="text-[#53A06C]">Kembali ke halaman utama</span>
-              </Link>
-            </div>
+            <NotFound content="Periode Penanaman" redirectPageTitle="utama" />
           ) : isSuccess ? (
             <div className="flex flex-col justify-center items-center">
               <Image

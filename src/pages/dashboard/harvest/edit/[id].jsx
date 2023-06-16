@@ -38,6 +38,7 @@ import {
 import dayjs from "dayjs";
 import Link from "next/link";
 import Image from "next/image";
+import NotFound from "@/components/templates/notFound";
 
 const informationColumn = [
   {
@@ -451,7 +452,7 @@ export default () => {
                       <p className="mb-4">{harvest.revisionNote}</p>
                     </>
                   )}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-4">
                       {formColumn.map((column) => (
                         <div className="flex flex-col">
@@ -627,20 +628,11 @@ export default () => {
             </>
           )}
         {!isLoadingGet && !harvest._id && (
-          <div className="flex flex-col justify-center items-center">
-            <Image
-              src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
-              width={400}
-              height={400}
-              alt="Ilustrasi Not Found"
-            />
-            <h2 className="text-xl font-bold">Panen tidak ditemukan</h2>
-            <Link href="/dashboard/harvest">
-              <span className="text-[#53A06C]">
-                Kembali ke halaman daftar panen
-              </span>
-            </Link>
-          </div>
+          <NotFound
+            content="Panen"
+            urlRedirect="/dashboard/harvest"
+            redirectPageTitle="daftar panen"
+          />
         )}
         {!isLoadingGet &&
           harvest._id &&

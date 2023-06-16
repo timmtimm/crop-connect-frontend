@@ -2,6 +2,7 @@ import Modal from "@/components/elements/modal";
 import Seo from "@/components/elements/seo";
 import Dashboard from "@/components/layouts/dashboard";
 import Loading from "@/components/modules/loading";
+import NotFound from "@/components/templates/notFound";
 import { roleUser, transactionStatus } from "@/constant/constant";
 import { get, putWithJSON } from "@/lib/axios";
 import {
@@ -91,27 +92,22 @@ export default () => {
 
   return (
     <>
-      <Seo title="Detail Validator" />
+      <Seo
+        title={
+          isLoading
+            ? "Loading..."
+            : dataUser?._id
+            ? `Detail Validator ${dataUser.name}`
+            : "Validator Tidak Ditemukan"
+        }
+      />
       {isLoading && <Loading />}
       <Dashboard roles={roleUser.admin}>
         <h1 className="text-2xl mb-4 font-bold">Detail Validator</h1>
         {result.errorMessage && (
-          <div className="flex flex-col justify-center items-center">
-            <Image
-              src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
-              width={400}
-              height={400}
-              alt="Ilustrasi Not Found"
-            />
-            <h2 className="text-xl font-bold">Validator tidak ditemukan</h2>
-            <Link href="/validator">
-              <span className="text-[#53A06C]">
-                Kembali ke halaman daftar validator
-              </span>
-            </Link>
-          </div>
+          <NotFound content="Validator" urlRedirect="dashboard/validator" />
         )}
-        {!isLoading && dataUser && (
+        {!isLoading && dataUser?._id && (
           <div className=" w-full bg-white p-4 rounded-xl shadow-md mb-4">
             <div className="flex flex-col gap-4 divide-y-2">
               <table className="w-full md:w-fit">

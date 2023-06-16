@@ -93,7 +93,7 @@ const headCells = [
     id: "validator",
     label: "Diterima oleh",
     isSort: false,
-    customDisplayRow: (data) => data?.accpeter?.name,
+    customDisplayRow: (data) => data?.accepter?.name,
   },
   {
     id: "createdAt",

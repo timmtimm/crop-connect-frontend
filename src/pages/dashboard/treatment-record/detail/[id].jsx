@@ -5,6 +5,7 @@ import Status, {
 } from "@/components/elements/status";
 import Dashboard from "@/components/layouts/dashboard";
 import Loading from "@/components/modules/loading";
+import NotFound from "@/components/templates/notFound";
 import { roleUser } from "@/constant/constant";
 import { get } from "@/lib/axios";
 import {
@@ -116,7 +117,7 @@ const informationColumn = [
   },
 ];
 
-const requesterColumn = [
+const validatorColumn = [
   {
     id: "name",
     label: "Nama",
@@ -131,24 +132,6 @@ const requesterColumn = [
     id: "phoneNumber",
     label: "Nomor Telepon",
     customDisplayRow: (data) => data?.requester?.phoneNumber,
-  },
-];
-
-const accepterColumn = [
-  {
-    id: "name",
-    label: "Nama",
-    customDisplayRow: (data) => data?.accepter?.name,
-  },
-  {
-    id: "email",
-    label: "Email",
-    customDisplayRow: (data) => data?.accepter?.email,
-  },
-  {
-    id: "phoneNumber",
-    label: "Nomor Telepon",
-    customDisplayRow: (data) => data?.accepter?.phoneNumber,
   },
 ];
 
@@ -187,27 +170,24 @@ export default () => {
 
   return (
     <>
-      <Seo title="Detail Riwayat Perawatan" />
+      <Seo
+        title={
+          isLoading
+            ? "Loading..."
+            : dataTreatment._id
+            ? `Detail Riwayat Perawatan ${dataTreatment.batch?.name} - ${dataTreatment.number}`
+            : "Riwayat Perawatan Tidak Ditemukan"
+        }
+      />
       {isLoading && <Loading />}
       <Dashboard roles={roleUser.farmer}>
         <h1 className="text-2xl mb-4 font-bold">Detail Riwayat Perawatan</h1>
         {result.errorMessage && (
-          <div className="flex flex-col justify-center items-center">
-            <Image
-              src="/navigation _ location, map, destination, direction, question, lost, need help_lg.png"
-              width={400}
-              height={400}
-              alt="Ilustrasi Not Found"
-            />
-            <h2 className="text-xl font-bold">
-              Riwayat Perawatan tidak ditemukan
-            </h2>
-            <Link href="/dashboard/treatment-record">
-              <span className="text-[#53A06C]">
-                Kembali ke halaman daftar riwayat perawatan
-              </span>
-            </Link>
-          </div>
+          <NotFound
+            content="Riwayat Perawatan"
+            urlRedirect="/dashboard/treatment-record"
+            redirectPageTitle="daftar riwayat perawatan"
+          />
         )}
         {dataTreatment._id && (
           <>
@@ -248,13 +228,13 @@ export default () => {
                 ))}
               </div>
             </div>
-            <div className=" w-full bg-white p-4 rounded-xl mb-4">
+            <div className=" w-full bg-white p-4 rounded-xl shadow-md mb-4">
               <h2 className="text-lg font-bold mb-2">
                 Kontak Validator Pengaju
               </h2>
               <table className="w-full md:w-fit">
                 <tbody>
-                  {requesterColumn.map((column, index) => (
+                  {validatorColumn.map((column, index) => (
                     <tr key={index}>
                       <td className="flex flex-row items-center justify-between">
                         <span>{column.label}</span>
@@ -271,13 +251,13 @@ export default () => {
               </table>
             </div>
             {dataTreatment?.accepter && (
-              <div className=" w-full bg-white p-4 rounded-xl mb-4">
+              <div className=" w-full bg-white p-4 rounded-xl shadow-md mb-4">
                 <h2 className="text-lg font-bold mb-2">
                   Kontak Validator Penerima
                 </h2>
                 <table className="w-full md:w-fit">
                   <tbody>
-                    {requesterColumn.map((column, index) => (
+                    {validatorColumn.map((column, index) => (
                       <tr key={index}>
                         <td className="flex flex-row items-center justify-between">
                           <span>{column.label}</span>
@@ -294,10 +274,10 @@ export default () => {
                 </table>
               </div>
             )}
-            <div className=" w-full bg-white p-4 rounded-xl mb-4">
+            <div className=" w-full bg-white p-4 rounded-xl shadow-md mb-4">
               <h2 className="text-lg font-bold mb-2">Informasi Perawatan</h2>
               <div className="flex flex-row justify-between items-center sm:justify-start gap-2 mb-4">
-                <h3 className="font-semibold">Status</h3>
+                <h3 className="text-lg font-semibold">Status</h3>
                 <div className="w-fit">
                   <Status
                     type={convertStatusForTreatmentRecord(
@@ -323,7 +303,9 @@ export default () => {
                   </tbody>
                 </table>
                 <h4>Deskripsi</h4>
-                <p>{dataTreatment?.description}</p>
+                <p className="whitespace-pre-line">
+                  {dataTreatment?.description}
+                </p>
               </div>
               {(dataTreatment?.revisionNote || dataTreatment?.warningNote) && (
                 <div className="mb-4">
@@ -332,13 +314,17 @@ export default () => {
                     {dataTreatment?.revisionNote && (
                       <div>
                         <h4>Revisi</h4>
-                        <p>{dataTreatment?.revisionNote}</p>
+                        <p className="whitespace-pre-line">
+                          {dataTreatment?.revisionNote}
+                        </p>
                       </div>
                     )}
                     {dataTreatment?.warningNote && (
                       <div>
                         <h4>Peringatan</h4>
-                        <p>{dataTreatment?.warningNote}</p>
+                        <p className="whitespace-pre-line">
+                          {dataTreatment?.warningNote}
+                        </p>
                       </div>
                     )}
                   </div>
@@ -357,10 +343,8 @@ export default () => {
                       <h4 className="font-bold text-center">
                         Gambar {index + 1}
                       </h4>
-                      <div className="w-full flex flex-row items-start justify-between gap-2">
-                        <div>
-                          <img className="rounded" src={item.imageURL} />
-                        </div>
+                      <div className="w-full flex flex-row items-start justify-center">
+                        <img className="rounded" src={item.imageURL} />
                       </div>
                       <div className="flex flex-col">
                         <span className="font-semibold">Nama gambar</span>
@@ -368,7 +352,7 @@ export default () => {
                           {getLastURLSegment(item.imageURL)}
                         </span>
                       </div>
-                      <div className="w-full p-2 bg-white rounded-md">
+                      <div className="w-full p-2 bg-white rounded-md whitespace-pre-line">
                         <span className="font-semibold mb-2">Catatan</span>
                         <br />
                         {item.note}
