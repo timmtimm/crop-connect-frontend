@@ -368,9 +368,10 @@ export default () => {
                             <span className="hidden md:flex text-right">:</span>
                           </td>
                           <td className="px-2 text-right md:text-left">
-                            {setWeightFormat(
+                            {setNumberFormat(
                               dataTransaction.harvest?.totalHarvest
-                            )}
+                            )}{" "}
+                            kilogram
                           </td>
                         </tr>
                       </>
