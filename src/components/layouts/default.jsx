@@ -28,12 +28,6 @@ export default (props) => {
       if (!isLoadingProfile && !isAuthenticated) {
         router.replace({
           pathname: "/login",
-          query: {
-            redirect: JSON.stringify({
-              pathname: router.pathname,
-              query: router.query,
-            }),
-          },
         });
 
         if (roles) {

@@ -474,6 +474,7 @@ export default () => {
                                         .estimatedTotalHarvest
                                   )}
                               </span>
+
                               {input.batchTransaction.isAvailable ? (
                                 <Link
                                   href={{
@@ -504,7 +505,10 @@ export default () => {
                                 </Link>
                               ) : (
                                 <Button
-                                  className="w-full bg-[#52A068] normal-case font-bold mt-2"
+                                  className={`w-full bg-[#52A068] normal-case font-bold mt-2 ${
+                                    profileUser.role != roleUser.buyer &&
+                                    "hidden"
+                                  }`}
                                   disabled={
                                     input.batchTransaction._id &&
                                     input.batchTransaction.isAvailable
@@ -605,7 +609,10 @@ export default () => {
                                   }}
                                 >
                                   <Button
-                                    className="w-full bg-[#52A068] normal-case font-bold mt-2"
+                                    className={`w-full bg-[#52A068] normal-case font-bold mt-2 ${
+                                      profileUser.role != roleUser.buyer &&
+                                      "hidden"
+                                    }`}
                                     disabled={
                                       input.proposalTransaction._id &&
                                       input.proposalTransaction.isAvailable
@@ -619,7 +626,10 @@ export default () => {
                                 </Link>
                               ) : (
                                 <Button
-                                  className="w-full bg-[#52A068] normal-case font-bold mt-2"
+                                  className={`w-full bg-[#52A068] normal-case font-bold mt-2 ${
+                                    profileUser.role != roleUser.buyer &&
+                                    "hidden"
+                                  }`}
                                   disabled={
                                     input.proposalTransaction._id &&
                                     input.proposalTransaction.isAvailable
