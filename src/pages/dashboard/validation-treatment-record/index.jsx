@@ -905,6 +905,7 @@ export default () => {
             </div>
           </>
         )}
+        {JSON.stringify(dataTreatmentRecord)}
         {!mutatingTreatmentRecord && dataTreatmentRecord && (
           <Table
             minWidth={400}
@@ -912,9 +913,11 @@ export default () => {
             data={dataTreatmentRecord}
             menuAction={(data) => (
               <>
-                <Link href={`${router.pathname}/notes/${data._id}`}>
-                  <MenuItem>Ubah Catatan</MenuItem>
-                </Link>
+                {data.status == treatmentRecordStatus.revision && (
+                  <Link href={`${router.pathname}/notes/${data._id}`}>
+                    <MenuItem>Ubah Catatan</MenuItem>
+                  </Link>
+                )}
                 <Link href={`${router.pathname}/detail/${data._id}`}>
                   <MenuItem>Lihat Detail</MenuItem>
                 </Link>
