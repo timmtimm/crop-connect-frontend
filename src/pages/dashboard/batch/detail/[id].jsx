@@ -95,6 +95,11 @@ const informationColumn = [
         customDisplayRow: (data) => data?.name,
       },
       {
+        id: "isAvailable",
+        label: "Tersedia",
+        customDisplayRow: (data) => (data?.isAvailable ? "Ya" : "Tidak"),
+      },
+      {
         id: "status",
         label: "Status",
         customDisplayRow: (data) => (

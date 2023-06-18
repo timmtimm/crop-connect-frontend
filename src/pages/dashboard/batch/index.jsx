@@ -65,6 +65,12 @@ const headCells = [
       dateFormatToIndonesia(data.estimatedHarvestDate),
   },
   {
+    id: "isAvailable",
+    label: "Tersedia",
+    isSort: false,
+    customDisplayRow: (data) => (data.isAvailable ? "Ya" : "Tidak"),
+  },
+  {
     id: "status",
     label: "Status",
     isSort: false,
