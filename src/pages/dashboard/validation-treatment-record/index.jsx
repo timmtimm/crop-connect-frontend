@@ -905,7 +905,6 @@ export default () => {
             </div>
           </>
         )}
-        {JSON.stringify(dataTreatmentRecord)}
         {!mutatingTreatmentRecord && dataTreatmentRecord && (
           <Table
             minWidth={400}
