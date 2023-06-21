@@ -82,19 +82,6 @@ export default () => {
     }
   };
 
-  const setRedirect = () => {
-    if (router.asPath == "/") {
-      return {};
-    } else {
-      return {
-        redirect: JSON.stringify({
-          pathname: router.pathname,
-          query: router.query,
-        }),
-      };
-    }
-  };
-
   useEffect(() => {
     setInput({
       searchBy: router.query?.searchBy || listSearchBy[0].value,
@@ -219,7 +206,6 @@ export default () => {
                   <Link
                     href={{
                       pathname: "/login",
-                      query: setRedirect(),
                     }}
                   >
                     <Button
@@ -232,7 +218,6 @@ export default () => {
                   <Link
                     href={{
                       pathname: "/register",
-                      query: setRedirect(),
                     }}
                   >
                     <Button

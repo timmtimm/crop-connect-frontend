@@ -101,30 +101,6 @@ export default () => {
     setError({ ...error, [name]: "" });
   };
 
-  /* useEffect */
-  useEffect(() => {
-    if (!Cookies.get("token")) {
-      router.replace({
-        pathname: "/login",
-        query: {
-          redirect: router.pathname,
-        },
-      });
-    } else if (
-      !isLoadingProfile &&
-      isAuthenticated &&
-      !checkRole(true, roleUser.buyer)
-    ) {
-      router.replace("/");
-    } else if (
-      !isLoadingProfile &&
-      isAuthenticated &&
-      checkRole(true, roleUser.buyer)
-    ) {
-      setIsLoading(false);
-    }
-  }, [isLoadingProfile, isAuthenticated]);
-
   /* Region */
   const { data: province, isLoading: provinceLoading } = useSWR(
     ["/api/v1/region/province", { country: input.country }],
@@ -320,7 +296,7 @@ export default () => {
         mutatingRegency ||
         mutatingDistrict ||
         mutatingSubdistrict) && <Loading />}
-      <Default>
+      <Default isAuth={true} roles={roleUser.buyer}>
         <h1 className="text-2xl font-bold mb-4">
           Perjanjian Transaksi Pembelian
         </h1>

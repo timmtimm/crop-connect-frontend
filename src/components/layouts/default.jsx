@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 
 export default (props) => {
-  const { homepage, children, isAuth, roles, className } = props;
+  const { homepage, children, isAuth, roles } = props;
   const router = useRouter();
   const { isLoadingProfile, isAuthenticated, checkRole } = useProfileUser();
 
