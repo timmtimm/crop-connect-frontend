@@ -11,10 +11,10 @@ export default (props) => {
 
   const handleCheckRole = () => {
     if (Array.isArray(roles)) {
-      let flag = true;
+      let flag = false;
       roles.forEach((role) => {
         if (!checkRole(true, role)) {
-          flag = false;
+          flag = true;
         }
       });
       return flag;
@@ -29,14 +29,11 @@ export default (props) => {
         router.replace({
           pathname: "/login",
         });
-
-        if (roles) {
-          if (handleCheckRole()) {
-            router.replace({
-              pathname: "/",
-            });
-          }
-        }
+      }
+      if (!isLoadingProfile && isAuthenticated && roles && handleCheckRole()) {
+        router.replace({
+          pathname: "/",
+        });
       }
     }, [isLoadingProfile, isAuthenticated]);
   }

@@ -42,7 +42,6 @@ export default () => {
   const router = useRouter();
   const { id } = router.query;
   const queryParam = router.query;
-  const { isLoadingProfile, isAuthenticated, checkRole } = useProfileUser();
 
   /* Snackbar */
   const [open, setOpen] = useState(false);
@@ -244,7 +243,17 @@ export default () => {
     handleModal();
   };
 
-  if (mutatingProposal || mutatingBatch || isLoading) return <Loading />;
+  if (
+    queryParam.transactionType == transactionType.annuals &&
+    mutatingProposal
+  ) {
+    return <Loading />;
+  } else if (
+    queryParam.transactionType == transactionType.perennials &&
+    mutatingBatch
+  ) {
+    return <Loading />;
+  }
 
   return (
     <>
