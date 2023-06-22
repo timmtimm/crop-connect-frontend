@@ -244,7 +244,7 @@ export default () => {
     if (data.status == HttpStatusCode.Ok) {
       router.push("/dashboard/validation-treatment-record");
     } else {
-      setError({ ...error, message: data.message });
+      setResult({ errorMessage: data.message });
     }
 
     setIsLoading(false);

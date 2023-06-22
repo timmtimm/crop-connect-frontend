@@ -311,7 +311,7 @@ export default () => {
                 {informationColumn.map((section, index) => (
                   <div key={index}>
                     <h2
-                      className={`text-lg font-bold ${
+                      className={`font-semibold ${
                         index == 0 ? "mb-2" : "my-2"
                       }`}
                     >
@@ -388,8 +388,8 @@ export default () => {
             )}
             <div className=" w-full bg-white p-4 rounded-xl shadow-md mb-4">
               <h2 className="text-lg font-bold mb-2">Informasi Perawatan</h2>
-              <div className="flex flex-col mb-4">
-                <h3 className="text-lg font-bold">Status</h3>
+              <div className="flex flex-row justify-between items-center sm:justify-start gap-2 mb-4">
+                <h3 className="font-semibold">Status</h3>
                 <div className="w-fit">
                   <Status
                     type={convertStatusForTreatmentRecord(
@@ -400,12 +400,12 @@ export default () => {
                 </div>
               </div>
               <div className="mb-4">
-                <h3 className="text-lg font-bold">Instruksi</h3>
+                <h3 className="font-semibold">Instruksi</h3>
                 <table className="w-full md:w-fit">
                   <tbody>
                     <tr>
                       <td className="flex flex-row items-center justify-between">
-                        <span className="font-semibold">Tanggal Pengisian</span>
+                        <span className="">Tanggal Pengisian</span>
                         <span className="hidden md:flex text-right">:</span>
                       </td>
                       <td className="ml-2 text-right md:text-left">
@@ -414,12 +414,12 @@ export default () => {
                     </tr>
                   </tbody>
                 </table>
-                <h4 className="font-semibold">Deskripsi</h4>
+                <h4>Deskripsi</h4>
                 <p className="whitespace-pre-line">
                   {dataTreatment?.description}
                 </p>
               </div>
-              <h3 className="text-lg font-bold">
+              <h3 className="text-lg font-semibold">
                 Gambar dan Catatan Perawatan
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

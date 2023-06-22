@@ -7,7 +7,11 @@ import NotFound from "@/components/templates/notFound";
 import { proposalStatus, roleUser } from "@/constant/constant";
 import { fetcher, putWithJSON } from "@/lib/axios";
 import { runOnce } from "@/lib/swr";
-import { dateFormatToIndonesia, setNumberFormat } from "@/utils/utilities";
+import {
+  dateFormatToIndonesia,
+  setNumberFormat,
+  setWeightFormat,
+} from "@/utils/utilities";
 import { Alert, Button, Slide, Snackbar } from "@mui/material";
 import { HttpStatusCode } from "axios";
 import Image from "next/image";
@@ -91,6 +95,13 @@ const column = [
           <span>
             {setNumberFormat(data?.plantingArea)} km<sup>2</sup>
           </span>
+        ),
+      },
+      {
+        id: "estimatedTotalHarvest",
+        label: "Perkiraan total panen",
+        customDisplayRow: (data) => (
+          <span>{setWeightFormat(data?.estimatedTotalHarvest)}</span>
         ),
       },
       {
