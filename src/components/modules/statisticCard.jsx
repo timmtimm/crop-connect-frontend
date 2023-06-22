@@ -12,13 +12,7 @@ export default (props) => {
     <div className="w-full flex flex-col content-between gap-4 bg-white p-6 shadow-md rounded-lg">
       <div className="flex flex-row justify-between">
         <div>
-          <span className="text-lg md:text-xl font-bold">
-            {data.money
-              ? setPriceFormat(data.total)
-              : data.weight
-              ? setWeightFormat(data.total)
-              : setNumberFormat(data.total)}
-          </span>
+          <span className="text-lg md:text-xl font-bold">{data.total}</span>
           <h3 className="text-md sm:text-lg">{data.content}</h3>
         </div>
         <div

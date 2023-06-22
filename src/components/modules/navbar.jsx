@@ -221,7 +221,7 @@ export default () => {
                     }}
                   >
                     <Button
-                      className="bg-white text-[#52A068] font-bold hover:bg-white"
+                      className="bg-white text-[#52A068] font-bold hover:bg-white shadow-none"
                       variant="contained"
                     >
                       Daftar

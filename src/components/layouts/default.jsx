@@ -17,7 +17,7 @@ export default (props) => {
           flag = true;
         }
       });
-      return flag;
+      return !flag;
     } else {
       return !checkRole(true, roles);
     }

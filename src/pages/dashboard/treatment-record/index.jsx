@@ -57,7 +57,7 @@ const headCells = [
     id: "date",
     label: "Tanggal pengisian",
     isSort: false,
-    customDisplayRow: null,
+    customDisplayRow: (data) => dateFormatToIndonesia(data.date),
   },
   {
     id: "status",

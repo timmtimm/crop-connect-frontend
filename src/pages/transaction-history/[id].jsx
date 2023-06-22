@@ -298,16 +298,15 @@ export default () => {
                       <span className="hidden md:flex text-right">:</span>
                     </td>
                     <td className="px-2 text-right md:text-left">
-                      {setNumberFormat(
+                      {setWeightFormat(
                         dataTransaction.proposal?.estimatedTotalHarvest
-                      )}{" "}
-                      kilogram
+                      )}
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            {dataTransaction.batch?._id && (
+            {dataTransaction.batch?._id != "000000000000000000000000" && (
               <div>
                 <h2 className="text-lg font-bold my-2">Informasi Periode</h2>
                 <table className="w-full md:w-fit">
@@ -445,10 +444,9 @@ export default () => {
                         </div>
                       </td>
                       <td className="px-2 text-right md:text-left">
-                        {setNumberFormat(
+                        {setWeightFormat(
                           dataTransaction.proposal?.estimatedTotalHarvest
-                        )}{" "}
-                        kilogram
+                        )}
                       </td>
                     </tr>
                   </tbody>

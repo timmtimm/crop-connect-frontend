@@ -1,4 +1,4 @@
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
@@ -146,7 +146,7 @@ export default (props) => {
           flag = true;
         }
       });
-      return flag;
+      return !flag;
     } else {
       return !checkRole(true, roles);
     }

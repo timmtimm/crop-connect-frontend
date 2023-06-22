@@ -478,7 +478,9 @@ export default () => {
                     </tbody>
                   </table>
                   <h4 className="font-bold">Deskripsi</h4>
-                  <p>{treatmentRecord?.description}</p>
+                  <p className="whitespace-pre-line">
+                    {treatmentRecord?.description}
+                  </p>
                 </div>
                 <div className="flex flex-row items-center gap-2">
                   <h3 className="text-lg font-bold">

@@ -10,7 +10,12 @@ import { GiClockwiseRotation } from "react-icons/gi";
 import { TbMoneybag, TbPlant, TbUsers } from "react-icons/tb";
 import { RiShoppingCartLine } from "react-icons/ri";
 import { BsBag } from "react-icons/bs";
-import { SumObjectByKey } from "@/utils/utilities";
+import {
+  SumObjectByKey,
+  setNumberFormat,
+  setPriceFormat,
+  setWeightFormat,
+} from "@/utils/utilities";
 import { HttpStatusCode } from "axios";
 import { FaUserCheck } from "react-icons/fa";
 import Loading from "@/components/modules/loading";
@@ -108,7 +113,7 @@ export default () => {
         );
         tempStatisticCard.push({
           content: "Komoditas",
-          total: dataTotalCommodityNow.data,
+          total: setNumberFormat(dataTotalCommodityNow.data),
           icon: <TbPlant className={setColorForIcon(diff)} size={25} />,
           bgColor: setBgColorForIcon(diff),
           differences: diff,
@@ -136,7 +141,7 @@ export default () => {
         );
         tempStatisticCard.push({
           content: "Periode penanaman",
-          total: dataTotalBatchNow.data,
+          total: setNumberFormat(dataTotalBatchNow.data),
           icon: (
             <GiClockwiseRotation className={setColorForIcon(diff)} size={25} />
           ),
@@ -166,7 +171,7 @@ export default () => {
         tempStatisticCard.push(
           {
             content: "Transaksi",
-            total: now?.totalTransaction,
+            total: setNumberFormat(now?.totalTransaction),
             icon: (
               <RiShoppingCartLine
                 className={setColorForIcon(diffTransaction)}
@@ -179,7 +184,7 @@ export default () => {
           },
           {
             content: "Berat transaksi",
-            total: now?.totalWeight,
+            total: setNumberFormat(now?.totalWeight),
             icon: <BsBag className={setColorForIcon(diffWeight)} size={25} />,
             bgColor: setBgColorForIcon(diffWeight),
             differences: diffWeight,
@@ -423,7 +428,9 @@ export default () => {
         tempStatisticCard.push(
           {
             content: "Pendapatan",
-            total: SumObjectByKey(dataTotalTransactionNow.data, "totalIncome"),
+            total: setPriceFormat(
+              SumObjectByKey(dataTotalTransactionNow.data, "totalIncome")
+            ),
             icon: (
               <TbMoneybag className={setColorForIcon(diffIncome)} size={25} />
             ),
@@ -434,7 +441,9 @@ export default () => {
           },
           {
             content: "Berat transaksi",
-            total: SumObjectByKey(dataTotalTransactionNow.data, "totalWeight"),
+            total: setWeightFormat(
+              SumObjectByKey(dataTotalTransactionNow.data, "totalWeight")
+            ),
             icon: <BsBag className={setColorForIcon(diffWeight)} size={25} />,
             bgColor: setBgColorForIcon(diffWeight),
             differences: diffWeight,
@@ -443,9 +452,8 @@ export default () => {
           },
           {
             content: "Transaksi",
-            total: SumObjectByKey(
-              dataTotalTransactionNow.data,
-              "totalTransaction"
+            total: setNumberFormat(
+              SumObjectByKey(dataTotalTransactionNow.data, "totalTransaction")
             ),
             icon: (
               <RiShoppingCartLine
@@ -459,7 +467,9 @@ export default () => {
           },
           {
             content: "Pembeli",
-            total: dataTotalTransactionNow.data[month - 1].totalUniqueBuyer,
+            total: setNumberFormat(
+              dataTotalTransactionNow.data[month - 1].totalUniqueBuyer
+            ),
             icon: (
               <TbUsers className={setColorForIcon(diffUniqueBuyer)} size={25} />
             ),
@@ -660,7 +670,7 @@ export default () => {
         );
         tempStatisticCard.push({
           content: "Komoditas",
-          total: dataTotalCommodityNow.data,
+          total: setNumberFormat(dataTotalCommodityNow.data),
           icon: <TbPlant className={setColorForIcon(diff)} size={25} />,
           bgColor: setBgColorForIcon(diff),
           differences: diff,
@@ -689,7 +699,7 @@ export default () => {
         );
         tempStatisticCard.push({
           content: "Periode",
-          total: dataTotalBatchNow.data,
+          total: setNumberFormat(dataTotalBatchNow.data),
           icon: (
             <GiClockwiseRotation className={setColorForIcon(diff)} size={25} />
           ),
@@ -723,7 +733,7 @@ export default () => {
         );
         tempStatisticCard.push({
           content: "Validasi",
-          total: totalValidateNow.data,
+          total: setNumberFormat(totalValidateNow.data),
           icon: (
             <GiClockwiseRotation className={setColorForIcon(diff)} size={25} />
           ),
@@ -757,7 +767,7 @@ export default () => {
         );
         tempStatisticCard.push({
           content: "Validator",
-          total: dataTotalValidatorNow.data,
+          total: setNumberFormat(dataTotalValidatorNow.data),
           icon: <FaUserCheck className={setColorForIcon(diff)} size={25} />,
           bgColor: setBgColorForIcon(diff),
           differences: diff,
