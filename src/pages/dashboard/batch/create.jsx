@@ -187,7 +187,7 @@ export default () => {
 
   return (
     <>
-      <Seo title="Tambah Periode" />
+      <Seo title="Tambah Periode Penanaman" />
       <Snackbar
         open={open}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -206,7 +206,7 @@ export default () => {
       </Snackbar>
       {(isLoading || commodityLoading || mutatingProposal) && <Loading />}
       <Dashboard roles={roleUser.farmer}>
-        <h1 className="text-2xl mb-4 font-bold">Tambah Periode</h1>
+        <h1 className="text-2xl mb-4 font-bold">Tambah Periode Penanaman</h1>
         <Alert className="mb-4 border-[1px] border-[#0288D1]" severity="info">
           <AlertTitle className="font-semibold">Informasi</AlertTitle>
           <span>

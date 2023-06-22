@@ -167,13 +167,13 @@ export default () => {
           isLoading
             ? "Loading..."
             : dataBatch?.name
-            ? `Detail Periode ${dataBatch?.name}`
-            : "Periode Tidak Ditemukan"
+            ? `Detail Periode Penanaman ${dataBatch?.name}`
+            : "Periode Penanaman Tidak Ditemukan"
         }
       />
       {isLoading && <Loading />}
       <Dashboard roles={roleUser.farmer}>
-        <h1 className="text-2xl mb-4 font-bold">Detail Periode</h1>
+        <h1 className="text-2xl mb-4 font-bold">Detail Periode Penanaman</h1>
         {result.errorMessage && (
           <NotFound
             content="Periode Penanaman"
