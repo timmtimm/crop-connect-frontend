@@ -415,7 +415,12 @@ export default () => {
           {error.message ? error.message : "Berhasil menambah proposal"}
         </Alert>
       </Snackbar>
-      {(isLoading || commodityLoading) && <Loading />}
+      {(isLoading ||
+        commodityLoading ||
+        provinceLoading ||
+        mutatingRegency ||
+        mutatingDistrict ||
+        mutatingSubdistrict) && <Loading />}
       <Dashboard roles={roleUser.farmer}>
         <h1 className="text-2xl mb-4 font-bold">Tambah Proposal</h1>
         <div className="w-full bg-white rounded-xl shadow-md p-4">

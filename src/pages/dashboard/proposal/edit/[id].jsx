@@ -406,7 +406,11 @@ export default () => {
           {error.message ? error.message : "Berhasil menambah proposal"}
         </Alert>
       </Snackbar>
-      {isLoading && <Loading />}
+      {(isLoading ||
+        provinceLoading ||
+        mutatingRegency ||
+        mutatingDistrict ||
+        mutatingSubdistrict) && <Loading />}
       <Dashboard roles={roleUser.farmer}>
         {!isLoading && !input.name && (
           <NotFound
