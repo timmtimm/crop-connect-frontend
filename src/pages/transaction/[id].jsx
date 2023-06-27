@@ -354,33 +354,60 @@ export default () => {
                   <h2 className="text-lg font-bold mb-2">
                     Komoditas yang ditransaksikan
                   </h2>
-                  <table className="w-full md:w-fit">
-                    <tbody>
-                      <tr>
-                        <td className="flex flex-row items-center justify-between">
-                          <span>Nama</span>
-                          <span className="hidden md:flex text-right">:</span>
-                        </td>
-                        <td className="px-2 text-right md:text-left">
-                          {dataProposal?.data.commodity?.name}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div className="flex flex-row justify-between">
-                            <span>Harga</span>
+                  <div className="flex flex-row items-start gap-x-6">
+                    <Image
+                      className="rounded-xl"
+                      src={
+                        dataProposal?.data.commodity?.imageURLs[0]
+                          ? dataProposal?.data.commodity?.imageURLs[0]
+                          : "/logo-no-background.png"
+                      }
+                      width={100}
+                      height={100}
+                    />
+                    <table className="w-full md:w-fit">
+                      <tbody>
+                        <tr>
+                          <td className="flex flex-row items-center justify-between">
+                            <span>Nama</span>
                             <span className="hidden md:flex text-right">:</span>
-                          </div>
-                        </td>
-                        <td className="px-2 text-right md:text-left">
-                          {setPriceFormat(
-                            dataProposal?.data.commodity.pricePerKg
-                          )}{" "}
-                          / kilogram
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                          </td>
+                          <td className="px-2 text-right md:text-left">
+                            {dataProposal?.data.commodity?.name}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div className="flex flex-row justify-between">
+                              <span>Bibit</span>
+                              <span className="hidden md:flex text-right">
+                                :
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-2 text-right md:text-left">
+                            {dataProposal?.data.commodity?.seed}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div className="flex flex-row justify-between">
+                              <span>Harga</span>
+                              <span className="hidden md:flex text-right">
+                                :
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-2 text-right md:text-left">
+                            {setPriceFormat(
+                              dataProposal?.data.commodity.pricePerKg
+                            )}{" "}
+                            / kilogram
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
                 <div>
                   <div>
@@ -652,6 +679,7 @@ export default () => {
                   </h2>
                   <div className="flex flex-row items-start gap-x-6">
                     <Image
+                      className="rounded-xl"
                       src={
                         dataBatch?.data.proposal.commodity?.imageURLs[0]
                           ? dataBatch?.data.proposal.commodity?.imageURLs[0]
