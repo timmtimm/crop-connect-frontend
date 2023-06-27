@@ -10,6 +10,7 @@ import {
   findErrorMessageFromResponse,
   setNumberFormat,
   setPriceFormat,
+  setWeightFormat,
   validateStringInputLogic,
 } from "@/utils/utilities";
 import {
@@ -417,7 +418,7 @@ export default () => {
                           </div>
                         </td>
                         <td className="px-2 text-right md:text-left">
-                          {dataProposal?.data.plantingArea} km
+                          {setNumberFormat(dataProposal?.data.plantingArea)} km
                           <sup>2</sup>
                         </td>
                       </tr>
@@ -429,10 +430,9 @@ export default () => {
                           </div>
                         </td>
                         <td className="px-2 text-right md:text-left">
-                          {setNumberFormat(
+                          {setWeightFormat(
                             dataProposal?.data.estimatedTotalHarvest
-                          )}{" "}
-                          kg
+                          )}
                         </td>
                       </tr>
                     </tbody>
@@ -572,7 +572,9 @@ export default () => {
                             </div>
                           </td>
                           <td className="px-2 text-right md:text-left">
-                            {dataProposal?.data.estimatedTotalHarvest} kilogram
+                            {setWeightFormat(
+                              dataProposal?.data.estimatedTotalHarvest
+                            )}
                           </td>
                         </tr>
                       </tbody>
@@ -785,7 +787,10 @@ export default () => {
                           </div>
                         </td>
                         <td className="px-2 text-right md:text-left">
-                          {dataBatch?.data?.proposal.plantingArea} km
+                          {setNumberFormat(
+                            dataBatch?.data?.proposal.plantingArea
+                          )}{" "}
+                          km
                           <sup>2</sup>
                         </td>
                       </tr>
@@ -797,10 +802,9 @@ export default () => {
                           </div>
                         </td>
                         <td className="px-2 text-right md:text-left">
-                          {setNumberFormat(
+                          {setWeightFormat(
                             dataBatch?.data?.proposal.estimatedTotalHarvest
-                          )}{" "}
-                          kg
+                          )}
                         </td>
                       </tr>
                     </tbody>
@@ -940,8 +944,9 @@ export default () => {
                             </div>
                           </td>
                           <td className="px-2 text-right md:text-left">
-                            {dataBatch?.data?.proposal.estimatedTotalHarvest}{" "}
-                            kilogram
+                            {setWeightFormat(
+                              dataBatch?.data?.proposal.estimatedTotalHarvest
+                            )}
                           </td>
                         </tr>
                       </tbody>
