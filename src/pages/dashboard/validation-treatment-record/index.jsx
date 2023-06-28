@@ -379,15 +379,13 @@ export default () => {
   }, [input.batchID, router.query]);
 
   useEffect(() => {
-    if (input.farmerID) {
-      triggerBatch({
-        ...paginationBatch,
-        ...router.query,
-        name: router.query.batchName,
-        farmerID: input.farmerID,
-        status: batchStatus.planting,
-      });
-    }
+    triggerBatch({
+      ...paginationBatch,
+      ...router.query,
+      name: router.query.batchName,
+      farmerID: input.farmerID,
+      status: batchStatus.planting,
+    });
   }, [input.farmerID, router.query]);
 
   const {
@@ -636,35 +634,33 @@ export default () => {
                     </span>
                   </span>
                 )}
-                {input.farmerID && (
-                  <div className="flex justify-end mt-2">
-                    <TextField
-                      placeholder="Periode"
-                      variant="outlined"
-                      name="batch"
-                      required
-                      InputProps={{
-                        className:
-                          "bg-white rounded-lg text-sm md:text-base focus:border-0 hover:border-0",
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <FaSearch
-                              className="cursor-pointer"
-                              onClick={(e) => handleSearchBatch(e)}
-                              size={20}
-                            />
-                          </InputAdornment>
-                        ),
-                      }}
-                      sx={{ "& input": { padding: "0.75rem" } }}
-                      value={search.batch}
-                      onChange={handleChangeSearch}
-                      onKeyDown={(e) =>
-                        e.keyCode === 13 ? handleSearchBatch(e) : null
-                      }
-                    />
-                  </div>
-                )}
+                <div className="flex justify-end mt-2">
+                  <TextField
+                    placeholder="Periode"
+                    variant="outlined"
+                    name="batch"
+                    required
+                    InputProps={{
+                      className:
+                        "bg-white rounded-lg text-sm md:text-base focus:border-0 hover:border-0",
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <FaSearch
+                            className="cursor-pointer"
+                            onClick={(e) => handleSearchBatch(e)}
+                            size={20}
+                          />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{ "& input": { padding: "0.75rem" } }}
+                    value={search.batch}
+                    onChange={handleChangeSearch}
+                    onKeyDown={(e) =>
+                      e.keyCode === 13 ? handleSearchBatch(e) : null
+                    }
+                  />
+                </div>
                 {dataBatch && !mutatingBatch && (
                   <div className="mt-4">
                     <Table
