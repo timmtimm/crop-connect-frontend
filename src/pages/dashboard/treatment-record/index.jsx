@@ -203,7 +203,8 @@ export default () => {
       id: "estimatedHarvestDate",
       label: "Estimasi waktu panen",
       isSort: false,
-      customDisplayRow: null,
+      customDisplayRow: (data) =>
+        dateFormatToIndonesia(data.estimatedHarvestDate),
     },
     {
       id: "status",
@@ -287,7 +288,7 @@ export default () => {
   );
 
   useEffect(() => {
-    if (input.batchID && input.commodityID) {
+    if (input.batchID) {
       triggerTreatmentRecord({
         ...paginationTreatmentRecord,
         batchID: input.batchID,
@@ -350,17 +351,11 @@ export default () => {
       name: router.query.commodityName,
     });
 
-    if (input.commodityID) {
-      triggerBatch({
-        ...paginationBatch,
-        commodityID: input.commodityID,
-        name: search.batch,
-      });
-    } else {
-      triggerBatch({
-        ...paginationBatch,
-      });
-    }
+    triggerBatch({
+      ...paginationBatch,
+      commodityID: input.commodityID,
+      name: search.batch,
+    });
 
     if (search.commodity || input.farmerID) {
       triggerCommodity({
