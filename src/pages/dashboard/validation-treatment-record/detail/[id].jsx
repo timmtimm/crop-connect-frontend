@@ -237,6 +237,7 @@ export default () => {
 
   const handleUpdate = async (e) => {
     setIsLoading(true);
+    setOpenModal(false);
 
     const data = await putWithJSON(`/api/v1/treatment-record/validate/${id}`, {
       ...input,
@@ -515,7 +516,8 @@ export default () => {
         )}
         {Array.isArray(dataTreatment?.treatment) &&
           dataTreatment?.treatment?.length > 0 &&
-          dataTreatment?.status == treatmentRecordStatus.pending && (
+          dataTreatment?.status == treatmentRecordStatus.pending &&
+          !isLoading && (
             <div className="flex w-full gap-2 justify-end">
               <Button
                 className="text-right bg-[#DB3546] hover:bg-[#BA2D3C] normal-case font-bold mt-2"
