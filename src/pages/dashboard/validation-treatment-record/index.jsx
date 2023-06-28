@@ -636,7 +636,7 @@ export default () => {
                     </span>
                   </span>
                 )}
-                {input.commodityID && (
+                {input.farmerID && (
                   <div className="flex justify-end mt-2">
                     <TextField
                       placeholder="Periode"
