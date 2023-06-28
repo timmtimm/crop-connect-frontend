@@ -122,7 +122,7 @@ const Puller = styled(Box)(({ theme }) => ({
   left: "calc(50% - 15px)",
 }));
 
-const steps = ["Pilih Petani", "Pilih Komoditas", "Pilih Periode"];
+const steps = ["Pilih Petani", "Pilih Periode"];
 
 export default () => {
   const router = useRouter();
@@ -214,69 +214,6 @@ export default () => {
     },
   ];
 
-  const headCellsCommodity = [
-    {
-      id: "id",
-      label: "ID",
-      isSort: false,
-      customDisplayRow: (data) => (
-        <span
-          className="cursor-pointer"
-          onClick={() => {
-            setInput({
-              ...input,
-              commodityID: data._id,
-              commodityName: data.name,
-              batchID: "",
-              batchName: "",
-            });
-            setActiveStep(2);
-          }}
-        >
-          {data._id}
-        </span>
-      ),
-    },
-    {
-      id: "name",
-      label: "Nama",
-      isSort: true,
-      customDisplayRow: null,
-    },
-    {
-      id: "plantingPeriod",
-      label: "Jangka waktu penanaman",
-      isSort: true,
-      customDisplayRow: (data) =>
-        `${setNumberFormat(data.plantingPeriod)} hari`,
-    },
-    {
-      id: "pricePerKg",
-      label: "Harga per kilogram",
-      isSort: true,
-      customDisplayRow: (data) => setPriceFormat(data.pricePerKg),
-    },
-    {
-      id: "isPerennials",
-      label: "Perennials",
-      isSort: false,
-      customDisplayRow: (data) => (data.isPerennials ? "Ya" : "Tidak"),
-    },
-    {
-      id: "isAvailable",
-      label: "Status",
-      isSort: true,
-      customDisplayRow: (data) =>
-        data.isAvailable ? "Tersedia" : "Tidak tersedia",
-    },
-    {
-      id: "createdAt",
-      label: "Dibuat waktu",
-      isSort: true,
-      customDisplayRow: (data) => dateFormatToIndonesia(data.createdAt, true),
-    },
-  ];
-
   const headCellsBatch = [
     {
       id: "id",
@@ -351,12 +288,10 @@ export default () => {
   });
   const [search, setSearch] = useState({
     farmer: "",
-    commodity: "",
     batch: "",
   });
   const [filter, setFilter] = useState({
     farmer: "",
-    commodity: "",
     batch: "",
   });
 
@@ -389,23 +324,6 @@ export default () => {
       query = deleteUniquePagination(router, "farmer");
       delete query.farmerName;
     }
-    router.push({
-      pathname: router.pathname,
-      query: query,
-    });
-  };
-
-  const handleSearchCommodity = (e) => {
-    e.preventDefault();
-
-    let query = { ...router.query };
-    if (search.commodity) {
-      query.commodityName = search.commodity;
-    } else {
-      query = deleteUniquePagination(router, "commodity");
-      delete query.commodityName;
-    }
-
     router.push({
       pathname: router.pathname,
       query: query,
@@ -462,37 +380,21 @@ export default () => {
 
   useEffect(() => {
     if (input.farmerID) {
-      triggerCommodity({
-        ...paginationCommodity,
-        ...router.query,
-        name: router.query.commodityName,
-        farmerID: input.farmerID,
-      });
-    }
-  }, [input.farmerID, router.query]);
-
-  useEffect(() => {
-    if (input.commodityID) {
       triggerBatch({
         ...paginationBatch,
         ...router.query,
         name: router.query.batchName,
-        commodityID: input.commodityID,
+        farmerID: input.farmerID,
+        status: batchStatus.planting,
       });
     }
-  }, [input.commodityID, router.query]);
+  }, [input.farmerID, router.query]);
 
   const {
     data: dataFarmer,
     trigger: triggerFarmer,
     isMutating: mutatingFarmer,
   } = useSWRMutation("/api/v1/user/farmer", triggerfetcher);
-
-  const {
-    data: dataCommodity,
-    trigger: triggerCommodity,
-    isMutating: mutatingCommodity,
-  } = useSWRMutation("/api/v1/commodity", triggerfetcher);
 
   const {
     data: dataBatch,
@@ -503,12 +405,10 @@ export default () => {
   useEffect(() => {
     setFilter({
       farmer: router.query.farmer || "",
-      commodity: router.query.commodity || "",
       batch: router.query.batch || "",
     });
     setSearch({
       farmer: router.query.farmerName || "",
-      commodity: router.query.commodityName || "",
       batch: router.query.batchName || "",
     });
   }, [router.query]);
@@ -516,10 +416,9 @@ export default () => {
   return (
     <>
       <Seo title="Daftar Riwayat Perawatan" />
-      {(mutatingBatch ||
-        mutatingFarmer ||
-        mutatingCommodity ||
-        mutatingTreatmentRecord) && <Loading />}
+      {(mutatingBatch || mutatingFarmer || mutatingTreatmentRecord) && (
+        <Loading />
+      )}
       <Root>
         <CssBaseline />
         <Global
@@ -722,62 +621,6 @@ export default () => {
                   </div>
                 )}
               </>
-            ) : activeStep == 1 ? (
-              <>
-                <h3 className="font-semibold mb-2">Pemilihan komoditas</h3>
-                <p className="text-sm sm:text-base">
-                  Silahkan melakukan pencarian komoditas melalui kolom pencarian
-                  dan pilih komoditas melalui ID pada tabel.
-                </p>
-                {input.commodityID && (
-                  <span>
-                    Komoditas yang dipilih:{" "}
-                    <span className="font-semibold">
-                      {input.commodityID} - {input.commodityName}
-                    </span>
-                  </span>
-                )}
-                {input.farmerID && (
-                  <div className="flex justify-end mt-2">
-                    <TextField
-                      placeholder="Komoditas"
-                      variant="outlined"
-                      name="commodity"
-                      required
-                      InputProps={{
-                        className:
-                          "bg-white rounded-lg text-sm md:text-base focus:border-0 hover:border-0",
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <FaSearch
-                              className="cursor-pointer"
-                              onClick={(e) => handleSearchCommodity(e)}
-                              size={20}
-                            />
-                          </InputAdornment>
-                        ),
-                      }}
-                      sx={{ "& input": { padding: "0.75rem" } }}
-                      value={search.commodity}
-                      onChange={handleChangeSearch}
-                      onKeyDown={(e) =>
-                        e.keyCode === 13 ? handleSearchCommodity(e) : null
-                      }
-                    />
-                  </div>
-                )}
-                {!mutatingCommodity && dataCommodity && (
-                  <div className="mt-4">
-                    <Table
-                      minWidth={400}
-                      headCells={headCellsCommodity}
-                      data={dataCommodity}
-                      menuAction={null}
-                      uniqueKeyPagination={"commodity"}
-                    />
-                  </div>
-                )}
-              </>
             ) : (
               <>
                 <h3 className="font-semibold mb-2">Pemilihan periode</h3>
@@ -844,7 +687,6 @@ export default () => {
               : "Validasi Riwayat Perawatan"}
           </h3>
           {input.batchID &&
-            input.commodityID &&
             input.farmerID &&
             input.batchStatus == batchStatus.planting && (
               <Link href={`${router.pathname}/create/${input.batchID}`}>
