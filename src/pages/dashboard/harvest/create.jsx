@@ -43,36 +43,6 @@ export default () => {
 
   const formColumn = [
     {
-      name: "commodityID",
-      label: "Komoditas",
-      placeholder: "",
-      description: "Pilih komoditas yang akan dijual pada proposal ini.",
-      type: null,
-      prefix: null,
-      suffix: null,
-      multiline: false,
-      required: true,
-      isSelect: true,
-      optionsWithData: (data) =>
-        Array.isArray(data) &&
-        data.map((item) => (
-          <MenuItem
-            key={item._id}
-            value={item._id}
-            onClick={() =>
-              handleChange({
-                target: {
-                  name: "commodityID",
-                  value: item._id,
-                },
-              })
-            }
-          >
-            {item.name}
-          </MenuItem>
-        )),
-    },
-    {
       name: "batchID",
       label: "Periode",
       placeholder: "",
@@ -119,7 +89,7 @@ export default () => {
       label: "Kondisi Panen",
       placeholder: "Kondisi panen yang dihasilkan ...",
       description:
-        "Masukkan Kondisi panen yang dihasilkan. Deskrsikan sebaik mungkin agar tidak ada perbaikan yang diminta dari validator.",
+        "Masukkan Kondisi panen yang dihasilkan. Deskripsikan sebaik mungkin agar tidak ada perbaikan yang diminta dari validator.",
       type: "text",
       prefix: null,
       suffix: null,
@@ -139,7 +109,6 @@ export default () => {
   };
 
   const [input, setInput] = useState({
-    commodityID: "",
     date: dayjs(),
     totalHarvest: "",
     condition: "",
@@ -147,7 +116,6 @@ export default () => {
     notes: [],
   });
   const [error, setError] = useState({
-    commodityID: "",
     date: "",
     totalHarvest: "",
     condition: "",
@@ -222,10 +190,6 @@ export default () => {
     let flag = true;
     let tempError = {};
 
-    tempError.commodityID = validateStringInputLogic(input.commodityID, true, {
-      empty: "Komoditas tidak boleh kosong",
-      invalid: "",
-    });
     tempError.batchID = validateStringInputLogic(input.batchID, true, {
       empty: "Periode tidak boleh kosong",
       invalid: "",
@@ -317,7 +281,6 @@ export default () => {
       const isSuccess = await postToAPI();
       if (isSuccess) {
         setInput({
-          commodityID: "",
           date: dayjs(),
           totalHarvest: 0,
           condition: "",
@@ -332,26 +295,11 @@ export default () => {
     setIsLoading(false);
   };
 
-  const { data: commodityData, isLoading: commodityLoading } = useSWR(
-    ["/api/v1/commodity/farmer", {}],
+  const { data: batchData, isLoading: batchLoading } = useSWR(
+    ["/api/v1/batch/harvest/all", {}],
     ([url, params]) => fetcher(url, params),
     runOnce
   );
-  const {
-    data: batchData,
-    trigger: triggerBatch,
-    isMutating: mutatingBatch,
-  } = useSWRMutation(
-    `/api/v1/batch/harvest/${input.commodityID}`,
-    triggerfetcher
-  );
-
-  useEffect(() => {
-    if (input.commodityID) {
-      setInput({ ...input, batchID: "" });
-      triggerBatch();
-    }
-  }, [input.commodityID]);
 
   return (
     <>
@@ -372,7 +320,7 @@ export default () => {
           {error.message ? error.message : "Berhasil menambah proposal"}
         </Alert>
       </Snackbar>
-      {(isLoading || commodityLoading || mutatingBatch) && <Loading />}
+      {(isLoading || batchLoading) && <Loading />}
       <Dashboard roles={roleUser.farmer}>
         <h1 className="text-2xl mb-4 font-bold">Tambah Panen</h1>
         <Alert className="mb-4 border-[1px] border-[#0288D1]" severity="info">
@@ -424,9 +372,7 @@ export default () => {
                         name={column.name}
                       >
                         {column.optionsWithData
-                          ? column.name == "commodityID"
-                            ? column.optionsWithData(commodityData?.data)
-                            : column.optionsWithData(batchData?.data)
+                          ? column.optionsWithData(batchData?.data)
                           : column.options.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
