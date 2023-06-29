@@ -15,7 +15,7 @@ import {
   setNumberFormat,
   setWeightFormat,
 } from "@/utils/utilities";
-import { Button, TextField } from "@mui/material";
+import { Alert, Button, Slide, Snackbar, TextField } from "@mui/material";
 import { HttpStatusCode } from "axios";
 import Image from "next/image";
 import Link from "next/link";
@@ -172,6 +172,16 @@ export default () => {
   const [openModal, setOpenModal] = useState(false);
   const handleModal = () => setOpenModal(!openModal);
 
+  /* Snackbar */
+  const [open, setOpen] = useState(false);
+  const handleClick = () => setOpen(true);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
   const [dataHarvest, setDataHarvest] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [result, setResult] = useState({
@@ -220,7 +230,8 @@ export default () => {
     if (data.status == HttpStatusCode.Ok) {
       router.push("/dashboard/validation-harvest");
     } else {
-      setError({ ...error, message: data.message });
+      setResult({ ...result, errorMessage: data.message });
+      handleClick();
     }
 
     setIsLoading(false);
@@ -238,6 +249,18 @@ export default () => {
         }
       />
       {isLoading && <Loading />}
+      <Snackbar
+        open={open}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        TransitionComponent={Slide}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message={result.errorMessage}
+      >
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          {result.errorMessage}
+        </Alert>
+      </Snackbar>
       {openModal && (
         <Modal>
           <Image
@@ -299,7 +322,7 @@ export default () => {
       )}
       <Dashboard roles={roleUser.validator}>
         <h1 className="text-2xl mb-4 font-bold">Detail Panen</h1>
-        {result.errorMessage && (
+        {!dataHarvest._id && (
           <NotFound
             content="Panen"
             urlRedirect="/dashboard/validation-harvest"
