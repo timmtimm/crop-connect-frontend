@@ -682,19 +682,17 @@ export default () => {
               ? `Riwayat Perawatan ${input.batchName}`
               : "Validasi Riwayat Perawatan"}
           </h3>
-          {input.batchID &&
-            input.farmerID &&
-            input.batchStatus == batchStatus.planting && (
-              <Link href={`${router.pathname}/create/${input.batchID}`}>
-                <Button
-                  className="text-white bg-[#52A068] normal-case font-bold"
-                  variant="contained"
-                >
-                  <GoPlus className="sm:mr-2" />
-                  <span className="hidden sm:block">Permintaan Pengisian</span>
-                </Button>
-              </Link>
-            )}
+          {input.batchID && input.batchStatus == batchStatus.planting && (
+            <Link href={`${router.pathname}/create/${input.batchID}`}>
+              <Button
+                className="text-white bg-[#52A068] normal-case font-bold"
+                variant="contained"
+              >
+                <GoPlus className="sm:mr-2" />
+                <span className="hidden sm:block">Permintaan Pengisian</span>
+              </Button>
+            </Link>
+          )}
         </div>
         {!input.batchID && (
           <>
