@@ -386,7 +386,7 @@ export default () => {
           isLoading
             ? "Loading..."
             : input.name
-            ? `Edit Proposal ${proposalName}`
+            ? `Ubah Proposal ${proposalName}`
             : `Proposal Tidak Ditemukan`
         }
       />
@@ -421,7 +421,7 @@ export default () => {
         )}
         {!isLoading && input.name && (
           <>
-            <h1 className="text-2xl mb-4 font-bold">Edit Proposal</h1>
+            <h1 className="text-2xl mb-4 font-bold">Ubah Proposal</h1>
             <div className="w-full bg-white rounded-xl shadow-md p-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {formColumn.map((column) => (

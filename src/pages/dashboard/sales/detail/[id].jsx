@@ -327,7 +327,8 @@ export default () => {
           <div className=" w-full bg-white p-4 rounded-xl shadow-md mb-4">
             <div className="flex flex-col gap-4 divide-y-2">
               {informationColumn.map((section, index) => {
-                return index == 2 && !dataTransaction.batch ? (
+                return index == 2 &&
+                  dataTransaction.batch._id == "000000000000000000000000" ? (
                   <></>
                 ) : (
                   <div key={index}>
