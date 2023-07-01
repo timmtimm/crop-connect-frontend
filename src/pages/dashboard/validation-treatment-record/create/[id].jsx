@@ -19,6 +19,7 @@ import {
   checkObjectIsNotNullExist,
   dateFormatToIndonesia,
   findErrorMessageFromResponse,
+  isValidDate,
   setNumberFormat,
   validateStringInputLogic,
 } from "@/utils/utilities";
@@ -225,7 +226,10 @@ export default () => {
   };
 
   const [input, setInput] = useState({
-    date: dayjs().add(1, "day"),
+    /* FOR TESTING PURPOSE */
+    date: dayjs(),
+
+    // date: dayjs().add(1, "day"),
     description: "",
   });
   const [error, setError] = useState({
@@ -406,7 +410,9 @@ export default () => {
                   </span>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
-                      minDate={dayjs().add(1, "day")}
+                      /* FOR TESTING PURPOSE */
+                      minDate={dayjs()}
+                      // minDate={dayjs().add(1, "day")}
                       value={dayjs(input.date)}
                       views={["year", "month", "day"]}
                       onChange={(newValue) => {
