@@ -244,10 +244,6 @@ export default () => {
   };
 
   const handleDate = ({ target: { name, value } }) => {
-    if (!isValidDate(value)) {
-      setError({ ...error, [name]: "Tanggal yang dimasukkan tidak valid" });
-    }
-
     setInput({ ...input, [name]: value });
   };
 
