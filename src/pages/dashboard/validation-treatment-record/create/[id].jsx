@@ -251,20 +251,12 @@ export default () => {
     let flag = true;
     let tempError = {};
 
-    tempError.date = validateStringInputLogic(
-      input.date,
-      dayjs.isDayjs(input.date),
-      {
-        empty: "Tanggal pengisian harus diisi",
-        invalid: "Tanggal pengisian tidak valid",
-      }
-    );
     tempError.description = validateStringInputLogic(input.description, true, {
       empty: "Deskripsi pengisian harus diisi",
       invalid: "",
     });
 
-    if (checkObjectIsNotNullExist(tempError, ["date", "description"])) {
+    if (checkObjectIsNotNullExist(tempError, ["description"])) {
       flag = false;
     }
 
@@ -276,7 +268,7 @@ export default () => {
     const data = await postWithJSON(
       `/api/v1/treatment-record/${router.query.id}`,
       {
-        date: input.date.format("YYYY-MM-DD"),
+        date: input.date,
         description: input.description,
       }
     );
