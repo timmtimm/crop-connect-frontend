@@ -308,7 +308,7 @@ export default () => {
                         Gambar {index + 1}
                       </h4>
                       <div className="w-full flex flex-row items-start justify-center">
-                        <img className="rounded" src={item.imageURL} />
+                        <img className="w-full rounded" src={item.imageURL} />
                       </div>
                       <div className="flex flex-col">
                         <span className="font-semibold">Nama gambar</span>

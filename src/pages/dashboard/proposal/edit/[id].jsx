@@ -52,10 +52,10 @@ export default () => {
     },
     {
       name: "name",
-      label: "Nama",
+      label: "Nama Proposal",
       placeholder: "Proposal A",
       description:
-        "Nama komoditas digunakan untuk menampilkan jenis komoditas yang dijual. Disarankan untuk tidak menggunakan huruf kapital berlebih dan kata-kata promosi.",
+        "Nama proposal yang dibuat. Usahakan nama proposal yang dibuat singkat dan jelas agar dapat menarik minat pembeli serta memudahkan pembeli untuk memahami proposal ini.",
       type: "text",
       prefix: null,
       suffix: null,
@@ -64,7 +64,7 @@ export default () => {
     },
     {
       name: "description",
-      label: "Deskripsi",
+      label: "Deskripsi Proposal",
       placeholder: "Proposal ini berisi...",
       description:
         "Deskripsikan proposal ini sebaik mungin agar dapat menarik minat pembeli serta memudahkan pembeli untuk memahami proposal ini.",
