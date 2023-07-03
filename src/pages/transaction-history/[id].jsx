@@ -309,8 +309,7 @@ export default () => {
                     </td>
                     <td className="px-2 text-right md:text-left">
                       {setNumberFormat(dataTransaction.proposal?.plantingArea)}{" "}
-                      km
-                      <sup>2</sup>
+                      m<sup>2</sup>
                     </td>
                   </tr>
                   <tr>

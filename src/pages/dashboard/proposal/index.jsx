@@ -76,7 +76,7 @@ const headCells = [
     isSort: true,
     customDisplayRow: (data) => (
       <>
-        {data.plantingArea} km<sup>2</sup>
+        {data.plantingArea} m<sup>2</sup>
       </>
     ),
   },

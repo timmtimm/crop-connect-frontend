@@ -77,7 +77,7 @@ const headCells = [
     isSort: true,
     customDisplayRow: (data) => (
       <span>
-        {setNumberFormat(data?.plantingArea)} km<sup>2</sup>
+        {setNumberFormat(data?.plantingArea)} m<sup>2</sup>
       </span>
     ),
   },

@@ -110,7 +110,7 @@ export default () => {
       prefix: null,
       suffix: (
         <span>
-          km<sup>2</sup>
+          m<sup>2</sup>
         </span>
       ),
       multiline: false,

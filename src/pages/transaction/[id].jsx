@@ -445,7 +445,7 @@ export default () => {
                           </div>
                         </td>
                         <td className="px-2 text-right md:text-left">
-                          {setNumberFormat(dataProposal?.data.plantingArea)} km
+                          {setNumberFormat(dataProposal?.data.plantingArea)} m
                           <sup>2</sup>
                         </td>
                       </tr>
@@ -818,8 +818,7 @@ export default () => {
                           {setNumberFormat(
                             dataBatch?.data?.proposal.plantingArea
                           )}{" "}
-                          km
-                          <sup>2</sup>
+                          m<sup>2</sup>
                         </td>
                       </tr>
                       <tr>

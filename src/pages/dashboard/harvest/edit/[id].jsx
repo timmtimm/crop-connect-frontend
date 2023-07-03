@@ -102,7 +102,7 @@ const informationColumn = [
         label: "Luas Lahan tanam",
         customDisplayRow: (data) => (
           <span>
-            {setNumberFormat(data?.proposal.plantingArea)} km<sup>2</sup>
+            {setNumberFormat(data?.proposal.plantingArea)} m<sup>2</sup>
           </span>
         ),
       },
