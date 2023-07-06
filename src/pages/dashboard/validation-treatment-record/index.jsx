@@ -99,7 +99,7 @@ const headCells = [
     id: "createdAt",
     label: "Terdaftar waktu",
     isSort: true,
-    customDisplayRow: (data) => dateFormatToIndonesia(data.date, true),
+    customDisplayRow: (data) => dateFormatToIndonesia(data.createdAt, true),
   },
 ];
 
@@ -234,6 +234,18 @@ export default () => {
           {data._id}
         </span>
       ),
+    },
+    {
+      id: "farmer",
+      label: "Petani",
+      isSort: false,
+      customDisplayRow: (data) => data.proposal.commodity.farmer.name,
+    },
+    {
+      id: "commodity",
+      label: "Komoditas",
+      isSort: false,
+      customDisplayRow: (data) => data.proposal.commodity.name,
     },
     {
       id: "proposal",
