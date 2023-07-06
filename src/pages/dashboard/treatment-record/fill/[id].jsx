@@ -540,7 +540,7 @@ export default () => {
                       </div>
                       <div className="w-full flex justify-center">
                         <img
-                          className="rounded"
+                          className="w-full rounded"
                           src={isURL(file) ? file : URL.createObjectURL(file)}
                         />
                       </div>

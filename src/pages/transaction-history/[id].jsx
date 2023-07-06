@@ -12,7 +12,7 @@ import {
   setPriceFormat,
   setWeightFormat,
 } from "@/utils/utilities";
-import { Alert, Button, Snackbar } from "@mui/material";
+import { Alert, Button, MenuItem, Select, Snackbar } from "@mui/material";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import Link from "next/link";
@@ -44,6 +44,9 @@ export default () => {
 
   /* State */
   const [dataTransaction, setDataTransaction] = useState({});
+  const [input, setInput] = useState({
+    treatmentRecord: "",
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -65,6 +68,22 @@ export default () => {
           };
         }
       }
+      console.log(data.data);
+      if (data.data.status == transactionStatus.accepted) {
+        const dataTreatmentRecord = await get(
+          `/api/v1/treatment-record/batch`,
+          {
+            "batch-id": data.data.batch._id,
+          }
+        );
+
+        if (data.status == HttpStatusCode.Ok) {
+          tempTransaction = {
+            ...tempTransaction,
+            treatmentRecord: dataTreatmentRecord.data,
+          };
+        }
+      }
 
       setDataTransaction(tempTransaction);
     } else {
@@ -73,6 +92,8 @@ export default () => {
 
     setIsLoading(false);
   };
+
+  const getTreatmentRecord = async () => {};
 
   /* useEffect */
   useEffect(() => {
@@ -348,6 +369,7 @@ export default () => {
                         )}
                       </td>
                     </tr>
+
                     {dataTransaction?.harvest && (
                       <>
                         <tr>
@@ -377,6 +399,112 @@ export default () => {
                     )}
                   </tbody>
                 </table>
+                {dataTransaction.status == transactionStatus.accepted && (
+                  <div className="flex flex-col mt-2">
+                    <h2 className="text-lg font-bold">Riwayat Perawatan</h2>
+                    <div>
+                      <div>
+                        Menampilkan riwayat perawatan ke -{" "}
+                        <Select
+                          className="bg-white"
+                          value={input.treatmentRecord.number}
+                          inputProps={{
+                            className: `py-1 ${
+                              input.treatmentRecord?.warningNote &&
+                              "text-red-500"
+                            }`,
+                          }}
+                        >
+                          {Array.isArray(dataTransaction?.treatmentRecord) &&
+                            dataTransaction?.treatmentRecord.map(
+                              (treatmentRecord) => (
+                                <MenuItem
+                                  className={`${
+                                    treatmentRecord?.warningNote &&
+                                    "text-red-500"
+                                  }`}
+                                  key={treatmentRecord.number}
+                                  value={treatmentRecord.number}
+                                  onClick={() => {
+                                    setInput({ ...input, treatmentRecord });
+                                  }}
+                                >
+                                  {treatmentRecord.number}
+                                </MenuItem>
+                              )
+                            )}
+                        </Select>{" "}
+                        <span className="font-semibold">
+                          {(Array.isArray(dataTransaction?.treatmentRecord) &&
+                            dataTransaction?.treatmentRecord.length) ||
+                            0}{" "}
+                          riwayat perawatan
+                        </span>
+                      </div>
+                      {input.treatmentRecord._id && (
+                        <div>
+                          <h3 className="text-lg font-semibold mt-4 mb-2">
+                            Catatan perawatan
+                          </h3>
+                          <div className="mb-4">
+                            <h3 className="text-lg font-semibold">Instruksi</h3>
+                            <span>Tanggal Pengisian: </span>
+                            <span>
+                              {dateFormatToIndonesia(
+                                input.treatmentRecord?.date
+                              )}
+                            </span>
+                            <h4>Deskripsi</h4>
+                            <p className="whitespace-pre-line">
+                              {input.treatmentRecord?.description}
+                            </p>
+                          </div>
+                          {input.treatmentRecord?.warningNote && (
+                            <div className="mb-4">
+                              <h3 className="text-lg font-semibold">
+                                Catatan Peringatan
+                              </h3>
+                              <p className="whitespace-pre-line">
+                                {input.treatmentRecord?.warningNote}
+                              </p>
+                            </div>
+                          )}
+                          <h3 className="text-lg font-semibold">
+                            Gambar dan Catatan Perawatan
+                          </h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {Array.isArray(input.treatmentRecord?.treatment) &&
+                              input.treatmentRecord?.treatment?.map(
+                                (item, index) => (
+                                  <div
+                                    key={index}
+                                    className="w-full flex flex-col rounded-lg p-3 gap-2 bg-gray-200"
+                                  >
+                                    <h4 className="font-bold text-center">
+                                      Gambar {index + 1}
+                                    </h4>
+                                    <div className="w-full flex flex-row items-start justify-center">
+                                      <img
+                                        className="rounded w-full"
+                                        src={item.imageURL}
+                                      />
+                                    </div>
+                                    <div className="w-full p-2 bg-white rounded-md whitespace-pre-line">
+                                      <span className="font-semibold mb-2">
+                                        Catatan
+                                      </span>
+                                      <br />
+                                      {item.note}
+                                    </div>
+                                  </div>
+                                )
+                              )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
                 {dataTransaction?.harvest && (
                   <>
                     <div className="my-2">

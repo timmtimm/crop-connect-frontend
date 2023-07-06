@@ -833,7 +833,7 @@ export default () => {
                                   </h4>
                                   <div className="w-full flex flex-row items-start justify-center">
                                     <img
-                                      className="rounded"
+                                      className="w-full rounded"
                                       src={item.imageURL}
                                     />
                                   </div>
@@ -937,7 +937,7 @@ export default () => {
                                 </h4>
                                 <div className="w-full flex flex-row items-start justify-center">
                                   <img
-                                    className="rounded"
+                                    className="w-full rounded"
                                     src={item.imageURL}
                                   />
                                 </div>

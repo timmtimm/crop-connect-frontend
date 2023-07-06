@@ -455,7 +455,7 @@ export default () => {
                       </h4>
                       <div className="w-full flex flex-row items-start justify-between gap-2">
                         <div>
-                          <img className="rounded" src={item.imageURL} />
+                          <img className="w-full rounded" src={item.imageURL} />
                         </div>
                       </div>
                       <div className="flex flex-col">
