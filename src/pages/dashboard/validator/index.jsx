@@ -1,24 +1,15 @@
 import Seo from "@/components/elements/seo";
 import Dashboard from "@/components/layouts/dashboard";
-import {
-  Alert,
-  Button,
-  Menu,
-  MenuItem,
-  Slide,
-  Snackbar,
-  TextField,
-} from "@mui/material";
+import { Button, MenuItem, TextField } from "@mui/material";
 import Link from "next/link";
 import { GoPlus } from "react-icons/go";
 import useSWR from "swr";
 import { getPagination } from "@/utils/url";
 import { runOnce } from "@/lib/swr";
 import Loading from "@/components/modules/loading";
-import { Delete, fetcher } from "@/lib/axios";
+import { fetcher } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { roleUser } from "@/constant/constant";
-import { HttpStatusCode } from "axios";
 import Table from "@/components/modules/table";
 import { useRouter } from "next/router";
 import { dateFormatToIndonesia, setIfNotNull } from "@/utils/utilities";

@@ -1,5 +1,4 @@
 import Default from "@/components/layouts/default";
-import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Seo from "@/components/elements/seo";

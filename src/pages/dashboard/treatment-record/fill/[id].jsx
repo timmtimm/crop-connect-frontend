@@ -1,47 +1,20 @@
 import Seo from "@/components/elements/seo";
 import Dashboard from "@/components/layouts/dashboard";
 import { roleUser } from "@/constant/constant";
-import {
-  Alert,
-  AlertTitle,
-  Button,
-  FormControl,
-  FormHelperText,
-  InputAdornment,
-  MenuItem,
-  Select,
-  Snackbar,
-  TextField,
-} from "@mui/material";
+import { Alert, Button, Snackbar, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import Slide from "@mui/material/Slide";
 import {
-  checkObjectIsNotNullExist,
   dateFormatToIndonesia,
-  findErrorMessageFromResponse,
   getLastURLSegment,
   isURL,
   setNumberFormat,
-  validateStringInputLogic,
 } from "@/utils/utilities";
 import { useRouter } from "next/router";
 import Loading from "@/components/modules/loading";
-import {
-  PostWithForm,
-  PutWithForm,
-  fetcher,
-  get,
-  triggerfetcher,
-} from "@/lib/axios";
+import { PutWithForm, get } from "@/lib/axios";
 import { HttpStatusCode } from "axios";
-import Status, {
-  convertStatusForBatch,
-  convertStatusForProposal,
-} from "@/components/elements/status";
-import useSWR from "swr";
-import { runOnce } from "@/lib/swr";
-import useSWRMutation from "swr/mutation";
-import { setParamRegionFetch } from "@/utils/url";
+import Status, { convertStatusForBatch } from "@/components/elements/status";
 import { FaTrashAlt } from "react-icons/fa";
 import { BsCardImage } from "react-icons/bs";
 import {
@@ -52,11 +25,6 @@ import {
   setInputImageUpdate,
   validateImage,
 } from "@/utils/image";
-import dayjs from "dayjs";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import Link from "next/link";
-import Image from "next/image";
 import NotFound from "@/components/templates/notFound";
 
 const informationColumn = [

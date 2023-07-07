@@ -22,7 +22,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { Global } from "@emotion/react";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import Seo from "@/components/elements/seo";
-import Image from "next/image";
 import NotFound from "@/components/templates/notFound";
 
 /* Menu */

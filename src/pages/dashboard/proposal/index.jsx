@@ -5,7 +5,6 @@ import {
   Button,
   FormControl,
   InputLabel,
-  Menu,
   MenuItem,
   Select,
   Slide,

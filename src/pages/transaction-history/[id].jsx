@@ -13,9 +13,7 @@ import {
   setWeightFormat,
 } from "@/utils/utilities";
 import { Alert, Button, MenuItem, Select, Snackbar } from "@mui/material";
-import Cookies from "js-cookie";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Slide from "@mui/material/Slide";

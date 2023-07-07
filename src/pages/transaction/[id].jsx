@@ -1,7 +1,7 @@
 import Loading from "@/components/modules/loading";
 import Seo from "@/components/elements/seo";
 import Default from "@/components/layouts/default";
-import { fetcher, get, postWithJSON, triggerfetcher } from "@/lib/axios";
+import { fetcher, postWithJSON, triggerfetcher } from "@/lib/axios";
 import { runOnce } from "@/lib/swr";
 import { setParamRegionFetch } from "@/utils/url";
 import {
@@ -29,10 +29,8 @@ import { useEffect, useState } from "react";
 import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
 import Slide from "@mui/material/Slide";
-import Cookies from "js-cookie";
 import Image from "next/image";
 import Link from "next/link";
-import { useProfileUser } from "@/context/profileUserContext";
 import { roleUser, transactionType } from "@/constant/constant";
 import { HttpStatusCode } from "axios";
 import Status, { convertStatusForBatch } from "@/components/elements/status";

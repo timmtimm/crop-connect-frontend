@@ -13,7 +13,7 @@ import {
   Snackbar,
   TextField,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Slide from "@mui/material/Slide";
 import {
   isValidDate,
@@ -24,13 +24,11 @@ import {
 } from "@/utils/utilities";
 import { useRouter } from "next/router";
 import Loading from "@/components/modules/loading";
-import { PostWithForm, fetcher, triggerfetcher } from "@/lib/axios";
+import { PostWithForm, fetcher } from "@/lib/axios";
 import { HttpStatusCode } from "axios";
 import Status from "@/components/elements/status";
 import useSWR from "swr";
 import { runOnce } from "@/lib/swr";
-import useSWRMutation from "swr/mutation";
-import { setParamRegionFetch } from "@/utils/url";
 import { FaTrashAlt } from "react-icons/fa";
 import { BsCardImage } from "react-icons/bs";
 import { setInputImageCreate, validateImage } from "@/utils/image";

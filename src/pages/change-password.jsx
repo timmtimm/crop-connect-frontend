@@ -10,10 +10,9 @@ import {
 } from "@/utils/utilities";
 import { Alert, Button, Snackbar, TextField } from "@mui/material";
 import Slide from "@mui/material/Slide";
-import Cookies from "js-cookie";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { HttpStatusCode } from "axios";
 
 export default () => {

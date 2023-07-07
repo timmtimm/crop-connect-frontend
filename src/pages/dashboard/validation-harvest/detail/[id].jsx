@@ -18,7 +18,6 @@ import {
 import { Alert, Button, Slide, Snackbar, TextField } from "@mui/material";
 import { HttpStatusCode } from "axios";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 

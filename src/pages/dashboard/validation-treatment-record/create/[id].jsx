@@ -3,7 +3,6 @@ import Dashboard from "@/components/layouts/dashboard";
 import { roleUser } from "@/constant/constant";
 import {
   Alert,
-  AlertTitle,
   Button,
   FormControl,
   FormHelperText,
@@ -19,18 +18,12 @@ import {
   checkObjectIsNotNullExist,
   dateFormatToIndonesia,
   findErrorMessageFromResponse,
-  isValidDate,
   setNumberFormat,
   validateStringInputLogic,
 } from "@/utils/utilities";
 import { useRouter } from "next/router";
 import Loading from "@/components/modules/loading";
-import {
-  PostWithForm,
-  fetcher,
-  postWithJSON,
-  triggerfetcher,
-} from "@/lib/axios";
+import { fetcher, postWithJSON } from "@/lib/axios";
 import { HttpStatusCode } from "axios";
 import Status, {
   convertStatusForBatch,
@@ -38,16 +31,9 @@ import Status, {
 } from "@/components/elements/status";
 import useSWR from "swr";
 import { runOnce } from "@/lib/swr";
-import useSWRMutation from "swr/mutation";
-import { setParamRegionFetch } from "@/utils/url";
-import { FaTrashAlt } from "react-icons/fa";
-import { BsCardImage } from "react-icons/bs";
-import { validateImage } from "@/utils/image";
 import dayjs from "dayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import Link from "next/link";
-import Image from "next/image";
 import NotFound from "@/components/templates/notFound";
 
 const informationColumn = [

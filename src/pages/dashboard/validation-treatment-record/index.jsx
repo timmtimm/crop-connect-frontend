@@ -35,7 +35,6 @@ import {
   dateFormatToIndonesia,
   setIfNotNull,
   setNumberFormat,
-  setPriceFormat,
 } from "@/utils/utilities";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";

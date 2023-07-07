@@ -5,7 +5,6 @@ import { fetcher, triggerfetcher } from "@/lib/axios";
 import { runOnce } from "@/lib/swr";
 import {
   dateFormatToIndonesia,
-  getLastURLSegment,
   setNumberFormat,
   setPriceFormat,
 } from "@/utils/utilities";
@@ -16,9 +15,7 @@ import {
   Select,
   Slide,
   Snackbar,
-  TextField,
 } from "@mui/material";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -28,23 +25,20 @@ import useSWRMutation from "swr/mutation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Navigation, Thumbs } from "swiper";
 import { HttpStatusCode } from "axios";
-
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/free-mode";
-import "swiper/css/navigation";
-import "swiper/css/thumbs";
 import { roleUser, transactionType } from "@/constant/constant";
-import Status, {
-  convertStatusForBatch,
-  convertStatusForTreatmentRecord,
-} from "@/components/elements/status";
+import Status, { convertStatusForBatch } from "@/components/elements/status";
 import { useProfileUser } from "@/context/profileUserContext";
 import { AiOutlineShareAlt } from "react-icons/ai";
 import Modal from "@/components/elements/modal";
 import QRCode from "react-qr-code";
 import { GrClose } from "react-icons/gr";
 import NotFound from "@/components/templates/notFound";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/free-mode";
+import "swiper/css/navigation";
+import "swiper/css/thumbs";
 
 export default () => {
   const router = useRouter();
