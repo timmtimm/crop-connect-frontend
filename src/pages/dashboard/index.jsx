@@ -184,7 +184,7 @@ export default () => {
           },
           {
             content: "Berat transaksi",
-            total: setNumberFormat(now?.totalWeight),
+            total: setWeightFormat(now?.totalWeight),
             icon: <BsBag className={setColorForIcon(diffWeight)} size={25} />,
             bgColor: setBgColorForIcon(diffWeight),
             differences: diffWeight,
