@@ -251,7 +251,7 @@ export default () => {
     const data = await postWithJSON(
       `/api/v1/treatment-record/${router.query.id}`,
       {
-        date: input.date,
+        date: input.date.format("YYYY-MM-DD"),
         description: input.description,
       }
     );
@@ -388,7 +388,7 @@ export default () => {
                         handleDate({
                           target: {
                             name: "date",
-                            value: dayjs(newValue).format("YYYY-MM-DD"),
+                            value: dayjs(newValue),
                           },
                         });
                       }}
