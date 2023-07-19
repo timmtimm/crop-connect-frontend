@@ -212,10 +212,7 @@ export default () => {
   };
 
   const [input, setInput] = useState({
-    /* FOR TESTING PURPOSE */
-    date: dayjs(),
-
-    // date: dayjs().add(1, "day"),
+    date: dayjs().add(1, "day"),
     description: "",
   });
   const [error, setError] = useState({
@@ -384,9 +381,7 @@ export default () => {
                   </span>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
-                      /* FOR TESTING PURPOSE */
-                      minDate={dayjs()}
-                      // minDate={dayjs().add(1, "day")}
+                      minDate={dayjs().add(1, "day")}
                       value={dayjs(input.date)}
                       views={["year", "month", "day"]}
                       onChange={(newValue) => {
